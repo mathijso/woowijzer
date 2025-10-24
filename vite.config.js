@@ -20,6 +20,9 @@ export default defineConfig(({ command }) => {
         ],
         server: {
             cors: true,
+            fs: {
+                allow: ['..']
+            }
         },
         build: {
             assetsDir: 'assets',

@@ -3,7 +3,7 @@
 /* Rijksoverheid Fonts */
 @font-face {
     font-family: 'RijksoverheidSans';
-    src: url('../fonts/rijksoverheidsanstext-regular.ttf') format('truetype');
+    src: url('https://mathijsoggel.nl/woowijzer/fonts/rijksoverheidsanstext-regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -11,7 +11,7 @@
 
 @font-face {
     font-family: 'RijksoverheidSans';
-    src: url('../fonts/rijksoverheidsansheading-bold.ttf') format('truetype');
+    src: url('https://mathijsoggel.nl/woowijzer/fonts/rijksoverheidsansheading-bold.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
     font-display: swap;
@@ -19,7 +19,7 @@
 
 @font-face {
     font-family: 'RijksoverheidSerif';
-    src: url('../fonts/rijksoverheidserif-regular.ttf') format('truetype');
+    src: url('https://mathijsoggel.nl/woowijzer/fonts/rijksoverheidserif-regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -27,7 +27,7 @@
 
 @font-face {
     font-family: 'RijksoverheidSerif';
-    src: url('../fonts/rijksoverheidserif-italic.ttf') format('truetype');
+    src: url('https://mathijsoggel.nl/woowijzer/fonts/rijksoverheidserif-italic.ttf') format('truetype');
     font-weight: normal;
     font-style: italic;
     font-display: swap;
