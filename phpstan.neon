@@ -1,0 +1,19 @@
+parameters:
+    level: 5
+    paths:
+        - app
+        - config
+        - database
+        - routes
+    excludePaths:
+        - bootstrap/cache
+        - storage
+        - vendor
+    ignoreErrors:
+        # Ignore errors about missing return type declarations
+        - '#Function .* should have return type but does not#'
+        # Ignore errors about missing parameter type declarations
+        - '#Parameter .* should have type declaration#'
+        - identifier: missingType.iterableValue
+        - identifier: missingType.generics
+    reportUnmatchedIgnoredErrors: false
