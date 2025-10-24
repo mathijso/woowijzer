@@ -31,8 +31,8 @@
                                         Document Samenvatten
                                         <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                        </svg>
-                                    </a>
+                                    </svg>
+                                </a>
                                     <a href="{{ route('about') }}" 
                                        class="inline-flex items-center px-8 py-4 border-2 border-white text-white font-medium rounded-lg hover:bg-white hover:text-rijksblauw transition-colors duration-200">
                                         Meer informatie
@@ -45,105 +45,80 @@
             </div>
         </section>
 
-        <!-- Features Section -->
-        <section class="py-20 bg-rijksgrijs-1">
+        <!-- WooWijzer Propositie Section -->
+        <section class="py-20 bg-white">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-16">
-                    <h3 class="text-3xl font-bold text-rijksblauw mb-4">
-                        Waarom WooWijzer?
+                    <h3 class="text-3xl font-bold text-rijksblauw mb-6">
+                        Van open naar écht begrijpelijk
                     </h3>
-                    <p class="text-lg text-rijksgrijs-6 max-w-2xl mx-auto">
-                        Woo-documenten kunnen complex en moeilijk te begrijpen zijn. WooWijzer maakt ze toegankelijk voor iedereen.
+                    <p class="text-xl text-rijksgrijs-6 max-w-4xl mx-auto leading-relaxed">
+                        Iedereen heeft recht op informatie van de overheid. Dat is het idee achter de Wet open overheid, de Woo. 
+                        Maar wie ooit een Woo-document heeft geopend, weet dat "open" nog niet betekent dat het ook begrijpelijk is.
                     </p>
                 </div>
 
-                <div class="grid md:grid-cols-3 gap-8">
-                    <!-- Feature 1 -->
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-rijkscyaan rounded-lg flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                        </div>
-                        <h4 class="text-xl font-bold text-rijksblauw mb-2">Automatische Samenvatting</h4>
-                        <p class="text-rijksgrijs-6">
-                            Upload uw Woo-document en ontvang een duidelijke, beknopte samenvatting van de belangrijkste punten.
+                <div class="grid lg:grid-cols-2 gap-12 items-center mb-16">
+                    <div>
+                        <h4 class="text-2xl font-bold text-rijksblauw mb-6">
+                            Het probleem
+                        </h4>
+                        <p class="text-lg text-rijksgrijs-6 mb-4">
+                            De meeste Woo-documenten zijn juridisch, complex en soms honderden pagina's lang. 
+                            Transparantie stopt dus vaak bij de drempel van de taal.
+                        </p>
+                        <p class="text-lg text-rijksgrijs-6">
+                            Burgers, journalisten en onderzoekers worstelen met ambtelijke taal en complexe besluitvorming. 
+                            De informatie is er wel, maar niet toegankelijk.
                         </p>
                     </div>
-
-                    <!-- Feature 2 -->
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-rijkscyaan rounded-lg flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
-                    </svg>
-                        </div>
-                        <h4 class="text-xl font-bold text-rijksblauw mb-2">Visuele Inzichten</h4>
-                        <p class="text-rijksgrijs-6">
-                            Complexe informatie wordt omgezet naar duidelijke visualisaties en grafieken voor beter begrip.
-                        </p>
+                    <div class="bg-rijksgrijs-1 p-8 rounded-lg border border-rijksgrijs-2">
+                        <h5 class="text-lg font-bold text-rijksblauw mb-4">Typische Woo-documenten</h5>
+                        <ul class="space-y-3 text-rijksgrijs-6">
+                            <li>• Besluiten van ministers en staatssecretarissen</li>
+                            <li>• Kamerstukken en beleidsnota's</li>
+                            <li>• Onderzoeksrapporten en evaluaties</li>
+                            <li>• Juridische adviezen en procedures</li>
+                            <li>• Financiële overzichten en begrotingen</li>
+                    </ul>
                     </div>
+                </div>
 
-                    <!-- Feature 3 -->
-                    <div class="text-center">
-                        <div class="w-16 h-16 bg-rijkscyaan rounded-lg flex items-center justify-center mx-auto mb-4">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                    </svg>
-                        </div>
-                        <h4 class="text-xl font-bold text-rijksblauw mb-2">Veilig & Betrouwbaar</h4>
-                        <p class="text-rijksgrijs-6">
-                            Uw documenten worden veilig verwerkt volgens de hoogste privacy- en beveiligingsstandaarden.
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div class="bg-rijksgrijs-1 p-8 rounded-lg border border-rijksgrijs-2">
+                        <h5 class="text-lg font-bold text-rijksblauw mb-4">WooWijzer oplossing</h5>
+                        <p class="text-rijksgrijs-6 mb-4">
+                            WooWijzer is een slimme tool die Woo-documenten omzet in begrijpelijke, samengevatte en inzichtelijke informatie.
+                        </p>
+                        <ul class="space-y-3 text-rijksgrijs-6">
+                            <li>• Controleert de leesbaarheid</li>
+                            <li>• Vat samen op drie niveaus</li>
+                            <li>• Toont besluitvorming overzichtelijk</li>
+                            <li>• Maakt complexe informatie visueel</li>
+                    </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-2xl font-bold text-rijksblauw mb-6">
+                            Hoe het werkt
+                        </h4>
+                        <p class="text-lg text-rijksgrijs-6 mb-4">
+                            Gebruikers uploaden een document, waarna AI de tekst opsplitst, analyseert en overzichtelijk presenteert. 
+                            Zo wordt een stapel ambtelijke taal omgezet in heldere kennis.
+                        </p>
+                        <p class="text-lg text-rijksgrijs-6">
+                            WooWijzer is direct toepasbaar, gebruiksvriendelijk en innovatief. Burgers begrijpen sneller wat er speelt, 
+                            ambtenaren krijgen minder vragen, en journalisten vinden sneller de kern.
                         </p>
                     </div>
                 </div>
-            </div>
-        </section>
 
-        <!-- How it works Section -->
-        <section class="py-20">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h3 class="text-3xl font-bold text-rijksblauw mb-4">
-                        Hoe werkt het?
-                    </h3>
-                    <p class="text-lg text-rijksgrijs-6 max-w-2xl mx-auto">
-                        In drie eenvoudige stappen heeft u een begrijpelijke samenvatting van uw Woo-document.
-                    </p>
-                </div>
-
-                <div class="grid md:grid-cols-3 gap-8">
-                    <!-- Step 1 -->
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-rijksblauw text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-                            1
-                        </div>
-                        <h4 class="text-xl font-bold text-rijksblauw mb-2">Upload Document</h4>
-                        <p class="text-rijksgrijs-6">
-                            Upload uw Woo-document (PDF of tekstbestand) via het uploadformulier.
-                        </p>
-                    </div>
-
-                    <!-- Step 2 -->
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-rijksblauw text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-                            2
-                        </div>
-                        <h4 class="text-xl font-bold text-rijksblauw mb-2">AI Verwerking</h4>
-                        <p class="text-rijksgrijs-6">
-                            Onze AI analyseert het document en extraheert de belangrijkste informatie.
-                        </p>
-        </div>
-
-                    <!-- Step 3 -->
-                    <div class="text-center">
-                        <div class="w-12 h-12 bg-rijksblauw text-white rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">
-                            3
-                        </div>
-                        <h4 class="text-xl font-bold text-rijksblauw mb-2">Ontvang Samenvatting</h4>
-                        <p class="text-rijksgrijs-6">
-                            Bekijk de samenvatting, visualisaties en inzichten in een overzichtelijk dashboard.
+                <div class="text-center mt-16">
+                    <div class="bg-rijksblauw text-white p-8 rounded-lg">
+                        <h4 class="text-2xl font-bold mb-4">
+                            Openbaarheid krijgt pas betekenis als iedereen het kan begrijpen
+                        </h4>
+                        <p class="text-lg opacity-90">
+                            WooWijzer maakt de Woo niet alleen open, maar écht toegankelijk en menselijk.
                         </p>
                     </div>
                 </div>
@@ -166,7 +141,7 @@
                     </svg>
                     Start nu met samenvatten
                 </a>
-            </div>
+                </div>
         </section>
-    </div>
+        </div>
 </x-app-layout>

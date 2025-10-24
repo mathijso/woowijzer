@@ -18,8 +18,11 @@
         </section>
 
         <!-- Document Upload Section -->
-        <section class="py-20 bg-rijksgrijs-1">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section class="py-20 ">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <code>
+                    hier komt de document upload
+                </code>
                 @livewire('document-summarizer')
             </div>
         </section>

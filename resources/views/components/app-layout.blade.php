@@ -23,19 +23,16 @@
 
 <body class="h-full font-rijks bg-white text-black antialiased">
     <div class="min-h-full">
-        <!-- Rijksoverheid Top Bar -->
-        
-            <div class="mx-auto bg-white px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-center items-center h-26">
-                    <!-- Rijksoverheid Logo -->
-                    <div class="logo flex items-center justify-center">
-                        <div class="logo__wrapper">
-                            <figure class="logo__figure flex items-center">
+            <div class="mx-auto bg-white m-0 p-0">
+                <div class="flex justify-center items-center  m-0 p-0">
+                    <div class="logo flex items-center justify-center m-0 p-0">
+                        <div class="logo__wrapper m-0 p-0">
+                            <figure class="logo__figure flex items-center m-0 p-0">
                                 <img src="{{ asset('images/beeldmerk-rijksoverheid-desktop.svg') }}"
-                                    alt="Logo Rijksoverheid" class="h-20 w-auto">
-                                <figcaption class="logo__text ml-3">
+                                    alt="Logo Rijksoverheid" class="h-20 w-auto m-0 p-0">
+                                <figcaption class="logo__text ml-3 m-0 p-0">
                                     <span
-                                        class="logo__sender text-rijksblauw font-bold text-left">Rijksoverheid</span>
+                                        class="logo__sender text-rijksblauw font-bold text-left m-0 p-0">Rijksoverheid</span>
                                 </figcaption>
                             </figure>
                         </div>
@@ -119,13 +116,52 @@
         <!-- Footer -->
         <footer class="bg-rijksgrijs-1 border-t border-rijksgrijs-2">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div class="text-center">
-                    <p class="text-rijksgrijs-6 text-sm">
-                        Een initiatief geïnspireerd door Hackathon Open Overheid 'Terminal WOO'
-                    </p>
-                    <p class="text-rijksgrijs-5 text-xs mt-2">
-                        © {{ date('Y') }} Techlethes.ai en Oggel-codelabs. Alle rechten voorbehouden.
-                    </p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Hackathon Section -->
+                    <div>
+                        <div class="flex items-center mb-4">
+                            <div class="bg-white rounded-lg p-2 mr-3">
+                                <img src="{{ asset('images/hackathon.svg') }}" alt="Hackathon Open Overheid Terminal WOO" class="h-8 w-auto">
+                            </div>
+                            <h3 class="text-lg font-bold text-rijksblauw">
+                                Hackathon Open Overheid
+                            </h3>
+                        </div>
+                        <p class="text-rijksgrijs-6 text-sm">
+                            Een initiatief geïnspireerd door Hackathon Open Overheid 'Terminal WOO' 
+                            op 31 oktober en 1 november 2025 in de Fokker Terminal in Den Haag.
+                        </p>
+                    </div>
+
+                    <!-- Bedrijven Section -->
+                    <div class="md:text-right  text-left">
+                        <h3 class="text-lg font-bold text-rijksblauw mb-4">
+                            Ontwikkeld door
+                        </h3>
+                        <div class="flex flex-col items-start space-y-3 md:flex-row md:items-center md:justify-end md:space-x-6 md:space-y-0">
+                            <div class="flex items-center">
+                                <img src="{{ asset('images/techletes_logo.jpg') }}" 
+                                     alt="Techletes.ai logo" 
+                                     class="h-8 w-auto object-contain mr-2">
+                                <a href="https://www.techletes.ai/" 
+                                   class="text-rijksblauw hover:text-rijkscyaan hover:underline text-sm font-medium">
+                                    Techletes.ai
+                                </a>
+                            </div>
+                            <div class="flex items-center">
+                                <img src="{{ asset('images/oggel-codelabs_logo.svg') }}" 
+                                     alt="Oggel Codelabs logo" 
+                                     class="h-8 w-auto object-contain mr-2">
+                                <a href="https://oggel-codelabs.nl/" 
+                                   class="text-rijksblauw hover:text-rijkscyaan hover:underline text-sm font-medium">
+                                    Oggel Codelabs
+                                </a>
+                            </div>
+                        </div>
+                        <p class="text-rijksgrijs-5 text-xs mt-4">
+                            © {{ date('Y') }} Techlethes.ai en Oggel-codelabs. Alle rechten voorbehouden.
+                        </p>
+                    </div>
                 </div>
             </div>
         </footer>
