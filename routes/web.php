@@ -4,22 +4,32 @@ use Illuminate\Support\Facades\Route;
 use Laravel\Fortify\Features;
 use Livewire\Volt\Volt;
 
-Route::get('/', fn (): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => view('welcome'))->name('welcome');
+Route::get('/', function () {
+    return view('welcome');
+})->name('welcome');
 
-Route::get('/home', fn () => redirect()->route('welcome'))->name('home');
+Route::get('/home', function () {
+    return redirect()->route('welcome');
+})->name('home');
 
 // WooWijzer Routes
-Route::get('/over', fn (): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => view('about'))->name('about');
+Route::get('/over', function () {
+    return view('about');
+})->name('about');
 
-Route::get('/document-samenvatten', fn (): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => view('document-summarize'))->name('document.summarize');
+Route::get('/document-samenvatten', function () {
+    return view('document-summarize');
+})->name('document.summarize');
 
-Route::get('/contact', fn (): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View => view('contact'))->name('contact');
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::middleware(['auth'])->group(function (): void {
+Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
     Volt::route('settings/profile', 'settings.profile')->name('profile.edit');
