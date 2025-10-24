@@ -2,49 +2,44 @@
     <x-slot name="title">WooWijzer - Woo-documenten begrijpelijk maken</x-slot>
     
     <div class="min-h-screen bg-white">
-        <!-- Hero Section -->
-        <section 
-            class="py-20 px-4 sm:px-6 lg:px-8" 
-            style="background: url('/images/background.png') left center no-repeat; background-size: cover; background-blend-mode: luminosity; background-color: rgba(255,255,255,0.85);"
-        >
-            <div class="max-w-7xl mx-auto">
-                <div class="text-left">
-                    <!-- Logo -->
-                    <div class="flex justify-start mb-8">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-16 h-16 bg-rijksblauw rounded-lg flex items-center justify-center">
-                                <span class="text-white font-bold text-2xl">W</span>
-                            </div>
-                            <div>
-                                <h1 class="text-4xl text-rijksblauw font-rijks-serif">WooWijzer</h1>
-                                <p class="text-lg text-rijksgrijs-6 font-rijks-bold">Woo-documenten begrijpelijk maken</p>
+        <!-- Hero Section - Rijksoverheid Style -->
+
+        <section class="relative bg-white">
+            <!-- Hero Image -->
+            <div 
+                class="relative h-120"
+                style="background-image: url('{{ asset('images/den-haag.jpg') }}'); background-size: cover; background-position: center;">
+                <div class="absolute inset-0 bg-rijksblauw opacity-40"></div>
+                <div class="relative h-full flex items-center">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                            <!-- Content -->
+                            <div class="text-white">
+                                <h1 class="text-4xl lg:text-6xl font-bold mb-6">
+                                    WooWijzer
+                                </h1>
+                                <p class="text-xl lg:text-2xl mb-8 font-medium">
+                                    Maak Woo-documenten toegankelijk en begrijpelijk
+                                </p>
+                                <p class="text-lg mb-8 opacity-90">
+                                    WooWijzer helpt u om complexe Woo-documenten te begrijpen door ze samen te vatten, 
+                                    te visualiseren en inzichtelijk te presenteren.
+                                </p>
+                                <div class="flex flex-col sm:flex-row gap-4">
+                                    <a href="{{ route('document.summarize') }}" 
+                                       class="inline-flex items-center px-8 py-4 bg-white text-rijksblauw font-medium rounded-lg hover:bg-rijksgrijs-1 transition-colors duration-200">
+                                        Document Samenvatten
+                                        <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                        </svg>
+                                    </a>
+                                    <a href="{{ route('about') }}" 
+                                       class="inline-flex items-center px-8 py-4 border-2 border-white text-white font-medium rounded-lg hover:bg-white hover:text-rijksblauw transition-colors duration-200">
+                                        Meer informatie
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Main heading -->
-                    <h2 class="text-5xl font-bold text-rijksblauw mb-6 text-left">
-                        Maak Woo-documenten toegankelijk
-                    </h2>
-                    
-                    <p class="text-xl text-rijksgrijs-6 mb-12 max-w-3xl text-left">
-                        WooWijzer helpt u om complexe Woo-documenten te begrijpen door ze samen te vatten, 
-                        te visualiseren en inzichtelijk te presenteren. Een initiatief geïnspireerd door de Wet open overheid.
-                    </p>
-
-                    <!-- CTA Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-4 justify-start">
-                        <a href="{{ route('document.summarize') }}" 
-                           class="inline-flex items-center px-8 py-4 bg-rijksblauw text-white font-medium rounded-lg hover:bg-rijkscyaan transition-colors duration-200">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
-                            </svg>
-                            Document Samenvatten
-                        </a>
-                        <a href="{{ route('about') }}" 
-                           class="inline-flex items-center px-8 py-4 border-2 border-rijksblauw text-rijksblauw font-medium rounded-lg hover:bg-rijksblauw hover:text-white transition-colors duration-200">
-                            Meer informatie
-                        </a>
                     </div>
                 </div>
             </div>

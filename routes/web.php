@@ -6,7 +6,24 @@ use Livewire\Volt\Volt;
 
 Route::get('/', function () {
     return view('welcome');
+})->name('welcome');
+
+Route::get('/home', function () {
+    return redirect()->route('welcome');
 })->name('home');
+
+// WooWijzer Routes
+Route::get('/over', function () {
+    return view('about');
+})->name('about');
+
+Route::get('/document-samenvatten', function () {
+    return view('document-summarize');
+})->name('document.summarize');
+
+Route::get('/contact', function () {
+    return view('contact');
+})->name('contact');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

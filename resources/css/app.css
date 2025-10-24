@@ -32,3 +32,123 @@
     font-style: italic;
     font-display: swap;
 }
+
+/* Rijksoverheid Kleuren - Direct CSS Classes */
+.bg-rijksblauw {
+    background-color: #154273;
+}
+
+.text-rijksblauw {
+    color: #154273;
+}
+
+.bg-rijkscyaan {
+    background-color: #007bc7;
+}
+
+.text-rijkscyaan {
+    color: #007bc7;
+}
+
+.bg-rijksgrijs-1 {
+    background-color: #f3f3f3;
+}
+
+.bg-rijksgrijs-2 {
+    background-color: #e6e6e6;
+}
+
+.bg-rijksgrijs-3 {
+    background-color: #cccccc;
+}
+
+.bg-rijksgrijs-4 {
+    background-color: #b4b4b4;
+}
+
+.bg-rijksgrijs-5 {
+    background-color: #999999;
+}
+
+.bg-rijksgrijs-6 {
+    background-color: #696969;
+}
+
+.bg-rijksgrijs-7 {
+    background-color: #535353;
+}
+
+.text-rijksgrijs-1 {
+    color: #f3f3f3;
+}
+
+.text-rijksgrijs-2 {
+    color: #e6e6e6;
+}
+
+.text-rijksgrijs-3 {
+    color: #cccccc;
+}
+
+.text-rijksgrijs-4 {
+    color: #b4b4b4;
+}
+
+.text-rijksgrijs-5 {
+    color: #999999;
+}
+
+.text-rijksgrijs-6 {
+    color: #696969;
+}
+
+.text-rijksgrijs-7 {
+    color: #535353;
+}
+
+.border-rijksgrijs-1 {
+    border-color: #f3f3f3;
+}
+
+.border-rijksgrijs-2 {
+    border-color: #e6e6e6;
+}
+
+.border-rijksgrijs-3 {
+    border-color: #cccccc;
+}
+
+.border-rijksgrijs-4 {
+    border-color: #b4b4b4;
+}
+
+.border-rijksgrijs-5 {
+    border-color: #999999;
+}
+
+.border-rijksgrijs-6 {
+    border-color: #696969;
+}
+
+.border-rijksgrijs-7 {
+    border-color: #535353;
+}
+
+/* Rijksoverheid Font Classes */
+.font-rijks {
+    font-family: 'RijksoverheidSans', 'Arial', sans-serif;
+}
+
+.font-rijks-bold {
+    font-family: 'RijksoverheidSans', 'Arial', sans-serif;
+    font-weight: bold;
+}
+
+.font-rijks-serif {
+    font-family: 'RijksoverheidSerif', 'Times New Roman', serif;
+}
+
+/* Set RijksoverheidSans as default font */
+body {
+    font-family: 'RijksoverheidSans', 'Arial', sans-serif;
+}
