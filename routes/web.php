@@ -66,8 +66,6 @@ Route::middleware(['auth'])->group(function () {
         ->name('woo-requests.create-manual');
     Route::post('woo-requests-manual/store', [App\Http\Controllers\WooRequestController::class, 'storeManual'])
         ->name('woo-requests.store-manual');
-    Route::post('woo-requests/extract-case-file', [App\Http\Controllers\WooRequestController::class, 'extractCaseFile'])
-        ->name('woo-requests.extract-case-file');
     Route::post('woo-requests/{wooRequest}/assign-case-manager', [App\Http\Controllers\WooRequestController::class, 'assignCaseManager'])
         ->name('woo-requests.assign-case-manager');
     Route::post('woo-requests/{wooRequest}/pickup', [App\Http\Controllers\WooRequestController::class, 'pickupCase'])
@@ -82,6 +80,10 @@ Route::middleware(['auth'])->group(function () {
         ->name('woo-requests.generate-summaries');
     Route::get('woo-requests/{wooRequest}/generate-report', [App\Http\Controllers\WooRequestController::class, 'generateReport'])
         ->name('woo-requests.generate-report');
+    Route::post('woo-requests/{wooRequest}/retry-processing', [App\Http\Controllers\WooRequestController::class, 'retryProcessing'])
+        ->name('woo-requests.retry-processing');
+    Route::get('woo-requests/{wooRequest}/download-document', [App\Http\Controllers\WooRequestController::class, 'downloadDocument'])
+        ->name('woo-requests.download-document');
 
     // Questions
     Route::get('questions', [App\Http\Controllers\QuestionController::class, 'index'])
@@ -132,7 +134,7 @@ Route::middleware(['auth', App\Http\Middleware\EnsureCaseManager::class])->group
         ->name('cases.update-status');
     Route::get('cases/{wooRequest}/generate-report', [App\Http\Controllers\WooRequestController::class, 'generateReport'])
         ->name('cases.generate-report');
-    
+
     // Case assignment actions
     Route::post('cases/{wooRequest}/pickup', [App\Http\Controllers\CaseOverviewController::class, 'pickupCase'])
         ->name('cases.pickup');

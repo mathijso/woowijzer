@@ -53,46 +53,19 @@
                     @enderror
                 </div>
 
-                {{-- Extracted Questions Section (Hidden initially) --}}
-                <div id="extracted-questions-section" class="hidden">
-                    <label class="block text-sm font-medium text-neutral-900 dark:text-white">
-                        Geëxtraheerde vragen
-                        <span class="text-sm font-normal text-neutral-500 dark:text-neutral-400">(U kunt deze bewerken of verwijderen)</span>
-                    </label>
-                    <div id="questions-container" class="mt-2 space-y-2">
-                        <!-- Questions will be dynamically added here -->
-                    </div>
-                    <button type="button"
-                            id="add-question-btn"
-                            class="mt-2 text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
-                        + Vraag toevoegen
-                    </button>
-                </div>
-
-                {{-- Loading State --}}
-                <div id="extraction-loading" class="hidden p-4 bg-blue-50 rounded-lg dark:bg-blue-900/10">
-                    <div class="flex items-center">
-                        <svg class="mr-3 w-5 h-5 text-blue-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        <span class="text-sm text-blue-700 dark:text-blue-300">Document wordt geanalyseerd...</span>
-                    </div>
-                </div>
-
                 {{-- Document Upload --}}
                 <div>
                     <label for="document" class="block text-sm font-medium text-neutral-900 dark:text-white">
                         WOO-verzoek document (PDF) <span class="text-red-600">*</span>
                     </label>
                     <div class="mt-1">
-                        <div class="flex justify-center px-6 pt-5 pb-6 rounded-lg border-2 border-dashed transition border-neutral-300 dark:border-neutral-700 hover:border-blue-400 dark:hover:border-blue-600">
+                        <div class="flex justify-center px-6 pt-5 pb-6 rounded-lg border-2 border-dashed border-neutral-300 dark:border-neutral-700 hover:border-blue-400">
                             <div class="space-y-1 text-center">
                                 <svg class="mx-auto w-12 h-12 text-neutral-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                                 <div class="flex text-sm text-neutral-600 dark:text-neutral-400">
-                                    <label for="document" class="relative font-medium text-blue-600 rounded-md cursor-pointer hover:text-blue-500 focus-within:outline-none">
+                                    <label for="document" class="relative font-medium text-blue-600 rounded-md cursor-pointer hover:text-blue-500">
                                         <span>Upload een bestand</span>
                                         <input id="document" name="document" type="file" accept=".pdf" required class="sr-only">
                                     </label>
@@ -104,6 +77,7 @@
                             </div>
                         </div>
                     </div>
+                    <div id="file-list" class="mt-3 space-y-2"></div>
                     @error('document')
                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                     @enderror
@@ -120,9 +94,9 @@
                         <div class="ml-3 text-sm text-blue-700 dark:text-blue-300">
                             <p class="font-medium">Let op:</p>
                             <ul class="mt-2 ml-4 space-y-1 list-disc">
-                                <li>Uw document wordt automatisch verwerkt</li>
-                                <li>Vragen worden geëxtraheerd uit het document</li>
-                                <li>U ontvangt updates over de status van uw verzoek</li>
+                                <li>Uw document wordt na indienen automatisch verwerkt</li>
+                                <li>Vragen worden automatisch geëxtraheerd uit het document</li>
+                                <li>U kunt de verwerkingsstatus volgen na het indienen</li>
                                 <li>Een case manager zal uw verzoek in behandeling nemen</li>
                             </ul>
                         </div>
@@ -146,121 +120,24 @@
 
     @push('scripts')
     <script>
-        let extractedData = null;
-        let questionCount = 0;
+        // Show selected file
+        document.getElementById('document').addEventListener('change', function(e) {
+            const fileList = document.getElementById('file-list');
+            fileList.innerHTML = '';
 
-        // Show filename and extract case file when file is selected
-        document.getElementById('document').addEventListener('change', async function(e) {
             const file = e.target.files[0];
-            if (!file) return;
-
-            // Update label
-            const label = document.querySelector('label[for="document"] span');
-            label.textContent = file.name;
-
-            // Extract case file information
-            await extractCaseFile(file);
-        });
-
-        async function extractCaseFile(file) {
-            const loadingDiv = document.getElementById('extraction-loading');
-            const questionsSection = document.getElementById('extracted-questions-section');
-
-            // Show loading state
-            loadingDiv.classList.remove('hidden');
-            questionsSection.classList.add('hidden');
-
-            try {
-                const formData = new FormData();
-                formData.append('document', file);
-                formData.append('_token', '{{ csrf_token() }}');
-
-                const response = await fetch('{{ route("woo-requests.extract-case-file") }}', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                const data = await response.json();
-
-                if (data.success) {
-                    extractedData = data.data;
-                    displayExtractedData(data.data);
-                } else {
-                    alert(data.message || 'Er is een fout opgetreden bij het analyseren van het document.');
-                }
-            } catch (error) {
-                console.error('Extraction error:', error);
-                alert('Er is een fout opgetreden bij het analyseren van het document. Probeer het opnieuw.');
-            } finally {
-                loadingDiv.classList.add('hidden');
+            if (file) {
+                const div = document.createElement('div');
+                div.className = 'flex items-center p-3 bg-green-50 dark:bg-green-900/20 rounded-lg';
+                div.innerHTML = `
+                    <svg class="mr-2 w-5 h-5 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="text-sm font-medium text-green-700 dark:text-green-400">${file.name}</span>
+                    <span class="ml-auto text-xs text-green-600 dark:text-green-400">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                `;
+                fileList.appendChild(div);
             }
-        }
-
-        function displayExtractedData(data) {
-            const titleInput = document.getElementById('title');
-            const descriptionInput = document.getElementById('description');
-            const questionsSection = document.getElementById('extracted-questions-section');
-            const questionsContainer = document.getElementById('questions-container');
-
-            // Pre-fill title if empty (fallback behavior)
-            if (!titleInput.value && data.title) {
-                titleInput.value = data.title;
-            }
-
-            // Pre-fill description if empty (fallback behavior)
-            if (!descriptionInput.value && data.description) {
-                descriptionInput.value = data.description;
-            }
-
-            // Display questions
-            if (data.questions && data.questions.length > 0) {
-                questionsContainer.innerHTML = '';
-                questionCount = 0;
-                data.questions.forEach(question => {
-                    addQuestionField(question);
-                });
-                questionsSection.classList.remove('hidden');
-            }
-        }
-
-        function addQuestionField(questionText = '') {
-            const questionsContainer = document.getElementById('questions-container');
-            const questionId = questionCount++;
-
-            const questionDiv = document.createElement('div');
-            questionDiv.className = 'flex items-start gap-2';
-            questionDiv.innerHTML = `
-                <input type="text"
-                       name="questions[]"
-                       value="${escapeHtml(questionText)}"
-                       placeholder="Voer een vraag in..."
-                       class="flex-1 px-4 py-2 rounded-lg border border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
-                <button type="button"
-                        onclick="removeQuestion(this)"
-                        class="px-3 py-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
-                    Verwijder
-                </button>
-            `;
-
-            questionsContainer.appendChild(questionDiv);
-        }
-
-        function removeQuestion(button) {
-            button.closest('div').remove();
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Add question button handler
-        document.getElementById('add-question-btn').addEventListener('click', function() {
-            addQuestionField();
         });
     </script>
     @endpush

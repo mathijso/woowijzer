@@ -62,45 +62,28 @@ class WooRequestController extends Controller
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'document' => 'required|file|mimes:pdf|max:' . (config('woo.max_upload_size_mb', 50) * 1024),
-            'questions' => 'nullable|array',
-            'questions.*' => 'nullable|string|max:1000',
         ]);
 
         // Store the uploaded file
         $filePath = $request->file('document')->store('woo-requests', 'woo-documents');
 
-        // Create WOO request
+        // Create WOO request with pending processing status
         $wooRequest = WooRequest::create([
             'user_id' => Auth::id(),
             'title' => $validated['title'],
             'description' => $validated['description'],
             'original_file_path' => $filePath,
             'status' => 'submitted',
+            'processing_status' => 'pending',
             'submitted_at' => now(),
         ]);
 
-        // Create questions if provided (from extraction)
-        if (! empty($validated['questions'])) {
-            $order = 1;
-            foreach ($validated['questions'] as $questionText) {
-                if (! empty(trim($questionText))) {
-                    $wooRequest->questions()->create([
-                        'question_text' => trim($questionText),
-                        'order' => $order++,
-                        'status' => 'unanswered',
-                    ]);
-                }
-            }
-        }
-
-        // Dispatch job to process document (this will extract questions if none were provided)
-        if ($wooRequest->questions()->count() === 0) {
-            ProcessWooRequestDocument::dispatch($wooRequest);
-        }
+        // Dispatch job to process document in the background
+        ProcessWooRequestDocument::dispatch($wooRequest);
 
         return redirect()
             ->route('woo-requests.show', $wooRequest)
-            ->with('success', 'Uw WOO-verzoek is succesvol ingediend en wordt verwerkt.');
+            ->with('success', 'Uw WOO-verzoek is succesvol ingediend. Het document wordt verwerkt op de achtergrond.');
     }
 
     /**
@@ -385,43 +368,45 @@ class WooRequestController extends Controller
     }
 
     /**
-     * Extract case file information from uploaded document (AJAX endpoint)
+     * Retry processing a failed WOO request document (case manager only)
      */
-    public function extractCaseFile(Request $request, DocumentProcessingService $processingService)
+    public function retryProcessing(WooRequest $wooRequest)
     {
-        $validated = $request->validate([
-            'document' => 'required|file|mimes:pdf,docx,doc,txt,jpg,jpeg,png|max:' . (config('woo.max_upload_size_mb', 50) * 1024),
+        $this->authorize('update', $wooRequest);
+
+        if (! $wooRequest->hasProcessingFailed()) {
+            return back()->with('error', 'Dit document kan niet opnieuw verwerkt worden.');
+        }
+
+        // Reset processing status to pending
+        $wooRequest->update([
+            'processing_status' => 'pending',
+            'processing_error' => null,
         ]);
 
-        try {
-            // Get the uploaded file
-            $file = $request->file('document');
-            $tempPath = $file->getRealPath();
+        // Dispatch job to process document again
+        ProcessWooRequestDocument::dispatch($wooRequest);
 
-            // Generate a temporary case ID for extraction
-            $tempCaseId = 'temp-' . \Illuminate\Support\Str::uuid();
-
-            // Call the API to extract case file information
-            $extractedData = $processingService->extractCaseFile($tempCaseId, $tempPath);
-
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'title' => $extractedData['title'] ?? '',
-                    'description' => $extractedData['description'] ?? '',
-                    'questions' => $extractedData['questions'] ?? [],
-                ],
-            ]);
-        } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Failed to extract case file', [
-                'error' => $e->getMessage(),
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Er is een fout opgetreden bij het analyseren van het document. Probeer het opnieuw.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return back()->with('success', 'Documentverwerking is opnieuw gestart.');
     }
+
+    /**
+     * Download the original WOO request document
+     */
+    public function downloadDocument(WooRequest $wooRequest)
+    {
+        $this->authorize('view', $wooRequest);
+
+        if (! $wooRequest->original_file_path) {
+            abort(404, 'Document niet gevonden.');
+        }
+
+        $fileName = $wooRequest->title . '.pdf';
+
+        return Storage::disk('woo-documents')->download(
+            $wooRequest->original_file_path,
+            $fileName
+        );
+    }
+
 }

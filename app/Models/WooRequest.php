@@ -44,6 +44,9 @@ class WooRequest extends Model
         'extracted_questions',
         'extracted_at',
         'status',
+        'processing_status',
+        'processing_error',
+        'processed_at',
         'submitted_at',
         'completed_at',
     ];
@@ -53,6 +56,7 @@ class WooRequest extends Model
         return [
             'extracted_questions' => 'array',
             'extracted_at' => 'datetime',
+            'processed_at' => 'datetime',
             'submitted_at' => 'datetime',
             'completed_at' => 'datetime',
         ];
@@ -209,5 +213,47 @@ class WooRequest extends Model
     public function hasExtractedData(): bool
     {
         return $this->extracted_at !== null;
+    }
+
+    public function isProcessing(): bool
+    {
+        return $this->processing_status === 'processing';
+    }
+
+    public function hasProcessingFailed(): bool
+    {
+        return $this->processing_status === 'failed';
+    }
+
+    public function isProcessed(): bool
+    {
+        return $this->processing_status === 'completed';
+    }
+
+    public function isPendingProcessing(): bool
+    {
+        return $this->processing_status === 'pending';
+    }
+
+    public function getProcessingStatusBadgeClass(): string
+    {
+        return match ($this->processing_status) {
+            'pending' => 'text-gray-700 bg-gray-100 dark:bg-gray-900/20 dark:text-gray-400',
+            'processing' => 'text-blue-700 bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400',
+            'completed' => 'text-green-700 bg-green-100 dark:bg-green-900/20 dark:text-green-400',
+            'failed' => 'text-red-700 bg-red-100 dark:bg-red-900/20 dark:text-red-400',
+            default => 'text-neutral-700 bg-neutral-100 dark:bg-neutral-900/20 dark:text-neutral-300',
+        };
+    }
+
+    public function getProcessingStatusLabel(): string
+    {
+        return match ($this->processing_status) {
+            'pending' => 'In wachtrij',
+            'processing' => 'Wordt verwerkt',
+            'completed' => 'Verwerkt',
+            'failed' => 'Verwerking mislukt',
+            default => ucfirst((string) $this->processing_status),
+        };
     }
 }

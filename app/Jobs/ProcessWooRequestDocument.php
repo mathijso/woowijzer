@@ -32,12 +32,24 @@ class ProcessWooRequestDocument implements ShouldQueue
         QuestionExtractionService $questionService
     ): void {
         try {
+            // Update status to processing
+            $this->wooRequest->update([
+                'processing_status' => 'processing',
+            ]);
+
             Log::info('Processing WOO request document', [
                 'woo_request_id' => $this->wooRequest->id,
             ]);
 
-            // Process document through API
-            $result = $processingService->processWooRequestDocument($this->wooRequest);
+            // Ensure case exists in WOO Insight API
+            $processingService->ensureCase($this->wooRequest);
+
+            // Get the full file path
+            $filePath = \Illuminate\Support\Facades\Storage::disk('woo-documents')->path($this->wooRequest->original_file_path);
+
+            // Extract case file information through API
+            $caseId = (string) $this->wooRequest->id;
+            $result = $processingService->extractCaseFile($caseId, $filePath);
 
             // Extract and create questions
             if (! empty($result['questions'])) {
@@ -50,11 +62,24 @@ class ProcessWooRequestDocument implements ShouldQueue
                 );
             }
 
+            // Update status to completed
+            $this->wooRequest->update([
+                'processing_status' => 'completed',
+                'processed_at' => now(),
+                'processing_error' => null,
+            ]);
+
             Log::info('WOO request document processed successfully', [
                 'woo_request_id' => $this->wooRequest->id,
                 'questions_count' => $this->wooRequest->questions()->count(),
             ]);
         } catch (\Exception $e) {
+            // Update status to failed
+            $this->wooRequest->update([
+                'processing_status' => 'failed',
+                'processing_error' => $e->getMessage(),
+            ]);
+
             Log::error('Failed to process WOO request document', [
                 'woo_request_id' => $this->wooRequest->id,
                 'error' => $e->getMessage(),
@@ -69,6 +94,12 @@ class ProcessWooRequestDocument implements ShouldQueue
      */
     public function failed(\Throwable $exception): void
     {
+        // Update status to failed
+        $this->wooRequest->update([
+            'processing_status' => 'failed',
+            'processing_error' => $exception->getMessage(),
+        ]);
+
         Log::error('WOO request document processing failed permanently', [
             'woo_request_id' => $this->wooRequest->id,
             'error' => $exception->getMessage(),
