@@ -1,6 +1,6 @@
 <x-app-layout>
-    <x-slot name="title">Document Samenvatten - WooWijzer</x-slot>
-    
+    <x-slot name="title">Document Samenvatten - woohub</x-slot>
+
     <div class="min-h-screen bg-white">
         <!-- Hero Section -->
         <section class="py-20 px-4 sm:px-6 lg:px-8">
@@ -10,7 +10,7 @@
                         Document Samenvatten
                     </h1>
                     <p class="text-xl text-rijksgrijs-6 max-w-3xl mx-auto">
-                        Upload uw Woo-document en ontvang een duidelijke, beknopte samenvatting 
+                        Upload uw Woo-document en ontvang een duidelijke, beknopte samenvatting
                         van de belangrijkste punten en inzichten.
                     </p>
                 </div>

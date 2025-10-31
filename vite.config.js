@@ -7,7 +7,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig(({ command }) => {
     // Determine base path based on environment
     const isProduction = command === 'build';
-    const basePath = isProduction ? '/woowijzer/' : '/';
+    const basePath = isProduction ? '/woohub/' : '/';
 
     return {
         base: basePath,

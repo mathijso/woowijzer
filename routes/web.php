@@ -12,7 +12,7 @@ Route::get('/home', function () {
     return redirect()->route('welcome');
 })->name('home');
 
-// WooWijzer Routes
+// woohub Routes
 Route::get('/over', function () {
     return view('about');
 })->name('about');

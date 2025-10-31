@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Pagina niet gevonden - WooWijzer</title>
+    <title>Pagina niet gevonden - woohub</title>
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
@@ -56,7 +56,7 @@
                     <nav class="hidden md:flex space-x-8">
                         <a href="{{ route('about') }}"
                             class="text-white hover:text-rijkscyaan hover:underline transition-colors duration-200">
-                            Over WooWijzer
+                            Over woohub
                         </a>
                         <a href="{{ route('document.summarize') }}"
                             class="text-white hover:text-rijkscyaan hover:underline transition-colors duration-200">
@@ -101,20 +101,20 @@
                                 Pagina niet gevonden
                             </h2>
                             <p class="text-lg text-rijksgrijs-6 max-w-3xl mx-auto mb-8">
-                                De pagina die u zoekt bestaat niet of is verplaatst. 
+                                De pagina die u zoekt bestaat niet of is verplaatst.
                                 Controleer de URL of ga terug naar de hoofdpagina.
                             </p>
 
                             <!-- Action Buttons -->
                             <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                                <a href="{{ route('welcome') }}" 
+                                <a href="{{ route('welcome') }}"
                                    class="inline-flex items-center px-6 py-3 bg-rijksblauw text-white font-medium rounded-md hover:bg-rijkscyaan transition-colors duration-200">
                                     <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                                     </svg>
                                     Naar hoofdpagina
                                 </a>
-                                <a href="{{ route('document.summarize') }}" 
+                                <a href="{{ route('document.summarize') }}"
                                    class="inline-flex items-center px-6 py-3 border border-rijksblauw text-rijksblauw font-medium rounded-md hover:bg-rijksblauw hover:text-white transition-colors duration-200">
                                     <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
@@ -136,7 +136,7 @@
                             <p class="text-rijksgrijs-6 mb-6">
                                 Als u denkt dat dit een fout is, neem dan contact met ons op.
                             </p>
-                            <a href="{{ route('contact') }}" 
+                            <a href="{{ route('contact') }}"
                                class="inline-flex items-center text-rijksblauw hover:text-rijkscyaan hover:underline font-medium">
                                 Contact opnemen
                                 <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -164,7 +164,7 @@
                             </h3>
                         </div>
                         <p class="text-rijksgrijs-6 text-sm">
-                            Een initiatief geïnspireerd door Hackathon Open Overheid 'Terminal WOO' 
+                            Een initiatief geïnspireerd door Hackathon Open Overheid 'Terminal WOO'
                             op 31 oktober en 1 november 2025 in de Fokker Terminal in Den Haag.
                         </p>
                     </div>
@@ -176,19 +176,19 @@
                         </h3>
                         <div class="flex flex-col items-start space-y-3 md:flex-row md:items-center md:justify-end md:space-x-6 md:space-y-0">
                             <div class="flex items-center">
-                                <img src="{{ asset('images/techletes_logo.jpg') }}" 
-                                     alt="Techletes.ai logo" 
+                                <img src="{{ asset('images/techletes_logo.jpg') }}"
+                                     alt="Techletes.ai logo"
                                      class="h-8 w-auto object-contain mr-2">
-                                <a href="https://www.techletes.ai/" 
+                                <a href="https://www.techletes.ai/"
                                    class="text-rijksblauw hover:text-rijkscyaan hover:underline text-sm font-medium">
                                     Techletes.ai
                                 </a>
                             </div>
                             <div class="flex items-center">
-                                <img src="{{ asset('images/oggel-codelabs_logo.svg') }}" 
-                                     alt="Oggel Codelabs logo" 
+                                <img src="{{ asset('images/oggel-codelabs_logo.svg') }}"
+                                     alt="Oggel Codelabs logo"
                                      class="h-8 w-auto object-contain mr-2">
-                                <a href="https://oggel-codelabs.nl/" 
+                                <a href="https://oggel-codelabs.nl/"
                                    class="text-rijksblauw hover:text-rijkscyaan hover:underline text-sm font-medium">
                                     Oggel Codelabs
                                 </a>

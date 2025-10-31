@@ -1,6 +1,6 @@
 <x-app-layout>
-    <x-slot name="title">Contact - WooWijzer</x-slot>
-    
+    <x-slot name="title">Contact - woohub</x-slot>
+
     <div class="min-h-screen bg-white">
         <!-- Hero Section -->
         <section class="py-20 px-4 sm:px-6 lg:px-8">
@@ -10,7 +10,7 @@
                         Contact
                     </h1>
                     <p class="text-xl text-rijksgrijs-6 max-w-3xl mx-auto">
-                        Heeft u vragen over WooWijzer of wilt u feedback geven? 
+                        Heeft u vragen over woohub of wilt u feedback geven?
                         Neem gerust contact met ons op.
                     </p>
                 </div>
@@ -31,11 +31,11 @@
                         <div class="space-y-4">
                             <div>
                                 <h3 class="font-semibold text-rijksblauw">E-mail</h3>
-                                <p class="text-rijksgrijs-6">info@woowijzer.nl</p>
+                                <p class="text-rijksgrijs-6">info@woohub.nl</p>
                             </div>
                             <div>
                                 <h3 class="font-semibold text-rijksblauw">Ondersteuning</h3>
-                                <p class="text-rijksgrijs-6">support@woowijzer.nl</p>
+                                <p class="text-rijksgrijs-6">support@woohub.nl</p>
                             </div>
                         </div>
                     </div>
