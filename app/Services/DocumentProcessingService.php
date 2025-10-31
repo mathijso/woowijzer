@@ -76,8 +76,22 @@ class DocumentProcessingService
             $caseId = (string) $submission->internalRequest->woo_request_id;
             $submissionId = (string) $submission->id;
 
-            // Create submission (API will handle if it already exists)
-            $response = Http::timeout($this->timeout)
+            // First try to fetch existing submission (idempotency)
+            $getResponse = Http::timeout(10)
+                ->get("{$this->baseUrl}/cases/{$caseId}/submissions/{$submissionId}");
+
+            if ($getResponse->successful()) {
+                $submission->update(['woo_insight_submission_id' => $submissionId]);
+                Log::info('Submission already exists in WOO Insight API', [
+                    'case_id' => $caseId,
+                    'submission_id' => $submissionId,
+                ]);
+
+                return $getResponse->json();
+            }
+
+            // Create submission
+            $createResponse = Http::timeout($this->timeout)
                 ->post("{$this->baseUrl}/cases/{$caseId}/submissions", [
                     'submission_id' => $submissionId,
                     'submitter_name' => $submission->getSubmitterName(),
@@ -85,17 +99,33 @@ class DocumentProcessingService
                     'notes' => $submission->submission_notes ?? '',
                 ]);
 
-            if ($response->successful()) {
+            if ($createResponse->successful()) {
                 $submission->update(['woo_insight_submission_id' => $submissionId]);
                 Log::info('Ensured submission in WOO Insight API', [
                     'case_id' => $caseId,
                     'submission_id' => $submissionId,
                 ]);
 
-                return $response->json();
+                return $createResponse->json();
             }
 
-            throw new \Exception('Failed to create submission: ' . $response->body());
+            // If API reports duplicate/exists, try GET once more and treat as success
+            $body = $createResponse->body();
+            if (str_contains($body, 'already exists') || $createResponse->status() === 409) {
+                $confirmResponse = Http::timeout(10)
+                    ->get("{$this->baseUrl}/cases/{$caseId}/submissions/{$submissionId}");
+                if ($confirmResponse->successful()) {
+                    $submission->update(['woo_insight_submission_id' => $submissionId]);
+                    Log::info('Submission existed after create attempt; proceeding', [
+                        'case_id' => $caseId,
+                        'submission_id' => $submissionId,
+                    ]);
+
+                    return $confirmResponse->json();
+                }
+            }
+
+            throw new \Exception('Failed to create submission: ' . $body);
         } catch (\Exception $e) {
             Log::error('Error ensuring submission in WOO Insight API', [
                 'submission_id' => $submission->id,
@@ -193,7 +223,22 @@ class DocumentProcessingService
                 return $response->json();
             }
 
-            throw new \Exception('Failed to get document markdown: ' . $response->body());
+            // If markdown is not ready/available yet, do not fail the whole job
+            $body = $response->body();
+            if (
+                $response->status() === 404 ||
+                str_contains(strtolower($body), 'markdown not available')
+            ) {
+                Log::info('Markdown not yet available for document', [
+                    'external_document_id' => $externalDocumentId,
+                ]);
+
+                return [
+                    'markdown_text' => null,
+                ];
+            }
+
+            throw new \Exception('Failed to get document markdown: ' . $body);
         } catch (\Exception $e) {
             Log::error('Error getting document markdown from WOO Insight API', [
                 'external_document_id' => $externalDocumentId,
