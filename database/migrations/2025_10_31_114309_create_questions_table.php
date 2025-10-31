@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('questions', function (Blueprint $table) {
+        Schema::create('questions', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('woo_request_id')->constrained()->onDelete('cascade');
             $table->text('question_text');

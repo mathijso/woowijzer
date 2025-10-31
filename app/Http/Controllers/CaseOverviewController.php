@@ -13,7 +13,7 @@ class CaseOverviewController extends Controller
     /**
      * Display case manager dashboard
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $user = Auth::user();
         
@@ -46,13 +46,13 @@ class CaseOverviewController extends Controller
             'in_progress' => WooRequest::where('status', 'in_progress')->count(),
         ];
 
-        return view('cases.index', compact('wooRequests', 'stats'));
+        return view('cases.index', ['wooRequests' => $wooRequests, 'stats' => $stats]);
     }
 
     /**
      * Display detailed case overview
      */
-    public function show(WooRequest $wooRequest)
+    public function show(WooRequest $wooRequest): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $this->authorize('view', $wooRequest);
 
@@ -78,7 +78,7 @@ class CaseOverviewController extends Controller
             'answered' => $answeredQuestions,
         ];
 
-        return view('cases.show', compact('wooRequest', 'progressPercentage', 'questionStats'));
+        return view('cases.show', ['wooRequest' => $wooRequest, 'progressPercentage' => $progressPercentage, 'questionStats' => $questionStats]);
     }
 
     /**

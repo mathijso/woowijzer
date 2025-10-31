@@ -13,7 +13,16 @@ return static function (RectorConfig $config): void {
     ]);
 
     $config->parallel();
-    $config->cacheDirectory(__DIR__ . '/storage/framework/rector');
+    // Keep Rector cache outside storage/framework to avoid touching app storage
+    $config->cacheDirectory(__DIR__ . '/.rector-cache');
+
+    // Extra safety: never process these paths
+    $config->skip([
+        __DIR__ . '/storage',
+        __DIR__ . '/vendor',
+        __DIR__ . '/public',
+        __DIR__ . '/bootstrap',
+    ]);
 
     $config->sets([
         LevelSetList::UP_TO_PHP_82,

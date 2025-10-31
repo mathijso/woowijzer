@@ -65,7 +65,7 @@ class Submission extends Model
         parent::boot();
 
         // Update documents count when documents are added/removed
-        static::created(function ($submission) {
+        static::created(function ($submission): void {
             $submission->updateDocumentsCount();
         });
     }

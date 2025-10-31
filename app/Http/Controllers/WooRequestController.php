@@ -13,7 +13,7 @@ class WooRequestController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $user = Auth::user();
         
@@ -31,13 +31,13 @@ class WooRequestController extends Controller
 
         $wooRequests = $query->latest()->paginate(20);
 
-        return view('woo-requests.index', compact('wooRequests'));
+        return view('woo-requests.index', ['wooRequests' => $wooRequests]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         return view('woo-requests.create');
     }
@@ -77,7 +77,7 @@ class WooRequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(WooRequest $wooRequest)
+    public function show(WooRequest $wooRequest): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $this->authorize('view', $wooRequest);
 
@@ -89,17 +89,17 @@ class WooRequestController extends Controller
             'internalRequests.submissions',
         ]);
 
-        return view('woo-requests.show', compact('wooRequest'));
+        return view('woo-requests.show', ['wooRequest' => $wooRequest]);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(WooRequest $wooRequest)
+    public function edit(WooRequest $wooRequest): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $this->authorize('update', $wooRequest);
 
-        return view('woo-requests.edit', compact('wooRequest'));
+        return view('woo-requests.edit', ['wooRequest' => $wooRequest]);
     }
 
     /**

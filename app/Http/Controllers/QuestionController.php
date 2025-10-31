@@ -12,7 +12,7 @@ class QuestionController extends Controller
     /**
      * Display questions for a WOO request
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $wooRequestId = $request->query('woo_request_id');
         $wooRequest = WooRequest::findOrFail($wooRequestId);
@@ -24,7 +24,7 @@ class QuestionController extends Controller
             ->ordered()
             ->get();
 
-        return view('questions.index', compact('questions', 'wooRequest'));
+        return view('questions.index', ['questions' => $questions, 'wooRequest' => $wooRequest]);
     }
 
     /**
@@ -68,7 +68,7 @@ class QuestionController extends Controller
             }
         }
 
-        if (!empty($summaryParts)) {
+        if ($summaryParts !== []) {
             $summary = "## Samenvatting\n\n" . implode("\n\n---\n\n", $summaryParts);
             $question->update(['ai_summary' => $summary]);
         }

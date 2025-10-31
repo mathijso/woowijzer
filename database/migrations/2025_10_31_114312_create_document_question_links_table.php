@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('document_question_links', function (Blueprint $table) {
+        Schema::create('document_question_links', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('document_id')->constrained()->onDelete('cascade');
             $table->foreignId('question_id')->constrained()->onDelete('cascade');

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('submissions', function (Blueprint $table) {
+        Schema::create('submissions', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('internal_request_id')->constrained()->onDelete('cascade');
             $table->string('submitted_by_email');

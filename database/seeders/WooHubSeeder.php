@@ -40,7 +40,7 @@ class WooHubSeeder extends Seeder
             ]
         );
 
-        $colleague = User::firstOrCreate(
+        User::firstOrCreate(
             ['email' => 'colleague@example.com'],
             [
                 'name' => 'Test Colleague',

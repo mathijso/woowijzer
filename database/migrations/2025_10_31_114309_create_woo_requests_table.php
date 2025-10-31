@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('woo_requests', function (Blueprint $table) {
+        Schema::create('woo_requests', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('case_manager_id')->nullable()->constrained('users')->onDelete('set null');

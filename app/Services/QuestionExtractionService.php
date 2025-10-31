@@ -16,9 +16,7 @@ class QuestionExtractionService
     {
         $questions = collect($apiResponse['questions'] ?? []);
         
-        return $questions->map(function ($questionData, $index) use ($wooRequest) {
-            return $this->createQuestion($wooRequest, $questionData, $index);
-        });
+        return $questions->map(fn(array $questionData, int $index): \App\Models\Question => $this->createQuestion($wooRequest, $questionData, $index));
     }
 
     /**
@@ -28,11 +26,9 @@ class QuestionExtractionService
     {
         $questions = $this->parseMarkdownForQuestions($markdown);
         
-        return $questions->map(function ($questionText, $index) use ($wooRequest) {
-            return $this->createQuestion($wooRequest, [
-                'question_text' => $questionText,
-            ], $index);
-        });
+        return $questions->map(fn($questionText, int $index): \App\Models\Question => $this->createQuestion($wooRequest, [
+            'question_text' => $questionText,
+        ], $index));
     }
 
     /**
@@ -75,7 +71,7 @@ class QuestionExtractionService
      */
     protected function looksLikeQuestion(string $text): bool
     {
-        if (empty($text)) {
+        if ($text === '' || $text === '0') {
             return false;
         }
 
@@ -114,10 +110,10 @@ class QuestionExtractionService
         $text = preg_replace('/^(\d+[\.\)]\s|[a-z][\.\)]\s)/i', '', $text);
         
         // Remove markdown formatting
-        $text = preg_replace('/[*_`#]/', '', $text);
+        $text = preg_replace('/[*_`#]/', '', (string) $text);
         
         // Trim whitespace
-        $text = trim($text);
+        $text = trim((string) $text);
         
         return $text;
     }
@@ -132,7 +128,7 @@ class QuestionExtractionService
         
         // Delete questions that are no longer in the new list
         $newQuestionTexts = collect($newQuestions)->pluck('question_text');
-        $existingQuestions->each(function ($question) use ($newQuestionTexts) {
+        $existingQuestions->each(function ($question) use ($newQuestionTexts): void {
             if (!$newQuestionTexts->contains($question->question_text)) {
                 $question->delete();
             }

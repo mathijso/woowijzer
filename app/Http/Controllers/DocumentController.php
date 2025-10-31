@@ -14,7 +14,7 @@ class DocumentController extends Controller
     /**
      * Display a listing of documents for a WOO request
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $wooRequestId = $request->query('woo_request_id');
         $wooRequest = null;
@@ -29,13 +29,13 @@ class DocumentController extends Controller
 
         $documents = $query->latest()->paginate(20);
 
-        return view('documents.index', compact('documents', 'wooRequest'));
+        return view('documents.index', ['documents' => $documents, 'wooRequest' => $wooRequest]);
     }
 
     /**
      * Display the specified document
      */
-    public function show(Document $document)
+    public function show(Document $document): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $this->authorize('view', $document->wooRequest);
 
@@ -45,7 +45,7 @@ class DocumentController extends Controller
             'questions',
         ]);
 
-        return view('documents.show', compact('document'));
+        return view('documents.show', ['document' => $document]);
     }
 
     /**

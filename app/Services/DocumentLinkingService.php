@@ -48,7 +48,7 @@ class DocumentLinkingService
         // Extract keywords from question
         $keywords = $this->extractKeywords($questionText);
         
-        if (empty($keywords)) {
+        if ($keywords === []) {
             return 0.0;
         }
 
@@ -87,14 +87,10 @@ class DocumentLinkingService
         
         // Split into words and clean
         $words = preg_split('/\s+/', Str::lower($text));
-        $words = array_map(function ($word) {
-            return preg_replace('/[^\w]/', '', $word);
-        }, $words);
+        $words = array_map(fn($word): ?string => preg_replace('/[^\w]/', '', $word), $words);
         
         // Remove stop words and short words
-        $keywords = array_filter($words, function ($word) use ($stopWords) {
-            return !in_array($word, $stopWords) && strlen($word) > 3;
-        });
+        $keywords = array_filter($words, fn(array|string|null $word): bool => !in_array($word, $stopWords) && strlen((string) $word) > 3);
         
         return array_values(array_unique($keywords));
     }

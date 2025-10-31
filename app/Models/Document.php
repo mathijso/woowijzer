@@ -132,12 +132,12 @@ class Document extends Model
     {
         parent::boot();
 
-        static::created(function ($document) {
+        static::created(function ($document): void {
             // Update submission documents count
             $document->submission->updateDocumentsCount();
         });
 
-        static::deleted(function ($document) {
+        static::deleted(function ($document): void {
             // Update submission documents count
             if ($document->submission) {
                 $document->submission->updateDocumentsCount();

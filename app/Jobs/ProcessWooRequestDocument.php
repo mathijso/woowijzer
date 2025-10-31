@@ -42,14 +42,12 @@ class ProcessWooRequestDocument implements ShouldQueue
             // Extract and create questions
             if (!empty($result['questions'])) {
                 $questionService->extractQuestionsFromApiResponse($this->wooRequest, $result);
-            } else {
+            } elseif ($this->wooRequest->original_file_content_markdown) {
                 // Fallback: extract questions from markdown
-                if ($this->wooRequest->original_file_content_markdown) {
-                    $questionService->extractQuestionsFromMarkdown(
-                        $this->wooRequest,
-                        $this->wooRequest->original_file_content_markdown
-                    );
-                }
+                $questionService->extractQuestionsFromMarkdown(
+                    $this->wooRequest,
+                    $this->wooRequest->original_file_content_markdown
+                );
             }
 
             Log::info('WOO request document processed successfully', [

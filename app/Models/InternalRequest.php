@@ -54,7 +54,7 @@ class InternalRequest extends Model
     {
         parent::boot();
 
-        static::creating(function ($internalRequest) {
+        static::creating(function ($internalRequest): void {
             if (empty($internalRequest->upload_token)) {
                 $internalRequest->upload_token = Str::random(64);
             }

@@ -12,7 +12,7 @@ class InternalRequestController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $wooRequestId = $request->query('woo_request_id');
         
@@ -26,13 +26,13 @@ class InternalRequestController extends Controller
 
         $internalRequests = $query->latest()->paginate(20);
 
-        return view('internal-requests.index', compact('internalRequests'));
+        return view('internal-requests.index', ['internalRequests' => $internalRequests]);
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request)
+    public function create(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $wooRequestId = $request->query('woo_request_id');
         $wooRequest = null;
@@ -42,7 +42,7 @@ class InternalRequestController extends Controller
             $this->authorize('update', $wooRequest);
         }
 
-        return view('internal-requests.create', compact('wooRequest'));
+        return view('internal-requests.create', ['wooRequest' => $wooRequest]);
     }
 
     /**
@@ -80,7 +80,7 @@ class InternalRequestController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(InternalRequest $internalRequest)
+    public function show(InternalRequest $internalRequest): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $this->authorize('view', $internalRequest);
 
@@ -90,7 +90,7 @@ class InternalRequestController extends Controller
             'submissions.documents',
         ]);
 
-        return view('internal-requests.show', compact('internalRequest'));
+        return view('internal-requests.show', ['internalRequest' => $internalRequest]);
     }
 
     /**

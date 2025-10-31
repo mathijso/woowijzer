@@ -73,12 +73,12 @@ class GenerateQuestionSummaries implements ShouldQueue
                 $summaryParts[] = "**{$document->file_name}:**\n{$document->ai_summary}";
             } elseif ($document->content_markdown) {
                 // Take first 500 characters if no AI summary
-                $excerpt = substr($document->content_markdown, 0, 500);
+                $excerpt = substr((string) $document->content_markdown, 0, 500);
                 $summaryParts[] = "**{$document->file_name}:**\n{$excerpt}...";
             }
         }
 
-        if (!empty($summaryParts)) {
+        if ($summaryParts !== []) {
             $summary = "## Samenvatting\n\n" . implode("\n\n---\n\n", $summaryParts);
             
             $question->update([

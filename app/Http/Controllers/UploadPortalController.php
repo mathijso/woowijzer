@@ -14,17 +14,17 @@ class UploadPortalController extends Controller
     /**
      * Show upload form for the given token
      */
-    public function show($token)
+    public function show($token): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $internalRequest = InternalRequest::where('upload_token', $token)
             ->with('wooRequest', 'caseManager')
             ->firstOrFail();
 
         if ($internalRequest->isExpired()) {
-            return view('upload-portal.expired', compact('internalRequest'));
+            return view('upload-portal.expired', ['internalRequest' => $internalRequest]);
         }
 
-        return view('upload-portal.show', compact('internalRequest'));
+        return view('upload-portal.show', ['internalRequest' => $internalRequest]);
     }
 
     /**

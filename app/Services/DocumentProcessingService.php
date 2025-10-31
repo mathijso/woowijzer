@@ -115,7 +115,7 @@ class DocumentProcessingService
     public function isAvailable(): bool
     {
         try {
-            if (empty($this->apiUrl) || empty($this->apiKey)) {
+            if ($this->apiUrl === '' || $this->apiUrl === '0' || ($this->apiKey === '' || $this->apiKey === '0')) {
                 return false;
             }
 
@@ -126,7 +126,7 @@ class DocumentProcessingService
                 ->get($this->apiUrl . '/health');
 
             return $response->successful();
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return false;
         }
     }
