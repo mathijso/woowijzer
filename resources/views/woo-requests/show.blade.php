@@ -3,34 +3,28 @@
         {{-- Header --}}
         <div class="mb-6">
             <div class="mb-4">
-                <a href="{{ route('woo-requests.index') }}"
+                <a href="{{ route('woo-requests.index') }}" 
                    class="inline-flex items-center text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white">
-                    <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                     </svg>
                     Terug naar overzicht
                 </a>
             </div>
-
+            
             <div class="flex items-start justify-between">
                 <div>
                     <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">{{ $wooRequest->title }}</h1>
-                    <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
-                        Ingediend op {{ $wooRequest->submitted_at?->format('d F Y') ?? $wooRequest->created_at->format('d F Y') }}
-                    </p>
+                    <div class="flex gap-4 items-center mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                        <span>Ingediend op {{ $wooRequest->submitted_at?->format('d F Y') ?? $wooRequest->created_at->format('d F Y') }}</span>
+                        @if($wooRequest->caseManager)
+                            <span>•</span>
+                            <span>Case manager: {{ $wooRequest->caseManager->name }}</span>
+                        @endif
+                    </div>
                 </div>
-                @php
-                    $statusColors = [
-                        'submitted' => 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
-                        'in_review' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
-                        'in_progress' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
-                        'completed' => 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
-                        'rejected' => 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400',
-                    ];
-                    $statusLabels = config('woo.woo_request_statuses');
-                @endphp
-                <span class="inline-flex rounded-full px-4 py-2 text-sm font-semibold {{ $statusColors[$wooRequest->status] ?? 'bg-gray-100 text-gray-800' }}">
-                    {{ $statusLabels[$wooRequest->status] ?? $wooRequest->status }}
+                <span class="px-3 py-1 text-xs font-medium rounded-full {{ $wooRequest->getStatusBadgeClass() }}">
+                    {{ $wooRequest->getStatusLabel() }}
                 </span>
             </div>
         </div>
@@ -40,173 +34,216 @@
             <div class="lg:col-span-2 space-y-6">
                 {{-- Description --}}
                 @if($wooRequest->description)
-                <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-neutral-800">
+                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
                     <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Beschrijving</h2>
-                    <p class="mt-3 whitespace-pre-wrap text-sm text-neutral-600 dark:text-neutral-400">
-                        {{ $wooRequest->description }}
-                    </p>
+                    <p class="mt-3 text-neutral-700 whitespace-pre-wrap dark:text-neutral-300">{{ $wooRequest->description }}</p>
+                </div>
+                @endif
+
+                {{-- Progress --}}
+                @if($wooRequest->questions->count() > 0)
+                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+                    <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Voortgang</h2>
+                    <div class="mt-4">
+                        <div class="flex items-center justify-between text-sm text-neutral-600 dark:text-neutral-400">
+                            <span>Beantwoorde vragen</span>
+                            <span class="font-semibold">{{ round($wooRequest->progress_percentage) }}%</span>
+                        </div>
+                        <div class="overflow-hidden mt-2 w-full bg-neutral-200 rounded-full h-2.5 dark:bg-neutral-700">
+                            <div class="h-full bg-blue-600 rounded-full transition-all" 
+                                 style="width: {{ $wooRequest->progress_percentage }}%"></div>
+                        </div>
+                        <div class="grid grid-cols-3 gap-4 mt-4">
+                            <div class="p-3 text-center rounded-lg bg-neutral-50 dark:bg-neutral-900">
+                                <div class="text-2xl font-bold text-neutral-900 dark:text-white">
+                                    {{ $wooRequest->questions->count() }}
+                                </div>
+                                <div class="text-xs text-neutral-600 dark:text-neutral-400">Totaal vragen</div>
+                            </div>
+                            <div class="p-3 text-center rounded-lg bg-green-50 dark:bg-green-900/20">
+                                <div class="text-2xl font-bold text-green-600 dark:text-green-400">
+                                    {{ $wooRequest->questions->where('status', 'answered')->count() }}
+                                </div>
+                                <div class="text-xs text-neutral-600 dark:text-neutral-400">Beantwoord</div>
+                            </div>
+                            <div class="p-3 text-center rounded-lg bg-red-50 dark:bg-red-900/20">
+                                <div class="text-2xl font-bold text-red-600 dark:text-red-400">
+                                    {{ $wooRequest->questions->where('status', 'unanswered')->count() }}
+                                </div>
+                                <div class="text-xs text-neutral-600 dark:text-neutral-400">Open</div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 @endif
 
                 {{-- Questions --}}
-                <div class="rounded-xl bg-white shadow-sm dark:bg-neutral-800">
-                    <div class="border-b border-neutral-200 p-6 dark:border-neutral-700">
-                        <div class="flex items-center justify-between">
-                            <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
-                                Vragen ({{ $wooRequest->questions->count() }})
-                            </h2>
-                            @if($wooRequest->questions->count() > 0)
-                                <span class="text-sm font-medium text-neutral-600 dark:text-neutral-400">
-                                    {{ round($wooRequest->progress_percentage) }}% beantwoord
-                                </span>
-                            @endif
-                        </div>
-                        @if($wooRequest->questions->count() > 0)
-                            <div class="mt-3 h-2 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
-                                <div class="h-full rounded-full bg-blue-600 transition-all"
-                                     style="width: {{ $wooRequest->progress_percentage }}%">
-                                </div>
-                            </div>
-                        @endif
+                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
+                            Vragen ({{ $wooRequest->questions->count() }})
+                        </h2>
                     </div>
 
-                    <div class="divide-y divide-neutral-200 dark:divide-neutral-700">
+                    <div class="space-y-3">
                         @forelse($wooRequest->questions as $question)
-                            <div class="p-6">
-                                <div class="flex items-start gap-4">
-                                    <div class="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
-                                        {{ $question->order }}
-                                    </div>
+                            <div class="p-4 rounded-lg bg-neutral-50 dark:bg-neutral-900">
+                                <div class="flex items-start justify-between">
                                     <div class="flex-1">
                                         <p class="text-sm text-neutral-900 dark:text-white">{{ $question->question_text }}</p>
-                                        <div class="mt-2 flex items-center gap-2">
-                                            @php
-                                                $questionStatusColors = [
-                                                    'unanswered' => 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
-                                                    'partially_answered' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400',
-                                                    'answered' => 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400',
-                                                ];
-                                                $questionStatusLabels = config('woo.question_statuses');
-                                            @endphp
-                                            <span class="inline-flex rounded-full px-2 py-1 text-xs font-medium {{ $questionStatusColors[$question->status] ?? 'bg-gray-100 text-gray-600' }}">
-                                                {{ $questionStatusLabels[$question->status] ?? $question->status }}
-                                            </span>
-                                            @if($question->documents->count() > 0)
-                                                <span class="text-xs text-neutral-600 dark:text-neutral-400">
-                                                    {{ $question->documents->count() }} document(en) gekoppeld
-                                                </span>
-                                            @endif
-                                        </div>
                                         @if($question->ai_summary)
-                                            <div class="mt-3 rounded-lg bg-neutral-50 p-3 text-xs text-neutral-600 dark:bg-neutral-900/50 dark:text-neutral-400">
-                                                <strong class="block text-neutral-900 dark:text-white">Samenvatting:</strong>
-                                                <p class="mt-1">{{ Str::limit($question->ai_summary, 200) }}</p>
-                                            </div>
+                                            <p class="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+                                                <strong>Samenvatting:</strong> {{ Str::limit($question->ai_summary, 200) }}
+                                            </p>
                                         @endif
                                     </div>
+                                    <span class="px-2 py-1 ml-4 text-xs font-medium rounded-full whitespace-nowrap {{ $question->getStatusBadgeClass() }}">
+                                        {{ $question->getStatusLabel() }}
+                                    </span>
                                 </div>
                             </div>
                         @empty
-                            <div class="p-8 text-center">
-                                <p class="text-sm text-neutral-600 dark:text-neutral-400">
-                                    Er zijn nog geen vragen geëxtraheerd uit dit verzoek.
-                                </p>
-                            </div>
+                            <p class="py-4 text-sm text-center text-neutral-600 dark:text-neutral-400">
+                                Nog geen vragen geëxtraheerd uit het document
+                            </p>
                         @endforelse
                     </div>
                 </div>
 
                 {{-- Documents --}}
-                @if($wooRequest->documents->count() > 0)
-                <div class="rounded-xl bg-white shadow-sm dark:bg-neutral-800">
-                    <div class="border-b border-neutral-200 p-6 dark:border-neutral-700">
+                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+                    <div class="flex items-center justify-between mb-4">
                         <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
                             Documenten ({{ $wooRequest->documents->count() }})
                         </h2>
+                        <a href="{{ route('documents.index', ['woo_request_id' => $wooRequest->id]) }}" 
+                           class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
+                            Alle documenten →
+                        </a>
                     </div>
-                    <div class="divide-y divide-neutral-200 p-6 dark:divide-neutral-700">
-                        @foreach($wooRequest->documents as $document)
-                            <div class="flex items-center justify-between py-3">
-                                <div class="flex items-center gap-3">
-                                    <div class="rounded-lg bg-blue-100 p-2 dark:bg-blue-900/20">
-                                        <svg class="h-5 w-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium text-neutral-900 dark:text-white">{{ $document->file_name }}</p>
-                                        <p class="text-xs text-neutral-600 dark:text-neutral-400">
-                                            {{ $document->getFileSizeFormatted() }} • {{ $document->created_at->format('d-m-Y') }}
-                                        </p>
-                                    </div>
+
+                    <div class="space-y-3">
+                        @forelse($wooRequest->documents->take(5) as $document)
+                            <a href="{{ route('documents.show', $document) }}" 
+                               class="flex items-center gap-3 p-3 rounded-lg transition bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">
+                                <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                </svg>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-neutral-900 truncate dark:text-white">{{ $document->file_name }}</p>
+                                    <p class="text-xs text-neutral-600 dark:text-neutral-400">
+                                        {{ $document->getFileSizeFormatted() }} • {{ $document->created_at->format('d-m-Y') }}
+                                    </p>
                                 </div>
-                                <a href="{{ route('documents.show', $document) }}"
-                                   class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
-                                    Bekijk →
-                                </a>
-                            </div>
-                        @endforeach
+                                @if($document->isProcessed())
+                                    <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full dark:bg-green-900/20 dark:text-green-400">
+                                        Verwerkt
+                                    </span>
+                                @else
+                                    <span class="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full dark:bg-yellow-900/20 dark:text-yellow-400">
+                                        In verwerking
+                                    </span>
+                                @endif
+                            </a>
+                        @empty
+                            <p class="py-4 text-sm text-center text-neutral-600 dark:text-neutral-400">
+                                Nog geen documenten geüpload
+                            </p>
+                        @endforelse
                     </div>
                 </div>
-                @endif
             </div>
 
             {{-- Sidebar --}}
             <div class="space-y-6">
-                {{-- Case Manager Info --}}
-                @if($wooRequest->caseManager)
-                <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-                    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Case Manager</h3>
-                    <div class="mt-3 flex items-center gap-3">
-                        <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-sm font-semibold text-blue-600 dark:bg-blue-900/20 dark:text-blue-400">
-                            {{ $wooRequest->caseManager->initials() }}
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-neutral-900 dark:text-white">
-                                {{ $wooRequest->caseManager->name }}
-                            </p>
-                            <p class="text-xs text-neutral-600 dark:text-neutral-400">
-                                {{ $wooRequest->caseManager->email }}
-                            </p>
-                        </div>
-                    </div>
+                {{-- Original Document --}}
+                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+                    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Origineel verzoek</h3>
+                    <a href="{{ Storage::disk('woo-documents')->url($wooRequest->original_file_path) }}" 
+                       download
+                       class="flex items-center gap-2 p-3 mt-3 rounded-lg transition bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/10 dark:hover:bg-blue-900/20">
+                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        <span class="text-sm font-medium text-blue-600 dark:text-blue-400">Download PDF</span>
+                    </a>
                 </div>
-                @endif
 
-                {{-- Statistics --}}
-                <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-                    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Statistieken</h3>
-                    <dl class="mt-4 space-y-3">
-                        <div class="flex items-center justify-between">
-                            <dt class="text-sm text-neutral-600 dark:text-neutral-400">Vragen</dt>
-                            <dd class="text-sm font-medium text-neutral-900 dark:text-white">
-                                {{ $wooRequest->questions->count() }}
-                            </dd>
+                {{-- Timeline --}}
+                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+                    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mb-4">Timeline</h3>
+                    <div class="space-y-4">
+                        <div class="flex gap-3">
+                            <div class="flex flex-col items-center">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/20">
+                                    <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                <div class="w-px h-full bg-neutral-200 dark:bg-neutral-700"></div>
+                            </div>
+                            <div class="pb-4">
+                                <p class="text-xs font-medium text-neutral-900 dark:text-white">Ingediend</p>
+                                <p class="text-xs text-neutral-600 dark:text-neutral-400">
+                                    {{ $wooRequest->submitted_at?->format('d-m-Y H:i') ?? $wooRequest->created_at->format('d-m-Y H:i') }}
+                                </p>
+                            </div>
                         </div>
-                        <div class="flex items-center justify-between">
-                            <dt class="text-sm text-neutral-600 dark:text-neutral-400">Documenten</dt>
-                            <dd class="text-sm font-medium text-neutral-900 dark:text-white">
-                                {{ $wooRequest->documents->count() }}
-                            </dd>
-                        </div>
-                        <div class="flex items-center justify-between">
-                            <dt class="text-sm text-neutral-600 dark:text-neutral-400">Interne verzoeken</dt>
-                            <dd class="text-sm font-medium text-neutral-900 dark:text-white">
-                                {{ $wooRequest->internalRequests->count() }}
-                            </dd>
-                        </div>
-                        @if($wooRequest->completed_at)
-                        <div class="flex items-center justify-between">
-                            <dt class="text-sm text-neutral-600 dark:text-neutral-400">Afgerond op</dt>
-                            <dd class="text-sm font-medium text-neutral-900 dark:text-white">
-                                {{ $wooRequest->completed_at->format('d-m-Y') }}
-                            </dd>
+
+                        @if($wooRequest->caseManager)
+                        <div class="flex gap-3">
+                            <div class="flex flex-col items-center">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/20">
+                                    <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                @if($wooRequest->status !== 'completed')
+                                <div class="w-px h-full bg-neutral-200 dark:bg-neutral-700"></div>
+                                @endif
+                            </div>
+                            <div class="{{ $wooRequest->status !== 'completed' ? 'pb-4' : '' }}">
+                                <p class="text-xs font-medium text-neutral-900 dark:text-white">Toegewezen</p>
+                                <p class="text-xs text-neutral-600 dark:text-neutral-400">
+                                    Aan {{ $wooRequest->caseManager->name }}
+                                </p>
+                            </div>
                         </div>
                         @endif
+
+                        @if($wooRequest->status === 'completed')
+                        <div class="flex gap-3">
+                            <div class="flex items-center justify-center w-8 h-8 rounded-full bg-green-100 dark:bg-green-900/20">
+                                <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="text-xs font-medium text-neutral-900 dark:text-white">Afgerond</p>
+                                <p class="text-xs text-neutral-600 dark:text-neutral-400">
+                                    {{ $wooRequest->completed_at?->format('d-m-Y H:i') }}
+                                </p>
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                {{-- Stats --}}
+                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+                    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mb-4">Statistieken</h3>
+                    <dl class="space-y-3">
+                        <div>
+                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">Totaal documenten</dt>
+                            <dd class="mt-1 text-lg font-semibold text-neutral-900 dark:text-white">{{ $wooRequest->documents->count() }}</dd>
+                        </div>
+                        <div>
+                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">Interne verzoeken</dt>
+                            <dd class="mt-1 text-lg font-semibold text-neutral-900 dark:text-white">{{ $wooRequest->internalRequests->count() }}</dd>
+                        </div>
                     </dl>
                 </div>
             </div>
         </div>
     </div>
 </x-layouts.app>
-

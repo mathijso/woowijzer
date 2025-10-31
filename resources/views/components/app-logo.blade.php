@@ -1,6 +1,6 @@
-<div class="flex aspect-square size-8 items-center justify-center rounded-md bg-accent-content text-accent-foreground">
-    <x-app-logo-icon class="size-5 fill-current text-white dark:text-black" />
+<div class="flex justify-center items-center rounded-md aspect-square size-8 bg-white text-rijksblauw">
+    <x-app-logo-icon class="text-rijksblauw fill-current size-5" />
 </div>
-<div class="ms-1 grid flex-1 text-start text-sm">
-    <span class="mb-0.5 truncate leading-tight font-semibold">Laravel Starter Kit</span>
+<div class="grid flex-1 text-sm ms-1 text-start">
+    <span class="mb-0.5 font-semibold leading-tight truncate text-white">WooHub</span>
 </div>

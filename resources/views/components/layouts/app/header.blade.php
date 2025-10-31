@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
         @include('partials.head')
     </head>
-    <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:header container class="border-b border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+    <body class="min-h-screen bg-white">
+        <flux:header container class="border-b border-rijksgrijs-2 bg-rijksblauw">
+            <flux:sidebar.toggle class="lg:hidden text-white" icon="bars-2" inset="left" />
 
-            <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 ms-2 me-5 rtl:space-x-reverse lg:ms-0" wire:navigate>
+            <a href="{{ route('welcome') }}" class="flex items-center space-x-2 ms-2 me-5 rtl:space-x-reverse lg:ms-0" wire:navigate>
                 <x-app-logo />
             </a>
 
-            <flux:navbar class="-mb-px max-lg:hidden">
-                <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
+            <flux:navbar class="-mb-px max-lg:hidden text-white">
+                <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate class="text-white hover:text-rijksgrijs-1">
                     {{ __('Dashboard') }}
                 </flux:navbar.item>
             </flux:navbar>
@@ -27,7 +27,7 @@
             <!-- Desktop User Menu -->
             <flux:dropdown position="top" align="end">
                 <flux:profile
-                    class="cursor-pointer"
+                    class="cursor-pointer text-white"
                     :initials="auth()->user()->initials()"
                 />
                 <flux:menu>
@@ -36,7 +36,7 @@
                             <div class="flex gap-2 items-center px-1 py-1.5 text-sm text-start">
                                 <span class="flex overflow-hidden relative w-8 h-8 rounded-lg shrink-0">
                                     <span
-                                        class="flex justify-center items-center w-full h-full text-black rounded-lg bg-neutral-200 dark:bg-neutral-700 dark:text-white"
+                                        class="flex justify-center items-center w-full h-full text-white rounded-lg bg-rijksblauw"
                                     >
                                         {{ auth()->user()->initials() }}
                                     </span>
@@ -69,14 +69,19 @@
         </flux:header>
 
         <!-- Mobile Menu -->
-        <flux:sidebar stashable sticky class="lg:hidden border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-            <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
+        <flux:sidebar stashable sticky class="lg:hidden border-e border-rijksgrijs-2 bg-white">
+            <flux:sidebar.toggle class="lg:hidden text-rijksblauw" icon="x-mark" />
 
-            <a href="{{ route('dashboard') }}" class="flex items-center space-x-2 ms-1 rtl:space-x-reverse" wire:navigate>
-                <x-app-logo />
+            <a href="{{ route('welcome') }}" class="flex items-center space-x-2 ms-1 rtl:space-x-reverse" wire:navigate>
+                <div class="flex justify-center items-center rounded-md aspect-square size-8 bg-rijksblauw text-white">
+                    <x-app-logo-icon class="text-white fill-current size-5" />
+                </div>
+                <div class="grid flex-1 text-sm ms-1 text-start">
+                    <span class="mb-0.5 font-semibold leading-tight truncate text-rijksblauw">WooHub</span>
+                </div>
             </a>
 
-            <flux:navlist variant="outline">
+            <flux:navlist variant="outline" class="text-rijksblauw">
                 <flux:navlist.group :heading="__('Platform')">
                     <flux:navlist.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>
                     {{ __('Dashboard') }}
@@ -86,7 +91,7 @@
 
             <flux:spacer />
 
-            <flux:navlist variant="outline">
+            <flux:navlist variant="outline" class="text-rijksblauw">
                 <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
                 {{ __('Repository') }}
                 </flux:navlist.item>

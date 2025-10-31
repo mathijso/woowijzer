@@ -1,0 +1,133 @@
+<x-layouts.app title="Documenten">
+    <div class="mx-auto max-w-7xl">
+        {{-- Header --}}
+        <div class="mb-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Documenten</h1>
+                    @if($wooRequest)
+                        <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+                            Voor: {{ $wooRequest->title }}
+                        </p>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        {{-- Filters --}}
+        <div class="mb-6 p-4 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+            <form method="GET" class="flex flex-wrap gap-4">
+                @if($wooRequest)
+                    <input type="hidden" name="woo_request_id" value="{{ $wooRequest->id }}">
+                @endif
+                
+                <div class="flex-1 min-w-64">
+                    <input type="text" 
+                           name="search" 
+                           value="{{ request('search') }}"
+                           placeholder="Zoek op bestandsnaam..."
+                           class="block w-full px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+                </div>
+
+                <select name="processed" 
+                        class="px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+                    <option value="">Alle statussen</option>
+                    <option value="1" {{ request('processed') === '1' ? 'selected' : '' }}>Verwerkt</option>
+                    <option value="0" {{ request('processed') === '0' ? 'selected' : '' }}>Niet verwerkt</option>
+                </select>
+
+                <button type="submit" 
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                    Filteren
+                </button>
+
+                @if(request()->hasAny(['search', 'processed']))
+                    <a href="{{ request()->url() }}{{ $wooRequest ? '?woo_request_id=' . $wooRequest->id : '' }}" 
+                       class="px-4 py-2 text-sm font-medium text-neutral-700 bg-white border rounded-lg border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-600">
+                        Reset
+                    </a>
+                @endif
+            </form>
+        </div>
+
+        {{-- Documents List --}}
+        <div class="bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+            <div class="divide-y divide-neutral-200 dark:divide-neutral-700">
+                @forelse($documents as $document)
+                    <a href="{{ route('documents.show', $document) }}" 
+                       class="block p-6 transition hover:bg-neutral-50 dark:hover:bg-neutral-700/50">
+                        <div class="flex items-start gap-4">
+                            {{-- File Icon --}}
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/20">
+                                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {{-- Document Info --}}
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-semibold text-neutral-900 truncate dark:text-white">
+                                    {{ $document->file_name }}
+                                </h3>
+                                <div class="flex flex-wrap gap-3 items-center mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+                                    <span>{{ $document->getFileSizeFormatted() }}</span>
+                                    <span>•</span>
+                                    <span>{{ $document->file_type }}</span>
+                                    <span>•</span>
+                                    <span>{{ $document->created_at->format('d-m-Y H:i') }}</span>
+                                </div>
+                                @if($document->submission)
+                                    <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+                                        Door: {{ $document->submission->getSubmitterName() }}
+                                    </p>
+                                @endif
+                            </div>
+
+                            {{-- Status & Actions --}}
+                            <div class="flex flex-col items-end gap-2">
+                                @if($document->isProcessed())
+                                    <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full dark:bg-green-900/20 dark:text-green-400">
+                                        Verwerkt
+                                    </span>
+                                @else
+                                    <span class="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full dark:bg-yellow-900/20 dark:text-yellow-400">
+                                        In verwerking
+                                    </span>
+                                @endif
+
+                                @if($document->questions->count() > 0)
+                                    <span class="flex items-center text-xs text-neutral-600 dark:text-neutral-400">
+                                        <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        {{ $document->questions->count() }} vraag/vragen
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+                    </a>
+                @empty
+                    <div class="p-12 text-center">
+                        <svg class="mx-auto w-12 h-12 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                        </svg>
+                        <h3 class="mt-4 text-sm font-medium text-neutral-900 dark:text-white">Geen documenten gevonden</h3>
+                        <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+                            Er zijn nog geen documenten geüpload voor dit verzoek.
+                        </p>
+                    </div>
+                @endforelse
+            </div>
+
+            {{-- Pagination --}}
+            @if($documents->hasPages())
+                <div class="p-4 border-t border-neutral-200 dark:border-neutral-700">
+                    {{ $documents->links() }}
+                </div>
+            @endif
+        </div>
+    </div>
+</x-layouts.app>
+
