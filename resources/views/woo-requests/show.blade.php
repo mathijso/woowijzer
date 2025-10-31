@@ -618,12 +618,13 @@
                                                                id="upload-link-{{ $internalRequest->id }}"
                                                                class="flex-1 px-3 py-1.5 font-mono text-xs rounded-lg border border-neutral-300 bg-neutral-50 text-neutral-700 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-300">
                                                         <button type="button"
-                                                                onclick="copyUploadLink({{ $internalRequest->id }})"
-                                                                class="inline-flex gap-1 items-center px-3 py-1.5 text-xs font-medium rounded-lg border border-neutral-300 text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700">
+                                                                onclick="copyUploadLink({{ $internalRequest->id }}, this)"
+                                                                class="inline-flex gap-1 items-center px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors border-neutral-300 text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700"
+                                                                id="copy-btn-{{ $internalRequest->id }}">
                                                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
                                                             </svg>
-                                                            Kopieer
+                                                            <span class="copy-text">Kopieer</span>
                                                         </button>
                                                         <a href="{{ route('upload.show', $internalRequest->upload_token) }}"
                                                            target="_blank"
@@ -832,34 +833,44 @@
                     <dl class="space-y-3">
                         <div class="flex justify-between items-center">
                             <dt class="text-sm text-neutral-600 dark:text-neutral-400">Vragen</dt>
-                            <dd class="text-sm font-medium text-neutral-900 dark:text-white">
-                                {{ $wooRequest->questions->count() }}
+                            <dd>
+                                <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
+                                    {{ $wooRequest->questions->count() }}
+                                </span>
                             </dd>
                         </div>
                         <div class="flex justify-between items-center">
                             <dt class="text-sm text-neutral-600 dark:text-neutral-400">Documenten</dt>
-                            <dd class="text-sm font-medium text-neutral-900 dark:text-white">
-                                {{ $wooRequest->documents->count() }}
+                            <dd>
+                                <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold text-indigo-800 bg-indigo-100 rounded-full dark:bg-indigo-900/20 dark:text-indigo-400">
+                                    {{ $wooRequest->documents->count() }}
+                                </span>
                             </dd>
                         </div>
                         <div class="flex justify-between items-center">
                             <dt class="text-sm text-neutral-600 dark:text-neutral-400">Uploads</dt>
-                            <dd class="text-sm font-medium text-neutral-900 dark:text-white">
-                                {{ $wooRequest->submissions->count() }}
+                            <dd>
+                                <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full dark:bg-yellow-900/20 dark:text-yellow-400">
+                                    {{ $wooRequest->submissions->count() }}
+                                </span>
                             </dd>
                         </div>
                         <div class="flex justify-between items-center">
                             <dt class="text-sm text-neutral-600 dark:text-neutral-400">Dagen actief</dt>
-                            <dd class="text-sm font-medium text-neutral-900 dark:text-white">
-                                {{ $wooRequest->created_at->diffInDays(now()) }}
+                            <dd>
+                                <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold text-gray-800 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-gray-300">
+                                    {{ ceil($wooRequest->created_at->diffInHours(now()) / 24) }}
+                                </span>
                             </dd>
                         </div>
                         @auth
                             @if(auth()->user()->isCaseManager())
                                 <div class="flex justify-between items-center">
                                     <dt class="text-sm text-neutral-600 dark:text-neutral-400">Interne verzoeken</dt>
-                                    <dd class="text-sm font-medium text-neutral-900 dark:text-white">
-                                        {{ $wooRequest->internalRequests->count() }}
+                                    <dd>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold text-pink-800 bg-pink-100 rounded-full dark:bg-pink-900/20 dark:text-pink-400">
+                                            {{ $wooRequest->internalRequests->count() }}
+                                        </span>
                                     </dd>
                                 </div>
                             @endif
@@ -872,26 +883,65 @@
 
     @push('scripts')
     <script>
-        function copyUploadLink(requestId) {
+        function copyUploadLink(requestId, buttonElement) {
             const input = document.getElementById('upload-link-' + requestId);
+            const linkText = input.value;
+            const button = buttonElement;
+            const copyTextSpan = button.querySelector('.copy-text');
+            const originalText = copyTextSpan.textContent;
+
+            // Use modern Clipboard API if available
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(linkText).then(function() {
+                    // Success feedback
+                    copyTextSpan.textContent = 'Gekopieerd!';
+                    button.classList.remove('text-neutral-700', 'border-neutral-300');
+                    button.classList.add('text-green-700', 'bg-green-50', 'border-green-300', 'dark:text-green-400', 'dark:bg-green-900/20', 'dark:border-green-600');
+
+                    // Reset after 2 seconds
+                    setTimeout(function() {
+                        copyTextSpan.textContent = originalText;
+                        button.classList.remove('text-green-700', 'bg-green-50', 'border-green-300', 'dark:text-green-400', 'dark:bg-green-900/20', 'dark:border-green-600');
+                        button.classList.add('text-neutral-700', 'border-neutral-300');
+                    }, 2000);
+                }).catch(function(err) {
+                    console.error('Failed to copy: ', err);
+                    // Fallback to old method
+                    fallbackCopy(input, button, copyTextSpan, originalText);
+                });
+            } else {
+                // Fallback for older browsers
+                fallbackCopy(input, button, copyTextSpan, originalText);
+            }
+        }
+
+        function fallbackCopy(input, button, copyTextSpan, originalText) {
+            // Select the text
             input.select();
             input.setSelectionRange(0, 99999); // For mobile devices
 
-            navigator.clipboard.writeText(input.value).then(function() {
-                // Show temporary success feedback
-                const button = event.target.closest('button');
-                const originalHtml = button.innerHTML;
-                button.innerHTML = '<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Gekopieerd!';
-                button.classList.add('text-green-600', 'border-green-300');
+            try {
+                // Try to copy using document.execCommand
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    // Success feedback
+                    copyTextSpan.textContent = 'Gekopieerd!';
+                    button.classList.remove('text-neutral-700', 'border-neutral-300');
+                    button.classList.add('text-green-700', 'bg-green-50', 'border-green-300', 'dark:text-green-400', 'dark:bg-green-900/20', 'dark:border-green-600');
 
-                setTimeout(function() {
-                    button.innerHTML = originalHtml;
-                    button.classList.remove('text-green-600', 'border-green-300');
-                }, 2000);
-            }).catch(function(err) {
-                console.error('Failed to copy: ', err);
-                alert('Kon link niet kopiëren. Probeer handmatig te selecteren en kopiëren.');
-            });
+                    // Reset after 2 seconds
+                    setTimeout(function() {
+                        copyTextSpan.textContent = originalText;
+                        button.classList.remove('text-green-700', 'bg-green-50', 'border-green-300', 'dark:text-green-400', 'dark:bg-green-900/20', 'dark:border-green-600');
+                        button.classList.add('text-neutral-700', 'border-neutral-300');
+                    }, 2000);
+                } else {
+                    alert('Kon link niet automatisch kopiëren. Selecteer de link handmatig en druk op Ctrl+C (of Cmd+C op Mac).');
+                }
+            } catch (err) {
+                console.error('Fallback copy failed: ', err);
+                alert('Kon link niet kopiëren. Selecteer de link handmatig en druk op Ctrl+C (of Cmd+C op Mac).');
+            }
         }
 
         function scrollToInternalRequests() {

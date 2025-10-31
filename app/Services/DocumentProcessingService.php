@@ -111,7 +111,12 @@ class DocumentProcessingService
 
             // If API reports duplicate/exists, try GET once more and treat as success
             $body = $createResponse->body();
-            if (str_contains($body, 'already exists') || $createResponse->status() === 409) {
+            $isDuplicate = $createResponse->status() === 409
+                || str_contains($body, 'already exists')
+                || str_contains($body, 'UniqueViolation')
+                || str_contains($body, 'duplicate key');
+
+            if ($isDuplicate) {
                 $confirmResponse = Http::timeout(10)
                     ->get("{$this->baseUrl}/cases/{$caseId}/submissions/{$submissionId}");
                 if ($confirmResponse->successful()) {
