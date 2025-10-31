@@ -794,7 +794,7 @@
                                             <form action="{{ route('woo-requests.pickup', $wooRequest) }}" method="POST" class="flex-1">
                                                 @csrf
                                                 <button type="submit"
-                                                        class="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                                                        class="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium rounded-lg bg-rijksblauw text-white hover:bg-rijksblauw/90 transition-colors">
                                                     <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                                     </svg>
@@ -847,7 +847,7 @@
                                             <form action="{{ route('woo-requests.pickup', $wooRequest) }}" method="POST">
                                                 @csrf
                                                 <button type="submit"
-                                                        class="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                                                        class="px-4 py-2 text-sm font-medium rounded-lg bg-rijksblauw text-white hover:bg-rijksblauw/90 transition-colors">
                                                     Overnemen
                                                 </button>
                                             </form>

@@ -122,7 +122,7 @@
                                 <form action="{{ route('cases.pickup', $request) }}" method="POST" class="inline">
                                     @csrf
                                     <button type="submit"
-                                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg bg-rijksblauw text-white hover:bg-rijksblauw/90 transition-colors">
                                         <svg class="mr-1.5 h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                         </svg>
