@@ -61,7 +61,12 @@ Route::post('/api/webhook/processing', [App\Http\Controllers\ApiWebhookControlle
 // Authenticated routes - WOO Request Management
 Route::middleware(['auth'])->group(function () {
     // WOO Requests - for burgers
-    Route::resource('woo-requests', App\Http\Controllers\WooRequestController::class);
+    Route::resource('woo-requests', App\Http\Controllers\WooRequestController::class)->except(['show']);
+    Route::get('woo-requests/{wooRequest}/{tab}', [App\Http\Controllers\WooRequestController::class, 'show'])
+        ->where('tab', 'questions|decision|timeline|documents|internal-requests')
+        ->name('woo-requests.show.tab');
+    Route::get('woo-requests/{wooRequest}', [App\Http\Controllers\WooRequestController::class, 'show'])
+        ->name('woo-requests.show');
     Route::get('woo-requests-manual/create', [App\Http\Controllers\WooRequestController::class, 'createManual'])
         ->name('woo-requests.create-manual');
     Route::post('woo-requests-manual/store', [App\Http\Controllers\WooRequestController::class, 'storeManual'])
@@ -132,7 +137,7 @@ Route::middleware(['auth'])->group(function () {
         if (is_numeric($id)) {
             $wooRequest = App\Models\WooRequest::find($id);
             if ($wooRequest) {
-                return redirect()->route('woo-requests.show', $wooRequest, 301);
+                return redirect()->route('woo-requests.show', [$wooRequest, 'questions'], 301);
             }
         }
         abort(404);
@@ -162,7 +167,7 @@ Route::middleware(['auth'])->group(function () {
         if (is_numeric($id)) {
             $wooRequest = App\Models\WooRequest::find($id);
             if ($wooRequest) {
-                return redirect()->route('woo-requests.show', $wooRequest, 301);
+                return redirect()->route('woo-requests.show', [$wooRequest, 'questions'], 301);
             }
         }
         abort(404);
@@ -177,7 +182,7 @@ Route::middleware(['auth', App\Http\Middleware\EnsureCaseManager::class])->group
 
     // Backwards compatibility - redirect cases.show to woo-requests.show
     Route::get('cases/{wooRequest}', function (App\Models\WooRequest $wooRequest) {
-        return redirect()->route('woo-requests.show', $wooRequest, 301);
+        return redirect()->route('woo-requests.show', [$wooRequest, 'questions'], 301);
     })->name('cases.show');
 
     // Backwards compatibility - route aliases for case actions

@@ -82,7 +82,7 @@ class WooRequestController extends Controller
         ProcessWooRequestDocument::dispatch($wooRequest);
 
         return redirect()
-            ->route('woo-requests.show', $wooRequest)
+            ->route('woo-requests.show', [$wooRequest, 'questions'])
             ->with('success', 'Uw WOO-verzoek is succesvol ingediend. Het document wordt verwerkt op de achtergrond.');
     }
 
@@ -123,16 +123,27 @@ class WooRequestController extends Controller
         }
 
         return redirect()
-            ->route('woo-requests.show', $wooRequest)
+            ->route('woo-requests.show', [$wooRequest, 'questions'])
             ->with('success', 'Uw WOO-verzoek is succesvol aangemaakt.');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(WooRequest $wooRequest): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+    public function show(Request $request, WooRequest $wooRequest, ?string $tab = null): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $this->authorize('view', $wooRequest);
+
+        // Get tab from request parameter if not in URL
+        if (!$tab) {
+            $tab = $request->query('tab', 'questions');
+        }
+
+        // Validate tab
+        $validTabs = ['questions', 'decision', 'timeline', 'documents', 'internal-requests'];
+        if (!in_array($tab, $validTabs)) {
+            $tab = 'questions';
+        }
 
         $wooRequest->load([
             'user',
@@ -171,6 +182,7 @@ class WooRequestController extends Controller
             'progressPercentage' => $progressPercentage,
             'questionStats' => $questionStats,
             'caseManagers' => $caseManagers,
+            'activeTab' => $tab,
         ]);
     }
 
@@ -204,7 +216,7 @@ class WooRequestController extends Controller
         }
 
         return redirect()
-            ->route('woo-requests.show', $wooRequest)
+            ->route('woo-requests.show', [$wooRequest, 'questions'])
             ->with('success', 'WOO-verzoek is bijgewerkt.');
     }
 
@@ -247,7 +259,7 @@ class WooRequestController extends Controller
         }
 
         return redirect()
-            ->route('woo-requests.show', $wooRequest)
+            ->route('woo-requests.show', [$wooRequest, 'questions'])
             ->with('success', $message);
     }
 
@@ -267,7 +279,7 @@ class WooRequestController extends Controller
         $wooRequest->update(['case_manager_id' => $user->id]);
 
         return redirect()
-            ->route('woo-requests.show', $wooRequest)
+            ->route('woo-requests.show', [$wooRequest, 'questions'])
             ->with('success', 'Case is toegewezen aan u.');
     }
 
