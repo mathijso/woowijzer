@@ -87,6 +87,8 @@ class WooRequestController extends Controller
             'questions.documents',
             'documents.submission.internalRequest',
             'internalRequests.submissions',
+            'caseTimeline',
+            'caseDecision',
         ]);
 
         return view('woo-requests.show', ['wooRequest' => $wooRequest]);

@@ -13,7 +13,7 @@ return [
     */
 
     'woo_insight_api' => [
-        'base_url' => env('WOO_INSIGHT_API_URL', 'http://localhost:5000'),
+        'base_url' => env('WOO_INSIGHT_API_URL', '178.128.254.41:5000'),
         'timeout' => env('WOO_INSIGHT_API_TIMEOUT', 120), // seconds
         'retry_interval_minutes' => env('WOO_INSIGHT_RETRY_INTERVAL', 10),
     ],

@@ -34,16 +34,53 @@
         <div class="grid gap-6 lg:grid-cols-3">
             {{-- Main Content --}}
             <div class="lg:col-span-2 space-y-6">
-                {{-- Processing Status --}}
-                @if(!$document->isProcessed())
-                    <div class="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/10">
-                        <div class="flex items-center">
-                            <svg class="w-5 h-5 text-yellow-400 animate-spin" fill="none" viewBox="0 0 24 24">
+                {{-- API Processing Status --}}
+                @if($document->api_processing_status === 'processing' || $document->api_processing_status === 'pending')
+                    <div class="p-4 rounded-lg bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-200 dark:border-yellow-800">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-yellow-400 animate-spin flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                             </svg>
-                            <p class="ml-3 text-sm font-medium text-yellow-800 dark:text-yellow-200">
-                                Document wordt verwerkt...
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                                    Document wordt verwerkt door WOO Insight API
+                                </p>
+                                <p class="mt-1 text-xs text-yellow-700 dark:text-yellow-300">
+                                    OCR extractie, timeline analyse en samenvatting worden gegenereerd...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @elseif($document->api_processing_status === 'failed')
+                    <div class="p-4 rounded-lg bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800">
+                        <div class="flex items-start gap-3">
+                            <svg class="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium text-red-800 dark:text-red-200">
+                                    Verwerking mislukt
+                                </p>
+                                @if($document->api_processing_error)
+                                <p class="mt-1 text-xs text-red-700 dark:text-red-300">
+                                    {{ $document->api_processing_error }}
+                                </p>
+                                @endif
+                                <p class="mt-2 text-xs text-red-600 dark:text-red-400">
+                                    Het systeem probeert het document automatisch opnieuw te verwerken.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                @elseif($document->api_processing_status === 'completed')
+                    <div class="p-4 rounded-lg bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-800">
+                        <div class="flex items-center gap-3">
+                            <svg class="w-5 h-5 text-green-600 dark:text-green-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p class="text-sm font-medium text-green-800 dark:text-green-200">
+                                Document succesvol verwerkt door WOO Insight API
                             </p>
                         </div>
                     </div>
@@ -59,10 +96,68 @@
                 </div>
                 @endif
 
+                {{-- Timeline Events --}}
+                @if($document->hasTimelineEvents())
+                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+                    <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Timeline Events uit Document</h2>
+                    <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+                        Geëxtraheerd door WOO Insight API
+                    </p>
+                    <div class="mt-4 space-y-4">
+                        @foreach($document->getTimelineEvents() as $event)
+                            <div class="flex gap-3 p-4 rounded-lg bg-neutral-50 dark:bg-neutral-900">
+                                <div class="flex flex-col items-center pt-1">
+                                    <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/20">
+                                        <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </div>
+                                    @if(!$loop->last)
+                                    <div class="w-px flex-1 mt-2 bg-neutral-200 dark:bg-neutral-700"></div>
+                                    @endif
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-start justify-between">
+                                        <div>
+                                            <p class="font-medium text-neutral-900 dark:text-white">{{ $event['title'] ?? 'Gebeurtenis' }}</p>
+                                            <p class="text-xs text-neutral-600 dark:text-neutral-400">
+                                                {{ $event['date'] ?? 'Onbekende datum' }}
+                                                @if(isset($event['type']))
+                                                    <span class="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
+                                                        {{ $event['type'] }}
+                                                    </span>
+                                                @endif
+                                            </p>
+                                        </div>
+                                        @if(isset($event['confidence']))
+                                        <span class="text-xs text-neutral-500 dark:text-neutral-400">
+                                            {{ round($event['confidence'] * 100) }}%
+                                        </span>
+                                        @endif
+                                    </div>
+                                    @if(isset($event['summary']))
+                                    <p class="mt-2 text-sm text-neutral-700 dark:text-neutral-300">{{ $event['summary'] }}</p>
+                                    @endif
+                                    @if(isset($event['actors']) && !empty($event['actors']))
+                                    <div class="flex flex-wrap gap-1 mt-2">
+                                        @foreach($event['actors'] as $actor)
+                                        <span class="px-2 py-1 text-xs rounded-full bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+                                            {{ $actor }}
+                                        </span>
+                                        @endforeach
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                @endif
+
                 {{-- Content --}}
                 @if($document->content_markdown)
                 <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
-                    <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Document Inhoud</h2>
+                    <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Document Inhoud (OCR)</h2>
                     <div class="mt-3 prose prose-sm dark:prose-invert max-w-none">
                         <div class="p-4 overflow-auto rounded-lg bg-neutral-50 dark:bg-neutral-900 max-h-96">
                             <pre class="text-xs text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap">{{ Str::limit($document->content_markdown, 2000) }}</pre>
@@ -133,10 +228,40 @@
                             <dt class="text-xs text-neutral-600 dark:text-neutral-400">Geüpload</dt>
                             <dd class="mt-1 text-sm font-medium text-neutral-900 dark:text-white">{{ $document->created_at->format('d-m-Y H:i') }}</dd>
                         </div>
+                        <div>
+                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">API Status</dt>
+                            <dd class="mt-1">
+                                @if($document->api_processing_status === 'completed')
+                                    <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full dark:bg-green-900/20 dark:text-green-400">
+                                        Verwerkt
+                                    </span>
+                                @elseif($document->api_processing_status === 'processing')
+                                    <span class="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full dark:bg-yellow-900/20 dark:text-yellow-400">
+                                        Bezig...
+                                    </span>
+                                @elseif($document->api_processing_status === 'failed')
+                                    <span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full dark:bg-red-900/20 dark:text-red-400">
+                                        Mislukt
+                                    </span>
+                                @else
+                                    <span class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-gray-400">
+                                        In wachtrij
+                                    </span>
+                                @endif
+                            </dd>
+                        </div>
                         @if($document->processed_at)
                         <div>
-                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">Verwerkt</dt>
+                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">Verwerkt op</dt>
                             <dd class="mt-1 text-sm font-medium text-neutral-900 dark:text-white">{{ $document->processed_at->format('d-m-Y H:i') }}</dd>
+                        </div>
+                        @endif
+                        @if($document->processing_metadata_json && isset($document->processing_metadata_json['confidence_score']))
+                        <div>
+                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">Betrouwbaarheid</dt>
+                            <dd class="mt-1 text-sm font-medium text-neutral-900 dark:text-white">
+                                {{ round($document->processing_metadata_json['confidence_score'] * 100) }}%
+                            </dd>
                         </div>
                         @endif
                     </dl>

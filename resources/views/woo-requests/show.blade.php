@@ -110,6 +110,149 @@
                     </div>
                 </div>
 
+                {{-- Decision Overview (B1 Summary) --}}
+                @if($wooRequest->hasDecision())
+                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800 border-2 border-blue-100 dark:border-blue-900/50">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Besluitoverzicht</h2>
+                            <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+                                Samenvatting in B1-Nederlands • Gegenereerd door WOO Insight API
+                            </p>
+                        </div>
+                        @if($wooRequest->caseDecision)
+                        <span class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
+                            {{ $wooRequest->caseDecision->document_count }} documenten
+                        </span>
+                        @endif
+                    </div>
+                    
+                    @if($wooRequest->caseDecision)
+                    <div class="space-y-4">
+                        <div class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/10">
+                            <p class="text-sm text-neutral-900 dark:text-neutral-100 leading-relaxed">
+                                {{ $wooRequest->caseDecision->summary_b1 }}
+                            </p>
+                        </div>
+
+                        @if($wooRequest->caseDecision->getKeyReasons())
+                        <div>
+                            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mb-2">Belangrijkste redenen</h3>
+                            <ul class="space-y-2">
+                                @foreach($wooRequest->caseDecision->getKeyReasons() as $reason)
+                                <li class="flex items-start gap-2 text-sm text-neutral-700 dark:text-neutral-300">
+                                    <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span>{{ $reason }}</span>
+                                </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        @endif
+
+                        @if($wooRequest->caseDecision->getProcessOutline())
+                        <div>
+                            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white mb-3">Proces overzicht</h3>
+                            <div class="space-y-3">
+                                @foreach($wooRequest->caseDecision->getProcessOutline() as $phase)
+                                <div class="flex gap-3">
+                                    <div class="flex-shrink-0 w-20 text-xs font-medium text-neutral-600 dark:text-neutral-400">
+                                        {{ $phase['when'] ?? '' }}
+                                    </div>
+                                    <div class="flex-1">
+                                        <p class="text-sm font-medium text-neutral-900 dark:text-white">{{ $phase['phase'] ?? '' }}</p>
+                                        <p class="text-sm text-neutral-600 dark:text-neutral-400">{{ $phase['what'] ?? '' }}</p>
+                                        @if(isset($phase['who']) && !empty($phase['who']))
+                                        <div class="flex flex-wrap gap-1 mt-1">
+                                            @foreach($phase['who'] as $person)
+                                            <span class="px-2 py-0.5 text-xs rounded-full bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+                                                {{ $person }}
+                                            </span>
+                                            @endforeach
+                                        </div>
+                                        @endif
+                                    </div>
+                                </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
+                    </div>
+                    @endif
+                </div>
+                @endif
+
+                {{-- Aggregated Timeline --}}
+                @if($wooRequest->hasTimeline())
+                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Complete Timeline</h2>
+                            <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+                                Geaggregeerd uit alle documenten • WOO Insight API
+                            </p>
+                        </div>
+                        @if($wooRequest->caseTimeline)
+                        <span class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
+                            {{ $wooRequest->caseTimeline->getEventCount() }} events
+                        </span>
+                        @endif
+                    </div>
+                    
+                    @if($wooRequest->caseTimeline && $wooRequest->caseTimeline->hasEvents())
+                    <div class="mt-4 space-y-4">
+                        @foreach($wooRequest->caseTimeline->getEvents() as $event)
+                        <div class="flex gap-3 p-4 rounded-lg bg-neutral-50 dark:bg-neutral-900">
+                            <div class="flex flex-col items-center pt-1">
+                                <div class="flex items-center justify-center w-8 h-8 rounded-full bg-blue-100 dark:bg-blue-900/20">
+                                    <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                    </svg>
+                                </div>
+                                @if(!$loop->last)
+                                <div class="w-px flex-1 mt-2 bg-neutral-200 dark:bg-neutral-700"></div>
+                                @endif
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-start justify-between">
+                                    <div>
+                                        <p class="font-medium text-neutral-900 dark:text-white">{{ $event['title'] ?? 'Gebeurtenis' }}</p>
+                                        <p class="text-xs text-neutral-600 dark:text-neutral-400">
+                                            {{ $event['date'] ?? 'Onbekende datum' }}
+                                            @if(isset($event['type']))
+                                                <span class="ml-2 px-2 py-0.5 text-xs font-medium rounded-full bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
+                                                    {{ $event['type'] }}
+                                                </span>
+                                            @endif
+                                        </p>
+                                    </div>
+                                    @if(isset($event['confidence']))
+                                    <span class="text-xs text-neutral-500 dark:text-neutral-400">
+                                        {{ round($event['confidence'] * 100) }}%
+                                    </span>
+                                    @endif
+                                </div>
+                                @if(isset($event['summary']))
+                                <p class="mt-2 text-sm text-neutral-700 dark:text-neutral-300">{{ $event['summary'] }}</p>
+                                @endif
+                                @if(isset($event['actors']) && !empty($event['actors']))
+                                <div class="flex flex-wrap gap-1 mt-2">
+                                    @foreach($event['actors'] as $actor)
+                                    <span class="px-2 py-1 text-xs rounded-full bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+                                        {{ $actor }}
+                                    </span>
+                                    @endforeach
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                    @endif
+                </div>
+                @endif
+
                 {{-- Documents --}}
                 <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
                     <div class="flex items-center justify-between mb-4">
@@ -135,13 +278,21 @@
                                         {{ $document->getFileSizeFormatted() }} • {{ $document->created_at->format('d-m-Y') }}
                                     </p>
                                 </div>
-                                @if($document->isProcessed())
+                                @if($document->api_processing_status === 'completed')
                                     <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full dark:bg-green-900/20 dark:text-green-400">
                                         Verwerkt
                                     </span>
-                                @else
+                                @elseif($document->api_processing_status === 'processing')
                                     <span class="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full dark:bg-yellow-900/20 dark:text-yellow-400">
-                                        In verwerking
+                                        Bezig...
+                                    </span>
+                                @elseif($document->api_processing_status === 'failed')
+                                    <span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full dark:bg-red-900/20 dark:text-red-400">
+                                        Mislukt
+                                    </span>
+                                @else
+                                    <span class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-gray-400">
+                                        In wachtrij
                                     </span>
                                 @endif
                             </a>

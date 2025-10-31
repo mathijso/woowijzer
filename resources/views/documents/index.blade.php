@@ -87,13 +87,25 @@
 
                             {{-- Status & Actions --}}
                             <div class="flex flex-col items-end gap-2">
-                                @if($document->isProcessed())
+                                @if($document->api_processing_status === 'completed')
                                     <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full dark:bg-green-900/20 dark:text-green-400">
                                         Verwerkt
                                     </span>
+                                @elseif($document->api_processing_status === 'processing')
+                                    <span class="flex items-center px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full dark:bg-yellow-900/20 dark:text-yellow-400">
+                                        <svg class="w-3 h-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24">
+                                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                        Bezig...
+                                    </span>
+                                @elseif($document->api_processing_status === 'failed')
+                                    <span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full dark:bg-red-900/20 dark:text-red-400">
+                                        Mislukt
+                                    </span>
                                 @else
-                                    <span class="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full dark:bg-yellow-900/20 dark:text-yellow-400">
-                                        In verwerking
+                                    <span class="px-2 py-1 text-xs font-medium text-gray-700 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-gray-400">
+                                        In wachtrij
                                     </span>
                                 @endif
 
@@ -103,6 +115,15 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                         </svg>
                                         {{ $document->questions->count() }} vraag/vragen
+                                    </span>
+                                @endif
+
+                                @if($document->hasTimelineEvents())
+                                    <span class="flex items-center text-xs text-blue-600 dark:text-blue-400">
+                                        <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        {{ count($document->getTimelineEvents()) }} events
                                     </span>
                                 @endif
                             </div>
