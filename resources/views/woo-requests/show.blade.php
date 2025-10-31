@@ -248,23 +248,77 @@ $statusLabels = config('woo.woo_request_statuses');
                     @endguest
                 @endif
 
-                {{-- Questions --}}
-                <div class="bg-white dark:bg-neutral-800 shadow-sm p-6 rounded-xl">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="font-semibold text-neutral-900 dark:text-white text-lg">
-                            Vragen ({{ $wooRequest->questions->count() }})
-                        </h2>
-                        @auth
-                            @if(auth()->user()->isCaseManager())
-                                <form action="{{ route('woo-requests.generate-summaries', $wooRequest) }}" method="POST" class="inline" onsubmit="return confirm('Weet je zeker dat je samenvattingen voor alle vragen wilt genereren? Dit kan enkele minuten duren.');">
-                                    @csrf
-                                    <button type="submit" class="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 text-sm">
-                                        Genereer samenvattingen
-                                    </button>
-                                </form>
+                {{-- Tabs Navigation --}}
+                <div class="bg-white dark:bg-neutral-800 shadow-sm rounded-xl">
+                    <div class="border-neutral-200 dark:border-neutral-700 border-b">
+                        <nav class="flex -mb-px overflow-x-auto" aria-label="Tabs">
+                            @php
+                                $activeTab = $activeTab ?? 'questions';
+                            @endphp
+                            <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'questions']) }}"
+                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'questions' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
+                                <span class="flex items-center gap-2">
+                                    Vragen
+                                    @if($wooRequest->questions->count() > 0)
+                                        <span class="px-2 py-0.5 text-xs font-semibold {{ $activeTab === 'questions' ? 'text-blue-700 bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400' }} rounded-full">
+                                            {{ $wooRequest->questions->count() }}
+                                        </span>
+                                    @endif
+                                </span>
+                            </a>
+                            @if($wooRequest->hasDecision())
+                            <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'decision']) }}"
+                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'decision' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
+                                Besluitoverzicht
+                            </a>
                             @endif
-                        @endauth
+                            @if($wooRequest->hasTimeline())
+                            <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'timeline']) }}"
+                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'timeline' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
+                                Complete Timeline
+                            </a>
+                            @endif
+                            <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'documents']) }}"
+                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'documents' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
+                                <span class="flex items-center gap-2">
+                                    Documenten
+                                    @if($wooRequest->documents->count() > 0)
+                                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full {{ $activeTab === 'documents' ? 'text-blue-700 bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400' }}">
+                                            {{ $wooRequest->documents->count() }}
+                                        </span>
+                                    @endif
+                                </span>
+                            </a>
+                            @auth
+                                @if(auth()->user()->isCaseManager())
+                                <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'internal-requests']) }}"
+                                   class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'internal-requests' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
+                                    Document Upload Verzoeken
+                                </a>
+                                @endif
+                            @endauth
+                        </nav>
                     </div>
+
+                    {{-- Tab Content: Questions --}}
+                    @if($activeTab === 'questions')
+                    <div id="tab-questions" class="tab-content">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="font-semibold text-neutral-900 dark:text-white text-lg">
+                                    Vragen ({{ $wooRequest->questions->count() }})
+                                </h2>
+                                @auth
+                                    @if(auth()->user()->isCaseManager())
+                                        <form action="{{ route('woo-requests.generate-summaries', $wooRequest) }}" method="POST" class="inline" onsubmit="return confirm('Weet je zeker dat je samenvattingen voor alle vragen wilt genereren? Dit kan enkele minuten duren.');">
+                                            @csrf
+                                            <button type="submit" class="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 text-sm">
+                                                Genereer samenvattingen
+                                            </button>
+                                        </form>
+                                    @endif
+                                @endauth
+                            </div>
 
                     <div class="space-y-3">
                         @forelse($wooRequest->questions as $question)
@@ -317,67 +371,145 @@ $statusLabels = config('woo.woo_request_statuses');
                                 Nog geen vragen geëxtraheerd uit het document
                             </p>
                         @endforelse
+                        </div>
+                        </div>
                     </div>
-                </div>
+                    @endif
 
-                {{-- Decision Overview (B1 Summary) --}}
-                @if($wooRequest->hasDecision())
-                <div class="bg-white dark:bg-neutral-800 shadow-sm p-6 border-2 border-blue-100 dark:border-blue-900/50 rounded-xl">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h2 class="font-semibold text-neutral-900 dark:text-white text-lg">Besluitoverzicht</h2>
-                            <p class="mt-1 text-neutral-600 dark:text-neutral-400 text-sm">
-                                Samenvatting in B1-Nederlands • Gegenereerd door WOO Insight API
-                            </p>
+                    {{-- Tab Content: Decision Overview --}}
+                    @if($wooRequest->hasDecision() && $activeTab === 'decision')
+                    <div id="tab-decision" class="tab-content">
+                        <div class="p-6 border-2 border-blue-100 dark:border-blue-900/50">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h2 class="font-semibold text-neutral-900 dark:text-white text-lg">Besluitoverzicht</h2>
+                                    <p class="mt-1 text-neutral-600 dark:text-neutral-400 text-sm">
+                                        Samenvatting in B1-Nederlands • Gegenereerd door WOO Insight API
+                                    </p>
+                                </div>
+                                @if($wooRequest->caseDecision)
+                                <span class="bg-blue-100 dark:bg-blue-900/20 px-2 py-1 rounded-full font-medium text-blue-700 dark:text-blue-400 text-xs">
+                                    {{ $wooRequest->caseDecision->document_count }} documenten
+                                </span>
+                                @endif
+                            </div>
+
+                            @if($wooRequest->caseDecision)
+                            <div class="space-y-4">
+                                <div class="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-lg">
+                                    <p class="text-neutral-900 dark:text-neutral-100 text-sm leading-relaxed">
+                                        {{ $wooRequest->caseDecision->summary_b1 }}
+                                    </p>
+                                </div>
+
+                                @if($wooRequest->caseDecision->getKeyReasons())
+                                <div>
+                                    <h3 class="mb-2 font-semibold text-neutral-900 dark:text-white text-sm">Belangrijkste redenen</h3>
+                                    <ul class="space-y-2">
+                                        @foreach($wooRequest->caseDecision->getKeyReasons() as $reason)
+                                        <li class="flex items-start gap-2 text-neutral-700 dark:text-neutral-300 text-sm">
+                                            <svg class="flex-shrink-0 mt-0.5 w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                                            </svg>
+                                            <span>{{ $reason }}</span>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                                @endif
+
+                                @if($wooRequest->caseDecision->getProcessOutline())
+                                <div>
+                                    <h3 class="mb-3 font-semibold text-neutral-900 dark:text-white text-sm">Proces overzicht</h3>
+                                    <div class="space-y-3">
+                                        @foreach($wooRequest->caseDecision->getProcessOutline() as $phase)
+                                        <div class="flex gap-3">
+                                            <div class="flex-shrink-0 w-20 font-medium text-neutral-600 dark:text-neutral-400 text-xs">
+                                                {{ $phase['when'] ?? '' }}
+                                            </div>
+                                            <div class="flex-1">
+                                                <p class="font-medium text-neutral-900 dark:text-white text-sm">{{ $phase['phase'] ?? '' }}</p>
+                                                <p class="text-neutral-600 dark:text-neutral-400 text-sm">{{ $phase['what'] ?? '' }}</p>
+                                                @if(isset($phase['who']) && !empty($phase['who']))
+                                                <div class="flex flex-wrap gap-1 mt-1">
+                                                    @foreach($phase['who'] as $person)
+                                                    <span class="bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 rounded-full text-neutral-700 dark:text-neutral-300 text-xs">
+                                                        {{ $person }}
+                                                    </span>
+                                                    @endforeach
+                                                </div>
+                                                @endif
+                                            </div>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                                @endif
+                            </div>
+                            @endif
                         </div>
-                        @if($wooRequest->caseDecision)
-                        <span class="bg-blue-100 dark:bg-blue-900/20 px-2 py-1 rounded-full font-medium text-blue-700 dark:text-blue-400 text-xs">
-                            {{ $wooRequest->caseDecision->document_count }} documenten
-                        </span>
-                        @endif
                     </div>
+                    @endif
 
-                    @if($wooRequest->caseDecision)
-                    <div class="space-y-4">
-                        <div class="bg-blue-50 dark:bg-blue-900/10 p-4 rounded-lg">
-                            <p class="text-neutral-900 dark:text-neutral-100 text-sm leading-relaxed">
-                                {{ $wooRequest->caseDecision->summary_b1 }}
-                            </p>
-                        </div>
+                    {{-- Tab Content: Timeline --}}
+                    @if($wooRequest->hasTimeline() && $activeTab === 'timeline')
+                    <div id="tab-timeline" class="tab-content">
+                        <div class="p-6">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h2 class="font-semibold text-neutral-900 dark:text-white text-lg">Complete Timeline</h2>
+                                    <p class="mt-1 text-neutral-600 dark:text-neutral-400 text-sm">
+                                        Geaggregeerd uit alle documenten • WOO Insight API
+                                    </p>
+                                </div>
+                                @if($wooRequest->caseTimeline)
+                                <span class="bg-blue-100 dark:bg-blue-900/20 px-2 py-1 rounded-full font-medium text-blue-700 dark:text-blue-400 text-xs">
+                                    {{ $wooRequest->caseTimeline->getEventCount() }} events
+                                </span>
+                                @endif
+                            </div>
 
-                        @if($wooRequest->caseDecision->getKeyReasons())
-                        <div>
-                            <h3 class="mb-2 font-semibold text-neutral-900 dark:text-white text-sm">Belangrijkste redenen</h3>
-                            <ul class="space-y-2">
-                                @foreach($wooRequest->caseDecision->getKeyReasons() as $reason)
-                                <li class="flex items-start gap-2 text-neutral-700 dark:text-neutral-300 text-sm">
-                                    <svg class="flex-shrink-0 mt-0.5 w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span>{{ $reason }}</span>
-                                </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        @endif
-
-                        @if($wooRequest->caseDecision->getProcessOutline())
-                        <div>
-                            <h3 class="mb-3 font-semibold text-neutral-900 dark:text-white text-sm">Proces overzicht</h3>
-                            <div class="space-y-3">
-                                @foreach($wooRequest->caseDecision->getProcessOutline() as $phase)
-                                <div class="flex gap-3">
-                                    <div class="flex-shrink-0 w-20 font-medium text-neutral-600 dark:text-neutral-400 text-xs">
-                                        {{ $phase['when'] ?? '' }}
+                            @if($wooRequest->caseTimeline && $wooRequest->caseTimeline->hasEvents())
+                            <div class="space-y-4 mt-4">
+                                @foreach($wooRequest->caseTimeline->getEvents() as $event)
+                                <div class="flex gap-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
+                                    <div class="flex flex-col items-center pt-1">
+                                        <div class="flex justify-center items-center bg-blue-100 dark:bg-blue-900/20 rounded-full w-8 h-8">
+                                            <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </div>
+                                        @if(!$loop->last)
+                                        <div class="flex-1 bg-neutral-200 dark:bg-neutral-700 mt-2 w-px"></div>
+                                        @endif
                                     </div>
                                     <div class="flex-1">
-                                        <p class="font-medium text-neutral-900 dark:text-white text-sm">{{ $phase['phase'] ?? '' }}</p>
-                                        <p class="text-neutral-600 dark:text-neutral-400 text-sm">{{ $phase['what'] ?? '' }}</p>
-                                        @if(isset($phase['who']) && !empty($phase['who']))
-                                        <div class="flex flex-wrap gap-1 mt-1">
-                                            @foreach($phase['who'] as $person)
-                                            <span class="bg-neutral-100 dark:bg-neutral-800 px-2 py-0.5 rounded-full text-neutral-700 dark:text-neutral-300 text-xs">
-                                                {{ $person }}
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="font-medium text-neutral-900 dark:text-white">{{ $event['title'] ?? 'Gebeurtenis' }}</p>
+                                                <p class="text-neutral-600 dark:text-neutral-400 text-xs">
+                                                    {{ $event['date'] ?? 'Onbekende datum' }}
+                                                    @if(isset($event['type']))
+                                                        <span class="bg-blue-100 dark:bg-blue-900/20 ml-2 px-2 py-0.5 rounded-full font-medium text-blue-700 dark:text-blue-400 text-xs">
+                                                            {{ $event['type'] }}
+                                                        </span>
+                                                    @endif
+                                                </p>
+                                            </div>
+                                            @if(isset($event['confidence']))
+                                            <span class="text-neutral-500 dark:text-neutral-400 text-xs">
+                                                {{ round($event['confidence'] * 100) }}%
+                                            </span>
+                                            @endif
+                                        </div>
+                                        @if(isset($event['summary']))
+                                        <p class="mt-2 text-neutral-700 dark:text-neutral-300 text-sm">{{ $event['summary'] }}</p>
+                                        @endif
+                                        @if(isset($event['actors']) && !empty($event['actors']))
+                                        <div class="flex flex-wrap gap-1 mt-2">
+                                            @foreach($event['actors'] as $actor)
+                                            <span class="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded-full text-neutral-700 dark:text-neutral-300 text-xs">
+                                                {{ $actor }}
                                             </span>
                                             @endforeach
                                         </div>
@@ -386,182 +518,115 @@ $statusLabels = config('woo.woo_request_statuses');
                                 </div>
                                 @endforeach
                             </div>
+                            @endif
                         </div>
-                        @endif
                     </div>
                     @endif
-                </div>
-                @endif
 
-                {{-- Aggregated Timeline --}}
-                @if($wooRequest->hasTimeline())
-                <div class="bg-white dark:bg-neutral-800 shadow-sm p-6 rounded-xl">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <h2 class="font-semibold text-neutral-900 dark:text-white text-lg">Complete Timeline</h2>
-                            <p class="mt-1 text-neutral-600 dark:text-neutral-400 text-sm">
-                                Geaggregeerd uit alle documenten • WOO Insight API
-                            </p>
-                        </div>
-                        @if($wooRequest->caseTimeline)
-                        <span class="bg-blue-100 dark:bg-blue-900/20 px-2 py-1 rounded-full font-medium text-blue-700 dark:text-blue-400 text-xs">
-                            {{ $wooRequest->caseTimeline->getEventCount() }} events
-                        </span>
-                        @endif
-                    </div>
-
-                    @if($wooRequest->caseTimeline && $wooRequest->caseTimeline->hasEvents())
-                    <div class="space-y-4 mt-4">
-                        @foreach($wooRequest->caseTimeline->getEvents() as $event)
-                        <div class="flex gap-3 bg-neutral-50 dark:bg-neutral-900 p-4 rounded-lg">
-                            <div class="flex flex-col items-center pt-1">
-                                <div class="flex justify-center items-center bg-blue-100 dark:bg-blue-900/20 rounded-full w-8 h-8">
-                                    <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
-                                    </svg>
+                    {{-- Tab Content: Documents --}}
+                    @if($activeTab === 'documents')
+                    <div id="tab-documents" class="tab-content">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="font-semibold text-neutral-900 dark:text-white text-lg">
+                                    Documenten ({{ $wooRequest->documents->count() }})
+                                </h2>
+                                <div class="flex items-center gap-4">
+                                    @auth
+                                        @if(auth()->user()->isCaseManager())
+                                            <form action="{{ route('woo-requests.auto-link-documents', $wooRequest) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" class="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 text-sm">
+                                                    Auto-link documenten
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @endauth
                                 </div>
-                                @if(!$loop->last)
-                                <div class="flex-1 bg-neutral-200 dark:bg-neutral-700 mt-2 w-px"></div>
-                                @endif
                             </div>
-                            <div class="flex-1">
-                                <div class="flex justify-between items-start">
-                                    <div>
-                                        <p class="font-medium text-neutral-900 dark:text-white">{{ $event['title'] ?? 'Gebeurtenis' }}</p>
-                                        <p class="text-neutral-600 dark:text-neutral-400 text-xs">
-                                            {{ $event['date'] ?? 'Onbekende datum' }}
-                                            @if(isset($event['type']))
-                                                <span class="bg-blue-100 dark:bg-blue-900/20 ml-2 px-2 py-0.5 rounded-full font-medium text-blue-700 dark:text-blue-400 text-xs">
-                                                    {{ $event['type'] }}
+
+                            <div class="space-y-3">
+                                @php
+                                    $documents = $wooRequest->documents->sortByDesc('created_at')->take(5);
+                                @endphp
+                                @forelse($documents as $document)
+                                    <a href="{{ route('cases.documents.show', [$wooRequest, $document]) }}"
+                                       class="flex items-center gap-3 bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800 p-3 rounded-lg transition cursor-pointer">
+                                        <svg class="flex-shrink-0 w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+                                        </svg>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="font-medium text-neutral-900 dark:text-white text-sm truncate">{{ $document->file_name }}</p>
+                                            <p class="text-neutral-600 dark:text-neutral-400 text-xs">
+                                                {{ $document->getFileSizeFormatted() }} • {{ $document->created_at->format('d-m-Y H:i') }}
+                                            </p>
+                                        </div>
+                                        <div class="flex items-center gap-2">
+                                            @if($document->api_processing_status === 'completed')
+                                                <span class="bg-green-100 dark:bg-green-900/20 px-2 py-1 rounded-full font-medium text-green-700 dark:text-green-400 text-xs">
+                                                    Verwerkt
+                                                </span>
+                                            @elseif($document->api_processing_status === 'processing')
+                                                <span class="bg-yellow-100 dark:bg-yellow-900/20 px-2 py-1 rounded-full font-medium text-yellow-700 dark:text-yellow-400 text-xs">
+                                                    Thinking...
+                                                </span>
+                                            @elseif($document->api_processing_status === 'failed')
+                                                <span class="bg-red-100 dark:bg-red-900/20 px-2 py-1 rounded-full font-medium text-red-700 dark:text-red-400 text-xs">
+                                                    Mislukt
+                                                </span>
+                                            @else
+                                                <span class="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full font-medium text-gray-700 dark:text-gray-400 text-xs">
+                                                    In wachtrij
                                                 </span>
                                             @endif
-                                        </p>
+                                            <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                            </svg>
+                                        </div>
+                                    </a>
+                                @empty
+                                    <p class="py-4 text-neutral-600 dark:text-neutral-400 text-sm text-center">
+                                        Nog geen documenten geüpload
+                                    </p>
+                                @endforelse
+
+                                @if($wooRequest->documents->count() > 5)
+                                    <div class="pt-3 border-neutral-200 dark:border-neutral-700 border-t">
+                                        <a href="{{ route('cases.documents.index', $wooRequest) }}"
+                                           class="flex justify-center items-center gap-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/10 dark:hover:bg-blue-900/20 py-3 rounded-lg font-medium text-blue-600 dark:text-blue-400 text-sm transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                                            </svg>
+                                            Alle {{ $wooRequest->documents->count() }} documenten bekijken
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                            </svg>
+                                        </a>
                                     </div>
-                                    @if(isset($event['confidence']))
-                                    <span class="text-neutral-500 dark:text-neutral-400 text-xs">
-                                        {{ round($event['confidence'] * 100) }}%
-                                    </span>
-                                    @endif
-                                </div>
-                                @if(isset($event['summary']))
-                                <p class="mt-2 text-neutral-700 dark:text-neutral-300 text-sm">{{ $event['summary'] }}</p>
-                                @endif
-                                @if(isset($event['actors']) && !empty($event['actors']))
-                                <div class="flex flex-wrap gap-1 mt-2">
-                                    @foreach($event['actors'] as $actor)
-                                    <span class="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded-full text-neutral-700 dark:text-neutral-300 text-xs">
-                                        {{ $actor }}
-                                    </span>
-                                    @endforeach
-                                </div>
+                                @elseif($wooRequest->documents->count() > 0)
+                                    <div class="pt-3 border-neutral-200 dark:border-neutral-700 border-t">
+                                        <a href="{{ route('cases.documents.index', $wooRequest) }}"
+                                           class="flex justify-center items-center gap-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/10 dark:hover:bg-blue-900/20 py-3 rounded-lg font-medium text-blue-600 dark:text-blue-400 text-sm transition">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                                            </svg>
+                                            Alle documenten bekijken
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                            </svg>
+                                        </a>
+                                    </div>
                                 @endif
                             </div>
                         </div>
-                        @endforeach
                     </div>
                     @endif
-                </div>
-                @endif
 
-                {{-- Documents --}}
-                <div class="bg-white dark:bg-neutral-800 shadow-sm p-6 rounded-xl">
-                    <div class="flex justify-between items-center mb-4">
-                        <h2 class="font-semibold text-neutral-900 dark:text-white text-lg">
-                            Documenten ({{ $wooRequest->documents->count() }})
-                        </h2>
-                        <div class="flex items-center gap-4">
-                            @auth
-                                @if(auth()->user()->isCaseManager())
-                                    <form action="{{ route('woo-requests.auto-link-documents', $wooRequest) }}" method="POST" class="inline">
-                                        @csrf
-                                        <button type="submit" class="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 text-sm">
-                                            Auto-link documenten
-                                        </button>
-                                    </form>
-                                @endif
-                            @endauth
-                        </div>
-                    </div>
-
-                    <div class="space-y-3">
-                        @php
-                            $documents = $wooRequest->documents->sortByDesc('created_at')->take(5);
-                        @endphp
-                        @forelse($documents as $document)
-                            <a href="{{ route('cases.documents.show', [$wooRequest, $document]) }}"
-                               class="flex items-center gap-3 bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800 p-3 rounded-lg transition cursor-pointer">
-                                <svg class="flex-shrink-0 w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                </svg>
-                                <div class="flex-1 min-w-0">
-                                    <p class="font-medium text-neutral-900 dark:text-white text-sm truncate">{{ $document->file_name }}</p>
-                                    <p class="text-neutral-600 dark:text-neutral-400 text-xs">
-                                        {{ $document->getFileSizeFormatted() }} • {{ $document->created_at->format('d-m-Y H:i') }}
-                                    </p>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    @if($document->api_processing_status === 'completed')
-                                        <span class="bg-green-100 dark:bg-green-900/20 px-2 py-1 rounded-full font-medium text-green-700 dark:text-green-400 text-xs">
-                                            Verwerkt
-                                        </span>
-                                    @elseif($document->api_processing_status === 'processing')
-                                        <span class="bg-yellow-100 dark:bg-yellow-900/20 px-2 py-1 rounded-full font-medium text-yellow-700 dark:text-yellow-400 text-xs">
-                                            Thinking...
-                                        </span>
-                                    @elseif($document->api_processing_status === 'failed')
-                                        <span class="bg-red-100 dark:bg-red-900/20 px-2 py-1 rounded-full font-medium text-red-700 dark:text-red-400 text-xs">
-                                            Mislukt
-                                        </span>
-                                    @else
-                                        <span class="bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded-full font-medium text-gray-700 dark:text-gray-400 text-xs">
-                                            In wachtrij
-                                        </span>
-                                    @endif
-                                    <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
-                                </div>
-                            </a>
-                        @empty
-                            <p class="py-4 text-neutral-600 dark:text-neutral-400 text-sm text-center">
-                                Nog geen documenten geüpload
-                            </p>
-                        @endforelse
-
-                        @if($wooRequest->documents->count() > 5)
-                            <div class="pt-3 border-neutral-200 dark:border-neutral-700 border-t">
-                                <a href="{{ route('cases.documents.index', $wooRequest) }}"
-                                   class="flex justify-center items-center gap-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/10 dark:hover:bg-blue-900/20 py-3 rounded-lg font-medium text-blue-600 dark:text-blue-400 text-sm transition">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                                    </svg>
-                                    Alle {{ $wooRequest->documents->count() }} documenten bekijken
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
-                                </a>
-                            </div>
-                        @elseif($wooRequest->documents->count() > 0)
-                            <div class="pt-3 border-neutral-200 dark:border-neutral-700 border-t">
-                                <a href="{{ route('cases.documents.index', $wooRequest) }}"
-                                   class="flex justify-center items-center gap-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/10 dark:hover:bg-blue-900/20 py-3 rounded-lg font-medium text-blue-600 dark:text-blue-400 text-sm transition">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                                    </svg>
-                                    Alle documenten bekijken
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                                    </svg>
-                                </a>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-
-                {{-- Internal Requests (Case Managers Only) --}}
-                @auth
-                    @if(auth()->user()->isCaseManager())
-                        <div id="internal-requests-section" class="bg-white dark:bg-neutral-800 shadow-sm rounded-xl">
+                    {{-- Tab Content: Internal Requests --}}
+                    @auth
+                        @if(auth()->user()->isCaseManager() && $activeTab === 'internal-requests')
+                        <div id="tab-internal-requests" class="tab-content">
+                            <div id="internal-requests-section">
                             <div class="p-6 border-neutral-200 dark:border-neutral-700 border-b">
                                 <h2 class="font-semibold text-neutral-900 dark:text-white text-lg">
                                     Document Upload Verzoeken
@@ -774,8 +839,10 @@ $statusLabels = config('woo.woo_request_statuses');
                                 @endforelse
                             </div>
                         </div>
-                    @endif
-                @endauth
+                        </div>
+                        @endif
+                    @endauth
+                </div>
             </div>
 
             {{-- Sidebar --}}

@@ -293,7 +293,7 @@
                 {{-- WOO Request Link --}}
                 <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
                     <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">WOO Verzoek</h3>
-                    <a href="{{ route('woo-requests.show', $wooRequest ?? $document->wooRequest) }}"
+                    <a href="{{ route('woo-requests.show', [$wooRequest ?? $document->wooRequest, 'questions']) }}"
                        class="block mt-3 text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
                         {{ ($wooRequest ?? $document->wooRequest)->title }} →
                     </a>
