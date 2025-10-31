@@ -68,6 +68,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('woo-requests.store-manual');
     Route::post('woo-requests/{wooRequest}/assign-case-manager', [App\Http\Controllers\WooRequestController::class, 'assignCaseManager'])
         ->name('woo-requests.assign-case-manager');
+    Route::post('woo-requests/{wooRequest}/pickup', [App\Http\Controllers\WooRequestController::class, 'pickupCase'])
+        ->name('woo-requests.pickup');
 
     // Case manager actions on WOO requests
     Route::post('woo-requests/{wooRequest}/update-status', [App\Http\Controllers\WooRequestController::class, 'updateStatus'])
@@ -128,6 +130,12 @@ Route::middleware(['auth', App\Http\Middleware\EnsureCaseManager::class])->group
         ->name('cases.update-status');
     Route::get('cases/{wooRequest}/generate-report', [App\Http\Controllers\WooRequestController::class, 'generateReport'])
         ->name('cases.generate-report');
+    
+    // Case assignment actions
+    Route::post('cases/{wooRequest}/pickup', [App\Http\Controllers\CaseOverviewController::class, 'pickupCase'])
+        ->name('cases.pickup');
+    Route::post('cases/{wooRequest}/assign', [App\Http\Controllers\CaseOverviewController::class, 'assignCase'])
+        ->name('cases.assign');
 
     // Internal requests
     Route::resource('internal-requests', App\Http\Controllers\InternalRequestController::class)

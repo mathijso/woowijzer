@@ -737,7 +737,77 @@
                         <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
                             <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Acties</h3>
                             <div class="mt-4 space-y-3">
-
+                                {{-- Case Assignment --}}
+                                @if(!$wooRequest->case_manager_id)
+                                    {{-- Not assigned - show pickup and assign options --}}
+                                    <div>
+                                        <label class="block mb-1 text-xs font-medium text-neutral-700 dark:text-neutral-300">
+                                            Case toewijzing
+                                        </label>
+                                        <div class="flex gap-2">
+                                            <form action="{{ route('woo-requests.pickup', $wooRequest) }}" method="POST" class="flex-1">
+                                                @csrf
+                                                <button type="submit"
+                                                        class="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                                                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                                    </svg>
+                                                    Case oppakken
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('woo-requests.assign-case-manager', $wooRequest) }}" method="POST" class="flex-1">
+                                                @csrf
+                                                <select name="case_manager_id"
+                                                        onchange="this.form.submit()"
+                                                        class="block px-3 py-2 w-full text-sm rounded-lg border shadow-sm border-neutral-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-white">
+                                                    <option value="">Toewijzen aan...</option>
+                                                    @foreach($caseManagers as $manager)
+                                                        <option value="{{ $manager->id }}">{{ $manager->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @elseif($wooRequest->case_manager_id === auth()->id())
+                                    {{-- Assigned to current user - show reassign option --}}
+                                    <div>
+                                        <label class="block mb-1 text-xs font-medium text-neutral-700 dark:text-neutral-300">
+                                            Case herverdelen
+                                        </label>
+                                        <form action="{{ route('woo-requests.assign-case-manager', $wooRequest) }}" method="POST">
+                                            @csrf
+                                            <select name="case_manager_id"
+                                                    onchange="this.form.submit()"
+                                                    class="block px-3 py-2 w-full text-sm rounded-lg border shadow-sm border-neutral-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-white">
+                                                <option value="{{ $wooRequest->case_manager_id }}">Toegewezen aan: {{ $wooRequest->caseManager->name }}</option>
+                                                <option value="">---</option>
+                                                @foreach($caseManagers->where('id', '!=', auth()->id()) as $manager)
+                                                    <option value="{{ $manager->id }}">{{ $manager->name }}</option>
+                                                @endforeach
+                                                <option value="">Niet toegewezen</option>
+                                            </select>
+                                        </form>
+                                    </div>
+                                @else
+                                    {{-- Assigned to someone else - show current assignment and option to take over --}}
+                                    <div>
+                                        <label class="block mb-1 text-xs font-medium text-neutral-700 dark:text-neutral-300">
+                                            Case toewijzing
+                                        </label>
+                                        <div class="flex gap-2">
+                                            <div class="flex-1 px-3 py-2 text-sm rounded-lg border border-neutral-300 bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-300">
+                                                Toegewezen aan: {{ $wooRequest->caseManager->name }}
+                                            </div>
+                                            <form action="{{ route('woo-requests.pickup', $wooRequest) }}" method="POST">
+                                                @csrf
+                                                <button type="submit"
+                                                        class="px-4 py-2 text-sm font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                                                    Overnemen
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @endif
 
                                 {{-- Status Dropdown --}}
                                 <div>

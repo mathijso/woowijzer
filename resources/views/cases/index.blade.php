@@ -47,10 +47,9 @@
         {{-- Cases List --}}
         <div class="grid gap-4">
             @forelse($wooRequests as $request)
-                <a href="{{ route('cases.show', $request) }}"
-                   class="block rounded-xl bg-white p-6 shadow-sm transition hover:shadow-md dark:bg-neutral-800">
+                <div class="rounded-xl bg-white p-6 shadow-sm transition hover:shadow-md dark:bg-neutral-800">
                     <div class="flex items-start justify-between">
-                        <div class="flex-1">
+                        <a href="{{ route('cases.show', $request) }}" class="flex-1">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-3">
@@ -116,14 +115,56 @@
                                     @endif
                                 </div>
                             </div>
-                        </div>
-                        <div class="ml-4">
-                            <svg class="h-5 w-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
+                        </a>
+                        <div class="ml-4 flex items-center gap-3">
+                            @if(!$request->case_manager_id)
+                                {{-- Pick up case button --}}
+                                <form action="{{ route('cases.pickup', $request) }}" method="POST" class="inline">
+                                    @csrf
+                                    <button type="submit"
+                                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                                        <svg class="mr-1.5 h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                        </svg>
+                                        Oppakken
+                                    </button>
+                                </form>
+                                
+                                {{-- Assign to another case manager dropdown --}}
+                                <form action="{{ route('cases.assign', $request) }}" method="POST" class="inline" id="assign-form-{{ $request->id }}">
+                                    @csrf
+                                    <select name="case_manager_id"
+                                            onchange="this.form.submit()"
+                                            class="text-xs px-2 py-1.5 rounded-lg border border-neutral-300 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-white">
+                                        <option value="">Toewijzen aan...</option>
+                                        @foreach($caseManagers as $manager)
+                                            <option value="{{ $manager->id }}">{{ $manager->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </form>
+                            @elseif($request->case_manager_id === auth()->id())
+                                {{-- Reassign button if assigned to current user --}}
+                                <form action="{{ route('cases.assign', $request) }}" method="POST" class="inline" id="reassign-form-{{ $request->id }}">
+                                    @csrf
+                                    <select name="case_manager_id"
+                                            onchange="this.form.submit()"
+                                            class="text-xs px-2 py-1.5 rounded-lg border border-neutral-300 bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-white">
+                                        <option value="">Herverdelen...</option>
+                                        @foreach($caseManagers->where('id', '!=', auth()->id()) as $manager)
+                                            <option value="{{ $manager->id }}">{{ $manager->name }}</option>
+                                        @endforeach
+                                        <option value="">Geen case manager</option>
+                                    </select>
+                                </form>
+                            @endif
+                            <a href="{{ route('cases.show', $request) }}" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                </svg>
+                            </a>
                         </div>
                     </div>
-                </a>
+                </div>
             @empty
                 <div class="rounded-xl bg-white p-12 text-center shadow-sm dark:bg-neutral-800">
                     <svg class="mx-auto h-16 w-16 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
