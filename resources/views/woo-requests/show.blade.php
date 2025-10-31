@@ -206,9 +206,12 @@
                         </h2>
                         @auth
                             @if(auth()->user()->isCaseManager())
-                                <button onclick="generateSummaries()" class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
-                                    Genereer samenvattingen
-                                </button>
+                                <form action="{{ route('woo-requests.generate-summaries', $wooRequest) }}" method="POST" class="inline" onsubmit="return confirm('Weet je zeker dat je samenvattingen voor alle vragen wilt genereren? Dit kan enkele minuten duren.');">
+                                    @csrf
+                                    <button type="submit" class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
+                                        Genereer samenvattingen
+                                    </button>
+                                </form>
                             @endif
                         @endauth
                     </div>
@@ -733,9 +736,7 @@
                         <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
                             <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Acties</h3>
                             <div class="mt-4 space-y-3">
-                                <button onclick="scrollToInternalRequests()" class="px-4 py-2 w-full text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
-                                    Verzoek documenten
-                                </button>
+
 
                                 {{-- Status Dropdown --}}
                                 <div>
@@ -894,37 +895,34 @@
         }
 
         function scrollToInternalRequests() {
-            const element = document.getElementById('new-request-form');
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                // Focus on the first input after a short delay
+            // Try to find the section first, then the form
+            const section = document.getElementById('internal-requests-section');
+            const form = document.getElementById('new-request-form');
+            const target = form || section;
+
+            if (target) {
+                // Calculate offset to account for any fixed headers
+                const offset = 80; // Adjust this value if needed
+                const elementPosition = target.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+
+                // Focus on the first input after scroll completes
                 setTimeout(() => {
-                    const firstInput = element.querySelector('input[type="email"]');
-                    if (firstInput) {
-                        firstInput.focus();
+                    if (form) {
+                        const firstInput = form.querySelector('input[type="email"]');
+                        if (firstInput) {
+                            firstInput.focus();
+                        }
                     }
-                }, 500);
+                }, 600);
             }
         }
 
-        function generateSummaries() {
-            if (confirm('Weet je zeker dat je samenvattingen voor alle vragen wilt genereren? Dit kan enkele minuten duren.')) {
-                fetch('{{ route('woo-requests.generate-summaries', $wooRequest) }}', {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json'
-                    }
-                }).then(response => response.json())
-                  .then(data => {
-                      alert('Samenvattingen worden gegenereerd op de achtergrond.');
-                      location.reload();
-                  }).catch(error => {
-                      console.error('Error:', error);
-                      alert('Er is een fout opgetreden bij het genereren van samenvattingen.');
-                  });
-            }
-        }
     </script>
     @endpush
 </x-layouts.app>
