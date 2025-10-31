@@ -71,4 +71,24 @@ class Question extends Model
     {
         return $this->documents()->count();
     }
+
+    public function getStatusBadgeClass(): string
+    {
+        return match ($this->status) {
+            'unanswered' => 'text-red-700 bg-red-100 dark:bg-red-900/20 dark:text-red-400',
+            'partially_answered' => 'text-yellow-700 bg-yellow-100 dark:bg-yellow-900/20 dark:text-yellow-400',
+            'answered' => 'text-green-700 bg-green-100 dark:bg-green-900/20 dark:text-green-400',
+            default => 'text-neutral-700 bg-neutral-100 dark:bg-neutral-900/20 dark:text-neutral-300',
+        };
+    }
+
+    public function getStatusLabel(): string
+    {
+        return match ($this->status) {
+            'unanswered' => 'Open',
+            'partially_answered' => 'Gedeeltelijk beantwoord',
+            'answered' => 'Beantwoord',
+            default => ucfirst((string) $this->status),
+        };
+    }
 }
