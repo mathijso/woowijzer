@@ -7,6 +7,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property int|null $case_manager_id
+ * @property string $title
+ * @property string|null $description
+ * @property string|null $original_file_path
+ * @property string|null $original_file_content_markdown
+ * @property string $status
+ * @property \Carbon\CarbonInterface|null $submitted_at
+ * @property \Carbon\CarbonInterface|null $completed_at
+ * @property-read User $user
+ * @property-read User|null $caseManager
+ * @property-read \Illuminate\Support\Collection<int, Question> $questions
+ * @property-read \Illuminate\Support\Collection<int, InternalRequest> $internalRequests
+ * @property-read \Illuminate\Support\Collection<int, Document> $documents
+ * @property-read \Illuminate\Support\Collection<int, Submission> $submissions
+ */
 class WooRequest extends Model
 {
     protected $fillable = [

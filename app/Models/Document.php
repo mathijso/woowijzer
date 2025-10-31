@@ -7,6 +7,24 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Storage;
 
+/**
+ * @property int $id
+ * @property int|null $woo_request_id
+ * @property int|null $submission_id
+ * @property string $file_path
+ * @property string $file_name
+ * @property string|null $file_type
+ * @property int|null $file_size
+ * @property string|null $content_markdown
+ * @property string|null $ai_summary
+ * @property \Carbon\CarbonInterface|null $processed_at
+ * @property-read WooRequest|null $wooRequest
+ * @property-read Submission|null $submission
+ * @property-read \Illuminate\Support\Collection<int, Question> $questions
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|Document processed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Document unprocessed()
+ */
 class Document extends Model
 {
     protected $fillable = [
@@ -79,11 +97,11 @@ class Document extends Model
     {
         $bytes = $this->file_size;
         $units = ['B', 'KB', 'MB', 'GB'];
-        
+
         for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
             $bytes /= 1024;
         }
-        
+
         return round($bytes, 2) . ' ' . $units[$i];
     }
 
@@ -124,7 +142,7 @@ class Document extends Model
             if ($document->submission) {
                 $document->submission->updateDocumentsCount();
             }
-            
+
             // Delete file from storage
             Storage::disk('woo-documents')->delete($document->file_path);
         });

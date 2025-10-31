@@ -7,6 +7,22 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Str;
 
+/**
+ * @property int $id
+ * @property int $woo_request_id
+ * @property int $case_manager_id
+ * @property string $colleague_email
+ * @property string|null $colleague_name
+ * @property string $description
+ * @property string $upload_token
+ * @property \Carbon\CarbonInterface $token_expires_at
+ * @property string $status
+ * @property \Carbon\CarbonInterface|null $sent_at
+ * @property \Carbon\CarbonInterface|null $closed_at
+ * @property-read WooRequest $wooRequest
+ * @property-read User $caseManager
+ * @property-read \Illuminate\Support\Collection<int, Submission> $submissions
+ */
 class InternalRequest extends Model
 {
     protected $fillable = [

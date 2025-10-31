@@ -17,6 +17,7 @@ class DocumentController extends Controller
     public function index(Request $request)
     {
         $wooRequestId = $request->query('woo_request_id');
+        $wooRequest = null;
         
         $query = Document::with(['submission.internalRequest', 'questions']);
 

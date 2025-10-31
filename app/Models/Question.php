@@ -6,6 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
+/**
+ * @property int $id
+ * @property int $woo_request_id
+ * @property string $question_text
+ * @property int|null $order
+ * @property string|null $status
+ * @property string|null $ai_summary
+ * @property-read WooRequest $wooRequest
+ * @property-read \Illuminate\Support\Collection<int, Document> $documents
+ *
+ * @method static \Illuminate\Database\Eloquent\Builder|Question answered()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question unanswered()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question partiallyAnswered()
+ * @method static \Illuminate\Database\Eloquent\Builder|Question ordered()
+ */
 class Question extends Model
 {
     protected $fillable = [
