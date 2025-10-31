@@ -25,6 +25,7 @@ class DocumentProcessingService
 
     /**
      * Ensure a case exists in the WOO Insight API
+     * Also extracts and stores case_file data if present in response
      */
     public function ensureCase(WooRequest $wooRequest): array
     {
@@ -36,9 +37,21 @@ class DocumentProcessingService
                 ->get("{$this->baseUrl}/cases/{$caseId}");
 
             if ($getResponse->successful()) {
-                Log::info('Case already exists in WOO Insight API', ['case_id' => $caseId]);
+                $data = $getResponse->json();
+                
+                Log::info('Case already exists in WOO Insight API', [
+                    'case_id' => $caseId,
+                    'full_response' => $data,
+                    'has_case_file' => isset($data['case_file']),
+                    'case_file_data' => $data['case_file'] ?? null,
+                ]);
+                
+                // Store case_file data if present in response (new API format)
+                if (isset($data['case_file']) && is_array($data['case_file'])) {
+                    $this->storeCaseFileData($wooRequest, $data['case_file']);
+                }
 
-                return $getResponse->json();
+                return $data;
             }
 
             // If GET fails with schema error, log it but try to create anyway
@@ -60,9 +73,22 @@ class DocumentProcessingService
 
             if ($response->successful()) {
                 $wooRequest->update(['woo_insight_case_id' => $caseId]);
-                Log::info('Created case in WOO Insight API', ['case_id' => $caseId]);
+                
+                $data = $response->json();
+                
+                Log::info('Created case in WOO Insight API', [
+                    'case_id' => $caseId,
+                    'full_response' => $data,
+                    'has_case_file' => isset($data['case_file']),
+                    'case_file_data' => $data['case_file'] ?? null,
+                ]);
+                
+                // Store case_file data if present in response (new API format)
+                if (isset($data['case_file']) && is_array($data['case_file'])) {
+                    $this->storeCaseFileData($wooRequest, $data['case_file']);
+                }
 
-                return $response->json();
+                return $data;
             }
 
             // Parse error response for better error messages
@@ -458,7 +484,9 @@ class DocumentProcessingService
                 $data = $response->json();
                 Log::info('Extracted case file information from WOO Insight API', [
                     'case_id' => $caseId,
+                    'full_response' => $data,
                     'question_count' => count($data['questions'] ?? []),
+                    'questions' => $data['questions'] ?? [],
                 ]);
 
                 return $data;
@@ -496,6 +524,28 @@ class DocumentProcessingService
             ]);
 
             throw $e;
+        }
+    }
+
+    /**
+     * Store case file data from API response
+     */
+    protected function storeCaseFileData(WooRequest $wooRequest, array $caseFileData): void
+    {
+        if (! empty($caseFileData['title']) || ! empty($caseFileData['description'])) {
+            $wooRequest->update([
+                'extracted_title' => $caseFileData['title'] ?? null,
+                'extracted_description' => $caseFileData['description'] ?? null,
+                'extracted_questions' => $caseFileData['questions'] ?? null,
+                'extracted_at' => isset($caseFileData['extracted_at']) ? now() : null,
+            ]);
+
+            Log::info('Stored case file data from API response', [
+                'woo_request_id' => $wooRequest->id,
+                'has_title' => ! empty($caseFileData['title']),
+                'has_description' => ! empty($caseFileData['description']),
+                'question_count' => count($caseFileData['questions'] ?? []),
+            ]);
         }
     }
 
