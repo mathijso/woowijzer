@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\CaseDecision;
+use App\Models\CaseTimeline;
 use App\Models\Document;
+use App\Models\Submission;
 use App\Models\WooRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -10,49 +13,54 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentProcessingService
 {
-    protected string $apiUrl;
-
-    protected string $apiKey;
+    protected string $baseUrl;
 
     protected int $timeout;
 
     public function __construct()
     {
-        $this->apiUrl = config('woo.document_processing.api_url');
-        $this->apiKey = config('woo.document_processing.api_key');
-        $this->timeout = config('woo.document_processing.timeout', 120);
+        $this->baseUrl = config('woo.woo_insight_api.base_url');
+        $this->timeout = config('woo.woo_insight_api.timeout', 120);
     }
 
     /**
-     * Process a document through the API
+     * Ensure a case exists in the WOO Insight API
      */
-    public function processDocument(string $filePath, array $metadata = []): array
+    public function ensureCase(WooRequest $wooRequest): array
     {
         try {
-            $fullPath = Storage::disk('woo-documents')->path($filePath);
+            $caseId = (string) $wooRequest->id;
 
-            $response = Http::timeout($this->timeout)
-                ->withHeaders([
-                    'Authorization' => 'Bearer ' . $this->apiKey,
-                    'Accept' => 'application/json',
-                ])
-                ->attach('file', file_get_contents($fullPath), basename($filePath))
-                ->post($this->apiUrl . '/process', $metadata);
+            // Check if case already exists
+            $response = Http::timeout(5)
+                ->get("{$this->baseUrl}/cases/{$caseId}");
 
             if ($response->successful()) {
-                return $this->parseApiResponse($response->json());
+                Log::info('Case already exists in WOO Insight API', ['case_id' => $caseId]);
+
+                return $response->json();
             }
 
-            Log::error('Document processing API error', [
-                'status' => $response->status(),
-                'body' => $response->body(),
-            ]);
+            // Create new case
+            $response = Http::timeout($this->timeout)
+                ->post("{$this->baseUrl}/cases", [
+                    'case_id' => $caseId,
+                    'title' => $wooRequest->title,
+                    'description' => $wooRequest->description ?? '',
+                ]);
 
-            throw new \Exception('Document processing failed: ' . $response->body());
+            if ($response->successful()) {
+                $wooRequest->update(['woo_insight_case_id' => $caseId]);
+                Log::info('Created case in WOO Insight API', ['case_id' => $caseId]);
+
+                return $response->json();
+            }
+
+            throw new \Exception('Failed to create case: ' . $response->body());
         } catch (\Exception $e) {
-            Log::error('Document processing exception', [
-                'message' => $e->getMessage(),
-                'file' => $filePath,
+            Log::error('Error ensuring case in WOO Insight API', [
+                'case_id' => $wooRequest->id,
+                'error' => $e->getMessage(),
             ]);
 
             throw $e;
@@ -60,55 +68,240 @@ class DocumentProcessingService
     }
 
     /**
-     * Parse the API response
+     * Ensure a submission exists in the WOO Insight API
      */
-    public function parseApiResponse(array $response): array
+    public function ensureSubmission(Submission $submission): array
     {
-        return [
-            'content_markdown' => $response['content_markdown'] ?? null,
-            'questions' => $response['questions'] ?? [],
-            'summary' => $response['summary'] ?? null,
-            'metadata' => $response['metadata'] ?? [],
-        ];
+        try {
+            $caseId = (string) $submission->internalRequest->woo_request_id;
+            $submissionId = (string) $submission->id;
+
+            // Create submission (API will handle if it already exists)
+            $response = Http::timeout($this->timeout)
+                ->post("{$this->baseUrl}/cases/{$caseId}/submissions", [
+                    'submission_id' => $submissionId,
+                    'submitter_name' => $submission->getSubmitterName(),
+                    'submitter_type' => $submission->submitter_type ?? 'government',
+                    'notes' => $submission->submission_notes ?? '',
+                ]);
+
+            if ($response->successful()) {
+                $submission->update(['woo_insight_submission_id' => $submissionId]);
+                Log::info('Ensured submission in WOO Insight API', [
+                    'case_id' => $caseId,
+                    'submission_id' => $submissionId,
+                ]);
+
+                return $response->json();
+            }
+
+            throw new \Exception('Failed to create submission: ' . $response->body());
+        } catch (\Exception $e) {
+            Log::error('Error ensuring submission in WOO Insight API', [
+                'submission_id' => $submission->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
     }
 
     /**
-     * Process WOO request document and extract questions
+     * Upload and process a document through the WOO Insight API
      */
-    public function processWooRequestDocument(WooRequest $wooRequest): array
+    public function uploadDocument(Document $document): array
     {
-        $result = $this->processDocument($wooRequest->original_file_path, [
-            'type' => 'woo_request',
-            'woo_request_id' => $wooRequest->id,
-        ]);
+        try {
+            $caseId = (string) $document->woo_request_id;
+            $submissionId = (string) $document->submission_id;
+            $documentId = $document->external_document_id;
 
-        // Update WOO request with markdown content
-        $wooRequest->update([
-            'original_file_content_markdown' => $result['content_markdown'],
-        ]);
+            if (empty($documentId)) {
+                throw new \Exception('Document must have an external_document_id before upload');
+            }
 
-        return $result;
+            // Get file path
+            $fullPath = Storage::disk('woo-documents')->path($document->file_path);
+
+            if (! file_exists($fullPath)) {
+                throw new \Exception("File not found: {$fullPath}");
+            }
+
+            // Upload document
+            $response = Http::timeout($this->timeout)
+                ->attach('file', file_get_contents($fullPath), $document->file_name)
+                ->post("{$this->baseUrl}/cases/{$caseId}/submissions/{$submissionId}/documents", [
+                    'document_id' => $documentId,
+                ]);
+
+            if ($response->successful()) {
+                Log::info('Uploaded document to WOO Insight API', [
+                    'document_id' => $documentId,
+                    'case_id' => $caseId,
+                    'submission_id' => $submissionId,
+                ]);
+
+                return $response->json();
+            }
+
+            throw new \Exception('Failed to upload document: ' . $response->body());
+        } catch (\Exception $e) {
+            Log::error('Error uploading document to WOO Insight API', [
+                'document_id' => $document->id,
+                'external_id' => $document->external_document_id,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
     }
 
     /**
-     * Process uploaded document
+     * Get detailed document information including timeline
      */
-    public function processUploadedDocument(Document $document): array
+    public function getDocumentDetails(string $externalDocumentId): array
     {
-        $result = $this->processDocument($document->file_path, [
-            'type' => 'uploaded_document',
-            'document_id' => $document->id,
-            'woo_request_id' => $document->woo_request_id,
-        ]);
+        try {
+            $response = Http::timeout($this->timeout)
+                ->get("{$this->baseUrl}/documents/{$externalDocumentId}");
 
-        // Update document with processed content
-        $document->update([
-            'content_markdown' => $result['content_markdown'],
-            'ai_summary' => $result['summary'],
-            'processed_at' => now(),
-        ]);
+            if ($response->successful()) {
+                return $response->json();
+            }
 
-        return $result;
+            throw new \Exception('Failed to get document details: ' . $response->body());
+        } catch (\Exception $e) {
+            Log::error('Error getting document details from WOO Insight API', [
+                'external_document_id' => $externalDocumentId,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Get document markdown content
+     */
+    public function getDocumentMarkdown(string $externalDocumentId): array
+    {
+        try {
+            $response = Http::timeout($this->timeout)
+                ->get("{$this->baseUrl}/documents/{$externalDocumentId}/markdown");
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            throw new \Exception('Failed to get document markdown: ' . $response->body());
+        } catch (\Exception $e) {
+            Log::error('Error getting document markdown from WOO Insight API', [
+                'external_document_id' => $externalDocumentId,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Get aggregated timeline for a case
+     */
+    public function getTimeline(WooRequest $wooRequest): array
+    {
+        try {
+            $caseId = (string) $wooRequest->id;
+
+            $response = Http::timeout($this->timeout)
+                ->get("{$this->baseUrl}/cases/{$caseId}/timeline");
+
+            if ($response->successful()) {
+                $data = $response->json();
+                Log::info('Retrieved timeline from WOO Insight API', [
+                    'case_id' => $caseId,
+                    'event_count' => count($data['events'] ?? []),
+                ]);
+
+                return $data;
+            }
+
+            throw new \Exception('Failed to get timeline: ' . $response->body());
+        } catch (\Exception $e) {
+            Log::error('Error getting timeline from WOO Insight API', [
+                'case_id' => $wooRequest->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Get decision overview for a case
+     */
+    public function getDecisionOverview(WooRequest $wooRequest): array
+    {
+        try {
+            $caseId = (string) $wooRequest->id;
+
+            $response = Http::timeout($this->timeout)
+                ->get("{$this->baseUrl}/cases/{$caseId}/decision-overview");
+
+            if ($response->successful()) {
+                $data = $response->json();
+                Log::info('Retrieved decision overview from WOO Insight API', [
+                    'case_id' => $caseId,
+                ]);
+
+                return $data;
+            }
+
+            throw new \Exception('Failed to get decision overview: ' . $response->body());
+        } catch (\Exception $e) {
+            Log::error('Error getting decision overview from WOO Insight API', [
+                'case_id' => $wooRequest->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Store or update the timeline for a WooRequest
+     */
+    public function storeTimeline(WooRequest $wooRequest, array $timelineData): CaseTimeline
+    {
+        $documentCount = $wooRequest->documents()->count();
+
+        return CaseTimeline::updateOrCreate(
+            ['woo_request_id' => $wooRequest->id],
+            [
+                'timeline_json' => $timelineData['events'] ?? [],
+                'document_count' => $documentCount,
+                'generated_at' => now(),
+            ]
+        );
+    }
+
+    /**
+     * Store or update the decision for a WooRequest
+     */
+    public function storeDecision(WooRequest $wooRequest, array $decisionData): CaseDecision
+    {
+        $documentCount = $wooRequest->documents()->count();
+
+        return CaseDecision::updateOrCreate(
+            ['woo_request_id' => $wooRequest->id],
+            [
+                'summary_b1' => $decisionData['summary_b1'] ?? '',
+                'key_reasons_json' => $decisionData['key_reasons'] ?? [],
+                'process_outline_json' => $decisionData['process_outline'] ?? [],
+                'source_refs_json' => $decisionData['source_refs'] ?? [],
+                'document_count' => $documentCount,
+                'generated_at' => now(),
+            ]
+        );
     }
 
     /**
@@ -117,15 +310,12 @@ class DocumentProcessingService
     public function isAvailable(): bool
     {
         try {
-            if ($this->apiUrl === '' || $this->apiUrl === '0' || ($this->apiKey === '' || $this->apiKey === '0')) {
+            if (empty($this->baseUrl)) {
                 return false;
             }
 
             $response = Http::timeout(5)
-                ->withHeaders([
-                    'Authorization' => 'Bearer ' . $this->apiKey,
-                ])
-                ->get($this->apiUrl . '/health');
+                ->get($this->baseUrl);
 
             return $response->successful();
         } catch (\Exception) {

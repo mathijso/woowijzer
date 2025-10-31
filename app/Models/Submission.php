@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @property string|null $submitted_by_email
  * @property string|null $submitted_by_name
  * @property string|null $submission_notes
+ * @property string $submitter_type
+ * @property string|null $woo_insight_submission_id
  * @property string|null $ip_address
  * @property string|null $user_agent
  * @property int $documents_count
@@ -25,9 +27,15 @@ class Submission extends Model
         'submitted_by_email',
         'submitted_by_name',
         'submission_notes',
+        'submitter_type',
+        'woo_insight_submission_id',
         'ip_address',
         'user_agent',
         'documents_count',
+    ];
+
+    protected $attributes = [
+        'submitter_type' => 'government',
     ];
 
     /**

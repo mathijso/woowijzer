@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
+ * @property string|null $external_document_id
  * @property int|null $woo_request_id
  * @property int|null $submission_id
  * @property string $file_path
@@ -18,16 +20,24 @@ use Illuminate\Support\Facades\Storage;
  * @property string|null $content_markdown
  * @property string|null $ai_summary
  * @property \Carbon\CarbonInterface|null $processed_at
+ * @property string $api_processing_status
+ * @property string|null $api_processing_error
+ * @property array|null $timeline_events_json
+ * @property array|null $processing_metadata_json
  * @property-read WooRequest|null $wooRequest
  * @property-read Submission|null $submission
  * @property-read \Illuminate\Support\Collection<int, Question> $questions
  *
  * @method static \Illuminate\Database\Eloquent\Builder|Document processed()
  * @method static \Illuminate\Database\Eloquent\Builder|Document unprocessed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Document apiPending()
+ * @method static \Illuminate\Database\Eloquent\Builder|Document apiFailed()
+ * @method static \Illuminate\Database\Eloquent\Builder|Document needsApiRetry()
  */
 class Document extends Model
 {
     protected $fillable = [
+        'external_document_id',
         'woo_request_id',
         'submission_id',
         'file_path',
@@ -37,6 +47,10 @@ class Document extends Model
         'content_markdown',
         'ai_summary',
         'processed_at',
+        'api_processing_status',
+        'api_processing_error',
+        'timeline_events_json',
+        'processing_metadata_json',
     ];
 
     protected function casts(): array
@@ -44,6 +58,8 @@ class Document extends Model
         return [
             'processed_at' => 'datetime',
             'file_size' => 'integer',
+            'timeline_events_json' => 'array',
+            'processing_metadata_json' => 'array',
         ];
     }
 
@@ -83,6 +99,21 @@ class Document extends Model
     public function scopeByType($query, $type)
     {
         return $query->where('file_type', $type);
+    }
+
+    public function scopeApiPending($query)
+    {
+        return $query->where('api_processing_status', 'pending');
+    }
+
+    public function scopeApiFailed($query)
+    {
+        return $query->where('api_processing_status', 'failed');
+    }
+
+    public function scopeNeedsApiRetry($query)
+    {
+        return $query->whereIn('api_processing_status', ['pending', 'failed']);
     }
 
     /**
@@ -125,12 +156,39 @@ class Document extends Model
         return $this->questions()->exists();
     }
 
+    public function isApiProcessed(): bool
+    {
+        return $this->api_processing_status === 'completed';
+    }
+
+    public function hasTimelineEvents(): bool
+    {
+        return ! empty($this->timeline_events_json);
+    }
+
+    public function getTimelineEvents(): array
+    {
+        return $this->timeline_events_json ?? [];
+    }
+
+    public function getProcessingMetadata(): array
+    {
+        return $this->processing_metadata_json ?? [];
+    }
+
     /**
      * Boot method
      */
     protected static function boot()
     {
         parent::boot();
+
+        static::creating(function ($document): void {
+            // Generate UUID if not set
+            if (empty($document->external_document_id)) {
+                $document->external_document_id = (string) Str::uuid();
+            }
+        });
 
         static::created(function ($document): void {
             // Update submission documents count

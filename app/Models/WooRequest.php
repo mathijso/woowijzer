@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
+ * @property string|null $woo_insight_case_id
  * @property int $user_id
  * @property int|null $case_manager_id
  * @property string $title
@@ -24,10 +26,13 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property-read \Illuminate\Support\Collection<int, InternalRequest> $internalRequests
  * @property-read \Illuminate\Support\Collection<int, Document> $documents
  * @property-read \Illuminate\Support\Collection<int, Submission> $submissions
+ * @property-read CaseTimeline|null $caseTimeline
+ * @property-read CaseDecision|null $caseDecision
  */
 class WooRequest extends Model
 {
     protected $fillable = [
+        'woo_insight_case_id',
         'user_id',
         'case_manager_id',
         'title',
@@ -78,6 +83,16 @@ class WooRequest extends Model
     public function submissions(): HasManyThrough
     {
         return $this->hasManyThrough(Submission::class, InternalRequest::class);
+    }
+
+    public function caseTimeline(): HasOne
+    {
+        return $this->hasOne(CaseTimeline::class);
+    }
+
+    public function caseDecision(): HasOne
+    {
+        return $this->hasOne(CaseDecision::class);
     }
 
     /**
@@ -173,5 +188,15 @@ class WooRequest extends Model
             'rejected' => 'Afgewezen',
             default => ucfirst((string) $this->status),
         };
+    }
+
+    public function hasTimeline(): bool
+    {
+        return $this->caseTimeline()->exists();
+    }
+
+    public function hasDecision(): bool
+    {
+        return $this->caseDecision()->exists();
     }
 }

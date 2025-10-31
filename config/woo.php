@@ -4,18 +4,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Document Processing API
+    | WOO Insight API
     |--------------------------------------------------------------------------
     |
-    | Configuration for the custom document processing API that extracts
-    | questions and content from uploaded WOO documents.
+    | Configuration for the WOO Insight API that processes documents,
+    | extracts timelines, and generates decision summaries.
     |
     */
 
-    'document_processing' => [
-        'api_url' => env('DOCUMENT_PROCESSING_API_URL'),
-        'api_key' => env('DOCUMENT_PROCESSING_API_KEY'),
-        'timeout' => env('DOCUMENT_PROCESSING_TIMEOUT', 120), // seconds
+    'woo_insight_api' => [
+        'base_url' => env('WOO_INSIGHT_API_URL', 'http://localhost:5000'),
+        'timeout' => env('WOO_INSIGHT_API_TIMEOUT', 120), // seconds
+        'retry_interval_minutes' => env('WOO_INSIGHT_RETRY_INTERVAL', 10),
     ],
 
     /*
