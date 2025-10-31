@@ -1,10 +1,6 @@
 import './bootstrap';
 
-// Import Livewire
-import { Livewire, Alpine } from '../../vendor/livewire/livewire/dist/livewire.esm.js';
-
-// Initialize Livewire
-Livewire.start();
+// Livewire and Alpine are provided via @fluxScripts in the layout
 
 // Mobile menu functionality
 document.addEventListener('DOMContentLoaded', function () {
