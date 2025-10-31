@@ -22,6 +22,11 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        // Ensure faker is available (fallback for production environments)
+        if (!isset($this->faker) || $this->faker === null) {
+            $this->faker = fake();
+        }
+
         return [
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
