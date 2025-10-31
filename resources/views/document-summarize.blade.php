@@ -10,8 +10,9 @@
                         Document Samenvatten
                     </h1>
                     <p class="text-xl text-rijksgrijs-6 max-w-3xl mx-auto">
-                        Upload uw Woo-document en ontvang een duidelijke, beknopte samenvatting
-                        van de belangrijkste punten en inzichten.
+                        Upload uw Woo-document en laat het verwerken door de WOO Insight API. 
+                        U ontvangt automatisch een tijdlijn van gebeurtenissen, een samenvatting van beslissingen 
+                        in begrijpelijk Nederlands (B1-niveau) en inzichtelijke analyses.
                     </p>
                 </div>
             </div>

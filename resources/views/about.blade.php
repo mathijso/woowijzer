@@ -47,7 +47,8 @@
                         </p>
                         <p class="text-rijksgrijs-6">
                             Het doel was om met slimme technologie het Woo-proces te ondersteunen, informatie proactief openbaar
-                            te maken en samen te bouwen aan een transparantere overheid.
+                            te maken en samen te bouwen aan een transparantere overheid. woohub biedt hiervoor een complete 
+                            workflow oplossing met geautomatiseerde verwerking en inzichtelijke visualisaties.
                         </p>
                     </div>
 
@@ -57,12 +58,14 @@
                         </h3>
                         <p class="text-rijksgrijs-6 mb-4">
                             Wij geloven dat overheidsinformatie toegankelijk moet zijn voor iedereen.
-                            Door gebruik te maken van geavanceerde AI-technologie maken wij complexe
-                            Woo-documenten begrijpelijk en inzichtelijk.
+                            woohub is een compleet systeem dat het hele Woo-proces ondersteunt: 
+                            van het indienen van verzoeken door burgers, via de verwerking door case managers, 
+                            tot het uploaden en verwerken van documenten.
                         </p>
                         <p class="text-rijksgrijs-6">
-                            Onze tool helpt burgers, journalisten, onderzoekers en andere belanghebbenden
-                            om snel de kern van overheidsdocumenten te begrijpen.
+                            Met geavanceerde AI-technologie (WOO Insight API) maken wij complexe 
+                            Woo-documenten begrijpelijk door tijdlijnen te extraheren, beslissingen samen te vatten 
+                            en documenten automatisch aan vragen te koppelen.
                         </p>
                     </div>
 
@@ -74,10 +77,13 @@
                             Ons team ontwikkelde woohub als antwoord op de uitdaging om Woo-documenten begrijpelijker te maken.
                         </p>
                         <ul class="space-y-2 text-rijksgrijs-6">
-                            <li>• Controleert de leesbaarheid van documenten</li>
-                            <li>• Vat samen op drie niveaus</li>
-                            <li>• Toont besluitvorming overzichtelijk</li>
-                            <li>• Maakt complexe informatie visueel</li>
+                            <li>• Extraheert automatisch vragen uit Woo-verzoeken</li>
+                            <li>• Verwerkt documenten met WOO Insight API</li>
+                            <li>• Creëert tijdlijnen van gebeurtenissen en beslissingen</li>
+                            <li>• Vat beslissingen samen in begrijpelijk Nederlands (B1-niveau)</li>
+                            <li>• Koppelt documenten automatisch aan vragen</li>
+                            <li>• Biedt real-time verwerkingsstatus tracking</li>
+                            <li>• Ondersteunt het complete Woo-proces workflow</li>
                         </ul>
                     </div>
 
