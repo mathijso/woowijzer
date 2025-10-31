@@ -239,7 +239,7 @@
                                     </span>
                                 @elseif($document->api_processing_status === 'processing')
                                     <span class="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full dark:bg-yellow-900/20 dark:text-yellow-400">
-                                        Bezig...
+                                        Thinking...
                                     </span>
                                 @elseif($document->api_processing_status === 'failed')
                                     <span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full dark:bg-red-900/20 dark:text-red-400">

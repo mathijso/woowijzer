@@ -36,6 +36,29 @@ class QuestionController extends Controller
     }
 
     /**
+     * Show a single question with linked documents
+     */
+    public function show(WooRequest $wooRequest, Question $question)
+    {
+        // Validate that question belongs to the case
+        if ($question->woo_request_id !== $wooRequest->id) {
+            abort(404, 'Question does not belong to this case.');
+        }
+
+        $this->authorize('view', $wooRequest);
+
+        // Load question with documents and their pivot data
+        $question->load(['documents' => function ($query) {
+            $query->orderByPivot('created_at', 'desc');
+        }, 'wooRequest']);
+
+        return view('questions.show', [
+            'question' => $question,
+            'wooRequest' => $wooRequest,
+        ]);
+    }
+
+    /**
      * Update question
      */
     public function update(Request $request, WooRequest $wooRequest, Question $question)

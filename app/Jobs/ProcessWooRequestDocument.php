@@ -45,29 +45,56 @@ class ProcessWooRequestDocument implements ShouldQueue
             // This also extracts and stores case_file data if available (new API format)
             $caseData = $processingService->ensureCase($this->wooRequest);
 
-            Log::info('Case data received from API', [
-                'woo_request_id' => $this->wooRequest->id,
-                'case_data' => $caseData,
-                'has_case_file_in_response' => isset($caseData['case_file']),
-            ]);
-
             // Refresh model to get any updates from ensureCase
             $this->wooRequest->refresh();
 
-            Log::info('WooRequest state after ensureCase', [
-                'woo_request_id' => $this->wooRequest->id,
-                'extracted_at' => $this->wooRequest->extracted_at,
-                'extracted_title' => $this->wooRequest->extracted_title,
-                'extracted_description' => $this->wooRequest->extracted_description,
-                'extracted_questions' => $this->wooRequest->extracted_questions,
-            ]);
-
             // If case_file data wasn't in the case response, extract it separately
             if (empty($this->wooRequest->extracted_at)) {
-                Log::info('No case_file in response, calling separate extract endpoint');
                 $filePath = \Illuminate\Support\Facades\Storage::disk('woo-documents')->path($this->wooRequest->original_file_path);
                 $caseId = (string) $this->wooRequest->id;
+                
+                // Start extraction (may be async)
                 $result = $processingService->extractCaseFile($caseId, $filePath);
+
+                // Check if extraction is async (new API behavior)
+                if (isset($result['status']) && $result['status'] === 'extraction_started') {
+                    Log::info('Case file extraction started in background, polling for results');
+                    
+                    // Poll for results (max 30 seconds, check every 2 seconds)
+                    $maxAttempts = 15;
+                    $attempt = 0;
+                    $extracted = false;
+
+                    while ($attempt < $maxAttempts && ! $extracted) {
+                        $attempt++;
+                        sleep(2); // Wait 2 seconds between attempts
+
+                        try {
+                            // Use suppressNotFoundErrors=true to avoid error logs during polling
+                            $result = $processingService->getCaseFileExtraction($caseId, true);
+                            
+                            // Check if we have valid data
+                            if (! empty($result['title']) || ! empty($result['questions'])) {
+                                $extracted = true;
+                                Log::info('Case file extraction completed', [
+                                    'attempt' => $attempt,
+                                    'time_seconds' => $attempt * 2,
+                                    'question_count' => count($result['questions'] ?? []),
+                                ]);
+                            }
+                        } catch (\Exception $e) {
+                            // Expected during polling - extraction not ready yet
+                            if ($attempt >= $maxAttempts) {
+                                Log::warning('Case file extraction timeout after ' . $maxAttempts . ' attempts (' . ($maxAttempts * 2) . ' seconds)');
+                            }
+                        }
+                    }
+
+                    if (! $extracted) {
+                        Log::warning('No case file data extracted, continuing without questions');
+                        $result = []; // Reset to empty so we don't store invalid data
+                    }
+                }
 
                 // Store extracted case file data
                 $this->wooRequest->update([

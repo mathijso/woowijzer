@@ -41,9 +41,7 @@ class DocumentProcessingService
                 
                 Log::info('Case already exists in WOO Insight API', [
                     'case_id' => $caseId,
-                    'full_response' => $data,
                     'has_case_file' => isset($data['case_file']),
-                    'case_file_data' => $data['case_file'] ?? null,
                 ]);
                 
                 // Store case_file data if present in response (new API format)
@@ -78,9 +76,7 @@ class DocumentProcessingService
                 
                 Log::info('Created case in WOO Insight API', [
                     'case_id' => $caseId,
-                    'full_response' => $data,
                     'has_case_file' => isset($data['case_file']),
-                    'case_file_data' => $data['case_file'] ?? null,
                 ]);
                 
                 // Store case_file data if present in response (new API format)
@@ -257,11 +253,57 @@ class DocumentProcessingService
                 return $response->json();
             }
 
-            throw new \Exception('Failed to upload document: ' . $response->body());
+            // Handle duplicate key error - document already exists, treat as success
+            $responseBody = $response->body();
+            if (
+                str_contains($responseBody, 'UniqueViolation') ||
+                str_contains($responseBody, 'duplicate key') ||
+                str_contains($responseBody, 'already exists')
+            ) {
+                Log::info('Document already exists in API, treating as success', [
+                    'document_id' => $documentId,
+                    'case_id' => $caseId,
+                    'submission_id' => $submissionId,
+                ]);
+
+                // Return a mock response indicating document exists
+                return [
+                    'document_id' => $documentId,
+                    'submission_id' => $submissionId,
+                    'status' => 'uploaded',
+                    'already_exists' => true,
+                ];
+            }
+
+            throw new \Exception('Failed to upload document: ' . $responseBody);
         } catch (\Exception $e) {
             Log::error('Error uploading document to WOO Insight API', [
                 'document_id' => $document->id,
                 'external_id' => $document->external_document_id,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Get document processing status
+     */
+    public function getDocumentStatus(string $externalDocumentId): array
+    {
+        try {
+            $response = Http::timeout($this->timeout)
+                ->get("{$this->baseUrl}/documents/{$externalDocumentId}/status");
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            throw new \Exception('Failed to get document status: ' . $response->body());
+        } catch (\Exception $e) {
+            Log::error('Error getting document status from WOO Insight API', [
+                'external_document_id' => $externalDocumentId,
                 'error' => $e->getMessage(),
             ]);
 
@@ -482,11 +524,10 @@ class DocumentProcessingService
 
             if ($response->successful()) {
                 $data = $response->json();
-                Log::info('Extracted case file information from WOO Insight API', [
+                Log::info('Case file extraction initiated', [
                     'case_id' => $caseId,
-                    'full_response' => $data,
-                    'question_count' => count($data['questions'] ?? []),
-                    'questions' => $data['questions'] ?? [],
+                    'status' => $data['status'] ?? 'unknown',
+                    'is_async' => isset($data['status']) && $data['status'] === 'extraction_started',
                 ]);
 
                 return $data;
@@ -505,19 +546,40 @@ class DocumentProcessingService
 
     /**
      * Get previously extracted case file information
+     * 
+     * @param bool $suppressNotFoundErrors If true, 404 errors won't be logged as errors (useful for polling)
      */
-    public function getCaseFileExtraction(string $caseId): array
+    public function getCaseFileExtraction(string $caseId, bool $suppressNotFoundErrors = false): array
     {
         try {
             $response = Http::timeout($this->timeout)
                 ->get("{$this->baseUrl}/cases/{$caseId}/case-file-extraction");
 
             if ($response->successful()) {
-                return $response->json();
+                $data = $response->json();
+                
+                Log::debug('Retrieved case file extraction', [
+                    'case_id' => $caseId,
+                    'has_title' => ! empty($data['title']),
+                    'has_description' => ! empty($data['description']),
+                    'question_count' => count($data['questions'] ?? []),
+                ]);
+                
+                return $data;
+            }
+
+            // If 404 or "not available" error and we're suppressing, throw without logging
+            if ($suppressNotFoundErrors && ($response->status() === 404 || str_contains($response->body(), 'No case file extraction available'))) {
+                throw new \Exception('Not ready yet');
             }
 
             throw new \Exception('Failed to get case file extraction: ' . $response->body());
         } catch (\Exception $e) {
+            // Don't log as error if it's expected "not ready yet" during polling
+            if ($suppressNotFoundErrors && str_contains($e->getMessage(), 'Not ready yet')) {
+                throw $e;
+            }
+
             Log::error('Error getting case file extraction from WOO Insight API', [
                 'case_id' => $caseId,
                 'error' => $e->getMessage(),

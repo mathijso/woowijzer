@@ -13,7 +13,7 @@
                     </a>
                 </div>
             @endif
-            <div class="flex items-center justify-between">
+            <div class="flex justify-between items-center">
                 <div>
                     <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Documenten</h1>
                     @if($wooRequest)
@@ -26,7 +26,7 @@
         </div>
 
         {{-- Filters and Sorting --}}
-        <div class="mb-6 p-4 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+        <div class="p-4 mb-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
             <form method="GET" class="flex flex-wrap gap-4">
                 @if($wooRequest)
                     <input type="hidden" name="woo_request_id" value="{{ $wooRequest->uuid }}">
@@ -37,11 +37,11 @@
                            name="search"
                            value="{{ request('search') }}"
                            placeholder="Zoek op bestandsnaam..."
-                           class="block w-full px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+                           class="block px-4 py-2 w-full rounded-lg border border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
                 </div>
 
                 <select name="processed"
-                        class="px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+                        class="px-4 py-2 rounded-lg border border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
                     <option value="">Alle statussen</option>
                     <option value="1" {{ request('processed') === '1' ? 'selected' : '' }}>Verwerkt</option>
                     <option value="0" {{ request('processed') === '0' ? 'selected' : '' }}>Niet verwerkt</option>
@@ -49,14 +49,14 @@
 
                 @if($wooRequest)
                 <select name="sort"
-                        class="px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+                        class="px-4 py-2 rounded-lg border border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
                     <option value="relevance" {{ $sortBy === 'relevance' ? 'selected' : '' }}>Relevantie</option>
                     <option value="date" {{ $sortBy === 'date' ? 'selected' : '' }}>Datum</option>
                     <option value="name" {{ $sortBy === 'name' ? 'selected' : '' }}>Naam</option>
                 </select>
 
                 <select name="order"
-                        class="px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+                        class="px-4 py-2 rounded-lg border border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
                     <option value="desc" {{ $sortOrder === 'desc' ? 'selected' : '' }}>Hoog → Laag</option>
                     <option value="asc" {{ $sortOrder === 'asc' ? 'selected' : '' }}>Laag → Hoog</option>
                 </select>
@@ -69,7 +69,7 @@
 
                 @if(request()->hasAny(['search', 'processed', 'sort', 'order']))
                     <a href="{{ request()->url() }}{{ $wooRequest ? '?woo_request_id=' . $wooRequest->uuid : '' }}"
-                       class="px-4 py-2 text-sm font-medium text-neutral-700 bg-white border rounded-lg border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-600">
+                       class="px-4 py-2 text-sm font-medium bg-white rounded-lg border text-neutral-700 border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-600">
                         Reset
                     </a>
                 @endif
@@ -82,10 +82,10 @@
                 @forelse($documents as $document)
                     <a href="{{ $wooRequest ? route('cases.documents.show', [$wooRequest, $document]) : route('documents.show', $document) }}"
                        class="block p-6 transition hover:bg-neutral-50 dark:hover:bg-neutral-700/50">
-                        <div class="flex items-start gap-4">
+                        <div class="flex gap-4 items-start">
                             {{-- File Icon --}}
                             <div class="flex-shrink-0">
-                                <div class="flex items-center justify-center w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/20">
+                                <div class="flex justify-center items-center w-12 h-12 bg-blue-100 rounded-lg dark:bg-blue-900/20">
                                     <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                                     </svg>
@@ -94,8 +94,8 @@
 
                             {{-- Document Info --}}
                             <div class="flex-1 min-w-0">
-                                <div class="flex items-center gap-2">
-                                    <h3 class="font-semibold text-neutral-900 truncate dark:text-white">
+                                <div class="flex gap-2 items-center">
+                                    <h3 class="font-semibold truncate text-neutral-900 dark:text-white">
                                         {{ $document->file_name }}
                                     </h3>
                                     @if($wooRequest && $document->relevance_score !== null)
@@ -119,18 +119,18 @@
                             </div>
 
                             {{-- Status & Actions --}}
-                            <div class="flex flex-col items-end gap-2">
+                            <div class="flex flex-col gap-2 items-end">
                                 @if($document->api_processing_status === 'completed')
                                     <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full dark:bg-green-900/20 dark:text-green-400">
                                         Verwerkt
                                     </span>
                                 @elseif($document->api_processing_status === 'processing')
                                     <span class="flex items-center px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full dark:bg-yellow-900/20 dark:text-yellow-400">
-                                        <svg class="w-3 h-3 mr-1 animate-spin" fill="none" viewBox="0 0 24 24">
+                                        <svg class="mr-1 w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
                                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                         </svg>
-                                        Bezig...
+                                        Thinking...
                                     </span>
                                 @elseif($document->api_processing_status === 'failed')
                                     <span class="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full dark:bg-red-900/20 dark:text-red-400">

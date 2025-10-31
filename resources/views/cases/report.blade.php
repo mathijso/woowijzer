@@ -246,7 +246,7 @@
                             @if($document->api_processing_status === 'completed')
                                 Verwerkt
                             @elseif($document->api_processing_status === 'processing')
-                                Bezig...
+                                Thinking...
                             @elseif($document->api_processing_status === 'failed')
                                 Mislukt
                             @else
