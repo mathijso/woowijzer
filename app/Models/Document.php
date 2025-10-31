@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
  * @property int|null $file_size
  * @property string|null $content_markdown
  * @property string|null $ai_summary
+ * @property float|null $relevance_score
  * @property \Carbon\CarbonInterface|null $processed_at
  * @property string $api_processing_status
  * @property string|null $api_processing_error
@@ -46,6 +47,7 @@ class Document extends Model
         'file_size',
         'content_markdown',
         'ai_summary',
+        'relevance_score',
         'processed_at',
         'api_processing_status',
         'api_processing_error',
@@ -58,6 +60,7 @@ class Document extends Model
         return [
             'processed_at' => 'datetime',
             'file_size' => 'integer',
+            'relevance_score' => 'decimal:2',
             'timeline_events_json' => 'array',
             'processing_metadata_json' => 'array',
         ];

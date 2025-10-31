@@ -2,6 +2,17 @@
     <div class="mx-auto max-w-7xl">
         {{-- Header --}}
         <div class="mb-6">
+            @if($wooRequest)
+                <div class="mb-4">
+                    <a href="{{ route('woo-requests.show', $wooRequest) }}" 
+                       class="inline-flex items-center text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white">
+                        <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Terug naar WOO-verzoek
+                    </a>
+                </div>
+            @endif
             <div class="flex items-center justify-between">
                 <div>
                     <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Documenten</h1>
@@ -14,7 +25,7 @@
             </div>
         </div>
 
-        {{-- Filters --}}
+        {{-- Filters and Sorting --}}
         <div class="mb-6 p-4 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
             <form method="GET" class="flex flex-wrap gap-4">
                 @if($wooRequest)
@@ -36,12 +47,27 @@
                     <option value="0" {{ request('processed') === '0' ? 'selected' : '' }}>Niet verwerkt</option>
                 </select>
 
+                @if($wooRequest)
+                <select name="sort" 
+                        class="px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+                    <option value="relevance" {{ $sortBy === 'relevance' ? 'selected' : '' }}>Relevantie</option>
+                    <option value="date" {{ $sortBy === 'date' ? 'selected' : '' }}>Datum</option>
+                    <option value="name" {{ $sortBy === 'name' ? 'selected' : '' }}>Naam</option>
+                </select>
+
+                <select name="order" 
+                        class="px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+                    <option value="desc" {{ $sortOrder === 'desc' ? 'selected' : '' }}>Hoog → Laag</option>
+                    <option value="asc" {{ $sortOrder === 'asc' ? 'selected' : '' }}>Laag → Hoog</option>
+                </select>
+                @endif
+
                 <button type="submit" 
                         class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
                     Filteren
                 </button>
 
-                @if(request()->hasAny(['search', 'processed']))
+                @if(request()->hasAny(['search', 'processed', 'sort', 'order']))
                     <a href="{{ request()->url() }}{{ $wooRequest ? '?woo_request_id=' . $wooRequest->id : '' }}" 
                        class="px-4 py-2 text-sm font-medium text-neutral-700 bg-white border rounded-lg border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-600">
                         Reset
@@ -68,9 +94,16 @@
 
                             {{-- Document Info --}}
                             <div class="flex-1 min-w-0">
-                                <h3 class="font-semibold text-neutral-900 truncate dark:text-white">
-                                    {{ $document->file_name }}
-                                </h3>
+                                <div class="flex items-center gap-2">
+                                    <h3 class="font-semibold text-neutral-900 truncate dark:text-white">
+                                        {{ $document->file_name }}
+                                    </h3>
+                                    @if($wooRequest && $document->relevance_score !== null)
+                                        <span class="px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400" title="Relevantie score">
+                                            {{ round($document->relevance_score * 100) }}%
+                                        </span>
+                                    @endif
+                                </div>
                                 <div class="flex flex-wrap gap-3 items-center mt-1 text-sm text-neutral-600 dark:text-neutral-400">
                                     <span>{{ $document->getFileSizeFormatted() }}</span>
                                     <span>•</span>

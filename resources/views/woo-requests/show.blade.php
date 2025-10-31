@@ -413,26 +413,22 @@
                         <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
                             Documenten ({{ $wooRequest->documents->count() }})
                         </h2>
-                        @auth
-                            @if(auth()->user()->isCaseManager())
-                                <form action="{{ route('woo-requests.auto-link-documents', $wooRequest) }}" method="POST" class="inline">
-                                    @csrf
-                                    <button type="submit" class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
-                                        Auto-link documenten
-                                    </button>
-                                </form>
-                            @else
-                                <a href="{{ route('documents.index', ['woo_request_id' => $wooRequest->id]) }}"
-                                   class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
-                                    Alle documenten →
-                                </a>
-                            @endif
-                        @else
+                        <div class="flex gap-4 items-center">
                             <a href="{{ route('documents.index', ['woo_request_id' => $wooRequest->id]) }}"
                                class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
                                 Alle documenten →
                             </a>
-                        @endauth
+                            @auth
+                                @if(auth()->user()->isCaseManager())
+                                    <form action="{{ route('woo-requests.auto-link-documents', $wooRequest) }}" method="POST" class="inline">
+                                        @csrf
+                                        <button type="submit" class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
+                                            Auto-link documenten
+                                        </button>
+                                    </form>
+                                @endif
+                            @endauth
+                        </div>
                     </div>
 
                     <div class="space-y-3">

@@ -18,6 +18,8 @@ class DocumentController extends Controller
     {
         $wooRequestId = $request->query('woo_request_id');
         $wooRequest = null;
+        $sortBy = $request->query('sort', $wooRequestId ? 'relevance' : 'date');
+        $sortOrder = $request->query('order', 'desc');
 
         $query = Document::with(['submission.internalRequest', 'questions']);
 
@@ -27,9 +29,31 @@ class DocumentController extends Controller
             $query->where('woo_request_id', $wooRequestId);
         }
 
-        $documents = $query->latest()->paginate(20);
+        // Apply sorting
+        if ($sortBy === 'relevance' && $wooRequestId) {
+            // Sort by relevance_score (nulls last), then by date
+            // SQLite doesn't support NULLS LAST, so we use a CASE statement
+            $query->orderByRaw('CASE WHEN relevance_score IS NULL THEN 1 ELSE 0 END')
+                  ->orderBy('relevance_score', 'desc')
+                  ->orderBy('created_at', $sortOrder);
+        } elseif ($sortBy === 'relevance' && !$wooRequestId) {
+            // If no woo_request_id but relevance sort requested, fall back to date
+            $query->orderBy('created_at', $sortOrder);
+        } elseif ($sortBy === 'name') {
+            $query->orderBy('file_name', $sortOrder);
+        } else {
+            // Default: sort by date
+            $query->orderBy('created_at', $sortOrder);
+        }
 
-        return view('documents.index', ['documents' => $documents, 'wooRequest' => $wooRequest]);
+        $documents = $query->paginate(20)->withQueryString();
+
+        return view('documents.index', [
+            'documents' => $documents,
+            'wooRequest' => $wooRequest,
+            'sortBy' => $sortBy,
+            'sortOrder' => $sortOrder,
+        ]);
     }
 
     /**

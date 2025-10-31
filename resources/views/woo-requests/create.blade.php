@@ -1,7 +1,7 @@
 <x-layouts.app title="Nieuw WOO-verzoek">
     <div class="mx-auto max-w-3xl">
         <div class="mb-6">
-            <a href="{{ route('woo-requests.index') }}" 
+            <a href="{{ route('woo-requests.index') }}"
                class="inline-flex items-center text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white">
                 <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -26,12 +26,12 @@
                     <label for="title" class="block text-sm font-medium text-neutral-900 dark:text-white">
                         Titel <span class="text-red-600">*</span>
                     </label>
-                    <input type="text" 
-                           name="title" 
-                           id="title" 
+                    <input type="text"
+                           name="title"
+                           id="title"
                            value="{{ old('title') }}"
                            required
-                           class="block w-full px-4 py-2 mt-1 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
+                           class="block px-4 py-2 mt-1 w-full rounded-lg border border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
                            placeholder="Bijv. Verzoek tot openbaarmaking van documenten over klimaatbeleid">
                     @error('title')
                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -43,10 +43,10 @@
                     <label for="description" class="block text-sm font-medium text-neutral-900 dark:text-white">
                         Beschrijving (optioneel)
                     </label>
-                    <textarea name="description" 
-                              id="description" 
+                    <textarea name="description"
+                              id="description"
                               rows="4"
-                              class="block w-full px-4 py-2 mt-1 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
+                              class="block px-4 py-2 mt-1 w-full rounded-lg border border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
                               placeholder="Geef een korte toelichting op uw verzoek...">{{ old('description') }}</textarea>
                     @error('description')
                         <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -62,7 +62,7 @@
                     <div id="questions-container" class="mt-2 space-y-2">
                         <!-- Questions will be dynamically added here -->
                     </div>
-                    <button type="button" 
+                    <button type="button"
                             id="add-question-btn"
                             class="mt-2 text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
                         + Vraag toevoegen
@@ -70,9 +70,9 @@
                 </div>
 
                 {{-- Loading State --}}
-                <div id="extraction-loading" class="hidden p-4 rounded-lg bg-blue-50 dark:bg-blue-900/10">
+                <div id="extraction-loading" class="hidden p-4 bg-blue-50 rounded-lg dark:bg-blue-900/10">
                     <div class="flex items-center">
-                        <svg class="w-5 h-5 mr-3 text-blue-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <svg class="mr-3 w-5 h-5 text-blue-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
@@ -86,7 +86,7 @@
                         WOO-verzoek document (PDF) <span class="text-red-600">*</span>
                     </label>
                     <div class="mt-1">
-                        <div class="flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded-lg border-neutral-300 dark:border-neutral-700 hover:border-blue-400 dark:hover:border-blue-600 transition">
+                        <div class="flex justify-center px-6 pt-5 pb-6 rounded-lg border-2 border-dashed transition border-neutral-300 dark:border-neutral-700 hover:border-blue-400 dark:hover:border-blue-600">
                             <div class="space-y-1 text-center">
                                 <svg class="mx-auto w-12 h-12 text-neutral-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -110,7 +110,7 @@
                 </div>
 
                 {{-- Info Box --}}
-                <div class="p-4 rounded-lg bg-blue-50 dark:bg-blue-900/10">
+                <div class="p-4 bg-blue-50 rounded-lg dark:bg-blue-900/10">
                     <div class="flex">
                         <div class="flex-shrink-0">
                             <svg class="w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
@@ -130,12 +130,12 @@
                 </div>
 
                 {{-- Submit Button --}}
-                <div class="flex justify-end gap-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
-                    <a href="{{ route('woo-requests.index') }}" 
-                       class="px-4 py-2 text-sm font-medium text-neutral-700 bg-white border rounded-lg border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-600 dark:hover:bg-neutral-700">
+                <div class="flex gap-4 justify-end pt-4 border-t border-neutral-200 dark:border-neutral-700">
+                    <a href="{{ route('woo-requests.index') }}"
+                       class="px-4 py-2 text-sm font-medium bg-white rounded-lg border text-neutral-700 border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-600 dark:hover:bg-neutral-700">
                         Annuleren
                     </a>
-                    <button type="submit" 
+                    <button type="submit"
                             class="px-6 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                         Verzoek indienen
                     </button>
@@ -165,7 +165,7 @@
         async function extractCaseFile(file) {
             const loadingDiv = document.getElementById('extraction-loading');
             const questionsSection = document.getElementById('extracted-questions-section');
-            
+
             // Show loading state
             loadingDiv.classList.remove('hidden');
             questionsSection.classList.add('hidden');
@@ -233,12 +233,12 @@
             const questionDiv = document.createElement('div');
             questionDiv.className = 'flex items-start gap-2';
             questionDiv.innerHTML = `
-                <input type="text" 
-                       name="questions[]" 
+                <input type="text"
+                       name="questions[]"
                        value="${escapeHtml(questionText)}"
                        placeholder="Voer een vraag in..."
-                       class="flex-1 px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
-                <button type="button" 
+                       class="flex-1 px-4 py-2 rounded-lg border border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+                <button type="button"
                         onclick="removeQuestion(this)"
                         class="px-3 py-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
                     Verwijder
