@@ -129,7 +129,7 @@ class InternalRequest extends Model
 
     public function isActive(): bool
     {
-        return in_array($this->status, ['pending', 'submitted']) && !$this->token_expires_at->isPast();
+        return in_array($this->status, ['pending', 'submitted']) && ! $this->token_expires_at->isPast();
     }
 
     public function hasSubmissions(): bool

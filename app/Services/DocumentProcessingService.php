@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Storage;
 class DocumentProcessingService
 {
     protected string $apiUrl;
+
     protected string $apiKey;
+
     protected int $timeout;
 
     public function __construct()
@@ -28,7 +30,7 @@ class DocumentProcessingService
     {
         try {
             $fullPath = Storage::disk('woo-documents')->path($filePath);
-            
+
             $response = Http::timeout($this->timeout)
                 ->withHeaders([
                     'Authorization' => 'Bearer ' . $this->apiKey,
@@ -52,7 +54,7 @@ class DocumentProcessingService
                 'message' => $e->getMessage(),
                 'file' => $filePath,
             ]);
-            
+
             throw $e;
         }
     }
@@ -131,4 +133,3 @@ class DocumentProcessingService
         }
     }
 }
-

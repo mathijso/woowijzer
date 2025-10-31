@@ -18,8 +18,7 @@ class InternalRequestSent extends Mailable
      */
     public function __construct(
         public InternalRequest $internalRequest
-    ) {
-    }
+    ) {}
 
     /**
      * Get the message envelope.

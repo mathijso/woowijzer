@@ -14,6 +14,7 @@ class ProcessUploadedDocument implements ShouldQueue
     use Queueable;
 
     public $timeout = 300; // 5 minutes
+
     public $tries = 3;
 
     /**
@@ -21,8 +22,7 @@ class ProcessUploadedDocument implements ShouldQueue
      */
     public function __construct(
         public Document $document
-    ) {
-    }
+    ) {}
 
     /**
      * Execute the job.
@@ -56,7 +56,7 @@ class ProcessUploadedDocument implements ShouldQueue
             // Update submission's internal request status
             $submission = $this->document->submission;
             $internalRequest = $submission->internalRequest;
-            
+
             if ($internalRequest->status === 'pending') {
                 $internalRequest->update(['status' => 'submitted']);
             }

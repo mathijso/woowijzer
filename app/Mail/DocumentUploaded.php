@@ -18,8 +18,7 @@ class DocumentUploaded extends Mailable
      */
     public function __construct(
         public Submission $submission
-    ) {
-    }
+    ) {}
 
     /**
      * Get the message envelope.

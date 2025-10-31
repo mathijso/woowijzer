@@ -24,6 +24,7 @@ class WooRequestPolicy
         if ($user->isBurger()) {
             return $user->id === $wooRequest->user_id;
         }
+
         // Case managers can view all requests
         return $user->isCaseManager();
     }

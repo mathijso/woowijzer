@@ -16,7 +16,7 @@ class WooRequestController extends Controller
     public function index(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $user = Auth::user();
-        
+
         $query = WooRequest::with(['user', 'caseManager', 'questions']);
 
         if ($user->isBurger()) {

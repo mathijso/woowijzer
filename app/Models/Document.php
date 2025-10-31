@@ -112,12 +112,12 @@ class Document extends Model
 
     public function hasContent(): bool
     {
-        return !empty($this->content_markdown);
+        return ! empty($this->content_markdown);
     }
 
     public function hasSummary(): bool
     {
-        return !empty($this->ai_summary);
+        return ! empty($this->ai_summary);
     }
 
     public function isLinkedToQuestions(): bool

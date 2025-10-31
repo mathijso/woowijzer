@@ -20,8 +20,7 @@ class WooRequestStatusChanged extends Mailable
         public WooRequest $wooRequest,
         public string $oldStatus,
         public string $newStatus
-    ) {
-    }
+    ) {}
 
     /**
      * Get the message envelope.

@@ -19,8 +19,7 @@ class GenerateQuestionSummaries implements ShouldQueue
      */
     public function __construct(
         public WooRequest $wooRequest
-    ) {
-    }
+    ) {}
 
     /**
      * Execute the job.
@@ -67,7 +66,7 @@ class GenerateQuestionSummaries implements ShouldQueue
 
         // Compile summary from linked documents
         $summaryParts = [];
-        
+
         foreach ($documents as $document) {
             if ($document->ai_summary) {
                 $summaryParts[] = "**{$document->file_name}:**\n{$document->ai_summary}";
@@ -80,7 +79,7 @@ class GenerateQuestionSummaries implements ShouldQueue
 
         if ($summaryParts !== []) {
             $summary = "## Samenvatting\n\n" . implode("\n\n---\n\n", $summaryParts);
-            
+
             $question->update([
                 'ai_summary' => $summary,
             ]);

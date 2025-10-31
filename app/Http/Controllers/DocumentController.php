@@ -18,7 +18,7 @@ class DocumentController extends Controller
     {
         $wooRequestId = $request->query('woo_request_id');
         $wooRequest = null;
-        
+
         $query = Document::with(['submission.internalRequest', 'questions']);
 
         if ($wooRequestId) {

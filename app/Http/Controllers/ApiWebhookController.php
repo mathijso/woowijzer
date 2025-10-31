@@ -65,7 +65,7 @@ class ApiWebhookController extends Controller
             ]);
 
             // Extract questions if provided
-            if (!empty($data['questions'])) {
+            if (! empty($data['questions'])) {
                 $questionService->extractQuestionsFromApiResponse($wooRequest, $data);
             }
 

@@ -19,13 +19,13 @@ class DocumentLinkingService
         $questions = $wooRequest->questions;
         $suggestions = collect();
 
-        if (!$document->hasContent()) {
+        if (! $document->hasContent()) {
             return $suggestions;
         }
 
         foreach ($questions as $question) {
             $relevanceScore = $this->calculateRelevance($document, $question);
-            
+
             if ($relevanceScore > 0.3) { // Only suggest if relevance > 30%
                 $suggestions->push([
                     'question' => $question,
@@ -44,10 +44,10 @@ class DocumentLinkingService
     {
         $documentContent = Str::lower($document->content_markdown ?? '');
         $questionText = Str::lower($question->question_text);
-        
+
         // Extract keywords from question
         $keywords = $this->extractKeywords($questionText);
-        
+
         if ($keywords === []) {
             return 0.0;
         }
@@ -55,7 +55,7 @@ class DocumentLinkingService
         // Count keyword matches
         $matchCount = 0;
         $totalKeywords = count($keywords);
-        
+
         foreach ($keywords as $keyword) {
             if (Str::contains($documentContent, $keyword)) {
                 $matchCount++;
@@ -64,7 +64,7 @@ class DocumentLinkingService
 
         // Calculate base relevance
         $relevance = $matchCount / $totalKeywords;
-        
+
         // Boost if question text appears directly in document
         if (Str::contains($documentContent, $questionText)) {
             $relevance = min(1.0, $relevance + 0.3);
@@ -84,14 +84,14 @@ class DocumentLinkingService
             'wat', 'wie', 'waar', 'wanneer', 'waarom', 'hoe', 'welk', 'welke',
             'zijn', 'heeft', 'hebben', 'kan', 'worden', 'werd', 'wordt',
         ];
-        
+
         // Split into words and clean
         $words = preg_split('/\s+/', Str::lower($text));
-        $words = array_map(fn($word): ?string => preg_replace('/[^\w]/', '', $word), $words);
-        
+        $words = array_map(fn ($word): ?string => preg_replace('/[^\w]/', '', $word), $words);
+
         // Remove stop words and short words
-        $keywords = array_filter($words, fn(array|string|null $word): bool => !in_array($word, $stopWords) && strlen((string) $word) > 3);
-        
+        $keywords = array_filter($words, fn (array|string|null $word): bool => ! in_array($word, $stopWords) && strlen((string) $word) > 3);
+
         return array_values(array_unique($keywords));
     }
 
@@ -102,7 +102,7 @@ class DocumentLinkingService
     {
         $suggestions = $this->suggestLinks($document);
         $linkedCount = 0;
-        
+
         foreach ($suggestions as $suggestion) {
             if ($suggestion['relevance_score'] >= $threshold) {
                 $this->linkDocumentToQuestion(
@@ -113,7 +113,7 @@ class DocumentLinkingService
                 $linkedCount++;
             }
         }
-        
+
         return $linkedCount;
     }
 
@@ -130,7 +130,7 @@ class DocumentLinkingService
             $question->id => [
                 'relevance_score' => $relevanceScore,
                 'confirmed_by_case_manager' => $confirmed,
-            ]
+            ],
         ]);
     }
 
@@ -191,4 +191,3 @@ class DocumentLinkingService
         return $stats;
     }
 }
-

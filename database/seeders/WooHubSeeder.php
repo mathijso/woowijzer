@@ -51,9 +51,9 @@ class WooHubSeeder extends Seeder
         );
 
         $this->command->info('Created test users:');
-        $this->command->info("  - Burger: burger@example.com / password");
-        $this->command->info("  - Case Manager: casemanager@example.com / password");
-        $this->command->info("  - Colleague: colleague@example.com / password");
+        $this->command->info('  - Burger: burger@example.com / password');
+        $this->command->info('  - Case Manager: casemanager@example.com / password');
+        $this->command->info('  - Colleague: colleague@example.com / password');
 
         // Create WOO requests
         $wooRequest1 = WooRequest::create([
@@ -111,7 +111,7 @@ class WooHubSeeder extends Seeder
             'status' => 'unanswered',
         ]);
 
-        $this->command->info("Created 4 questions across both requests");
+        $this->command->info('Created 4 questions across both requests');
 
         // Create internal request
         $internalRequest = InternalRequest::create([
@@ -127,7 +127,7 @@ class WooHubSeeder extends Seeder
         ]);
 
         $this->command->info("\nCreated internal request with upload token");
-        $this->command->info("  Upload URL: " . route('upload.show', $internalRequest->upload_token));
+        $this->command->info('  Upload URL: ' . route('upload.show', $internalRequest->upload_token));
 
         // Create submission
         $submission = Submission::create([
@@ -140,7 +140,7 @@ class WooHubSeeder extends Seeder
             'documents_count' => 2,
         ]);
 
-        $this->command->info("Created submission");
+        $this->command->info('Created submission');
 
         // Create documents
         $document1 = Document::create([
@@ -151,7 +151,7 @@ class WooHubSeeder extends Seeder
             'file_type' => 'application/pdf',
             'file_size' => 2048576,
             'content_markdown' => "# Klimaatrapport 2023\n\nIn 2023 zijn diverse maatregelen genomen...",
-            'ai_summary' => "Dit rapport beschrijft de klimaatmaatregelen die in 2023 zijn genomen, inclusief een overzicht van CO2-reductie per kwartaal.",
+            'ai_summary' => 'Dit rapport beschrijft de klimaatmaatregelen die in 2023 zijn genomen, inclusief een overzicht van CO2-reductie per kwartaal.',
             'processed_at' => now()->subDays(2),
         ]);
 
@@ -163,11 +163,11 @@ class WooHubSeeder extends Seeder
             'file_type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'file_size' => 524288,
             'content_markdown' => "# Investeringen\n\nProjecten, bedragen, status...",
-            'ai_summary' => "Overzicht van alle investeringen in duurzame energie projecten met totaalbedragen per categorie.",
+            'ai_summary' => 'Overzicht van alle investeringen in duurzame energie projecten met totaalbedragen per categorie.',
             'processed_at' => now()->subDays(2),
         ]);
 
-        $this->command->info("Created 2 documents");
+        $this->command->info('Created 2 documents');
 
         // Link documents to questions
         $document1->questions()->attach($question1->id, [
@@ -185,11 +185,11 @@ class WooHubSeeder extends Seeder
             'confirmed_by_case_manager' => false,
         ]);
 
-        $this->command->info("Linked documents to questions");
+        $this->command->info('Linked documents to questions');
 
         $this->command->info("\n✅ WOO Hub seeding completed successfully!");
         $this->command->info("\nYou can now log in with:");
-        $this->command->info("  burger@example.com / password (Burger)");
-        $this->command->info("  casemanager@example.com / password (Case Manager)");
+        $this->command->info('  burger@example.com / password (Burger)');
+        $this->command->info('  casemanager@example.com / password (Case Manager)');
     }
 }

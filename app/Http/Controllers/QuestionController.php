@@ -16,7 +16,7 @@ class QuestionController extends Controller
     {
         $wooRequestId = $request->query('woo_request_id');
         $wooRequest = WooRequest::findOrFail($wooRequestId);
-        
+
         $this->authorize('view', $wooRequest);
 
         $questions = $wooRequest->questions()

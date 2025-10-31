@@ -16,8 +16,8 @@ class CaseOverviewController extends Controller
     public function index(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $user = Auth::user();
-        
-        if (!$user->isCaseManager()) {
+
+        if (! $user->isCaseManager()) {
             abort(403, 'Alleen case managers hebben toegang tot dit dashboard.');
         }
 
@@ -67,7 +67,7 @@ class CaseOverviewController extends Controller
         // Calculate progress
         $totalQuestions = $wooRequest->questions()->count();
         $answeredQuestions = $wooRequest->questions()->answered()->count();
-        $progressPercentage = $totalQuestions > 0 
+        $progressPercentage = $totalQuestions > 0
             ? round(($answeredQuestions / $totalQuestions) * 100, 2)
             : 0;
 

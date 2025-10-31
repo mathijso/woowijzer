@@ -84,7 +84,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('documents.destroy');
     Route::get('documents/{document}/download', [App\Http\Controllers\DocumentController::class, 'download'])
         ->name('documents.download');
-    
+
     // Document-Question linking
     Route::post('documents/{document}/link-to-question', [App\Http\Controllers\DocumentController::class, 'linkToQuestion'])
         ->name('documents.link-to-question');

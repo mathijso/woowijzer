@@ -14,6 +14,7 @@ class ProcessWooRequestDocument implements ShouldQueue
     use Queueable;
 
     public $timeout = 300; // 5 minutes
+
     public $tries = 3;
 
     /**
@@ -21,8 +22,7 @@ class ProcessWooRequestDocument implements ShouldQueue
      */
     public function __construct(
         public WooRequest $wooRequest
-    ) {
-    }
+    ) {}
 
     /**
      * Execute the job.
@@ -40,7 +40,7 @@ class ProcessWooRequestDocument implements ShouldQueue
             $result = $processingService->processWooRequestDocument($this->wooRequest);
 
             // Extract and create questions
-            if (!empty($result['questions'])) {
+            if (! empty($result['questions'])) {
                 $questionService->extractQuestionsFromApiResponse($this->wooRequest, $result);
             } elseif ($this->wooRequest->original_file_content_markdown) {
                 // Fallback: extract questions from markdown

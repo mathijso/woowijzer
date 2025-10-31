@@ -15,8 +15,8 @@ class QuestionExtractionService
     public function extractQuestionsFromApiResponse(WooRequest $wooRequest, array $apiResponse): Collection
     {
         $questions = collect($apiResponse['questions'] ?? []);
-        
-        return $questions->map(fn(array $questionData, int $index): \App\Models\Question => $this->createQuestion($wooRequest, $questionData, $index));
+
+        return $questions->map(fn (array $questionData, int $index): \App\Models\Question => $this->createQuestion($wooRequest, $questionData, $index));
     }
 
     /**
@@ -25,8 +25,8 @@ class QuestionExtractionService
     public function extractQuestionsFromMarkdown(WooRequest $wooRequest, string $markdown): Collection
     {
         $questions = $this->parseMarkdownForQuestions($markdown);
-        
-        return $questions->map(fn($questionText, int $index): \App\Models\Question => $this->createQuestion($wooRequest, [
+
+        return $questions->map(fn ($questionText, int $index): \App\Models\Question => $this->createQuestion($wooRequest, [
             'question_text' => $questionText,
         ], $index));
     }
@@ -50,19 +50,19 @@ class QuestionExtractionService
     protected function parseMarkdownForQuestions(string $markdown): Collection
     {
         $questions = collect();
-        
+
         // Split by common question patterns
         $lines = explode("\n", $markdown);
-        
+
         foreach ($lines as $line) {
             $line = trim($line);
-            
+
             // Check if line looks like a question
             if ($this->looksLikeQuestion($line)) {
                 $questions->push($this->cleanQuestion($line));
             }
         }
-        
+
         return $questions->filter()->values();
     }
 
@@ -108,13 +108,13 @@ class QuestionExtractionService
     {
         // Remove numbering (e.g., "1. ", "a) ")
         $text = preg_replace('/^(\d+[\.\)]\s|[a-z][\.\)]\s)/i', '', $text);
-        
+
         // Remove markdown formatting
         $text = preg_replace('/[*_`#]/', '', (string) $text);
-        
+
         // Trim whitespace
         $text = trim((string) $text);
-        
+
         return $text;
     }
 
@@ -125,20 +125,20 @@ class QuestionExtractionService
     {
         // Get existing questions
         $existingQuestions = $wooRequest->questions;
-        
+
         // Delete questions that are no longer in the new list
         $newQuestionTexts = collect($newQuestions)->pluck('question_text');
         $existingQuestions->each(function ($question) use ($newQuestionTexts): void {
-            if (!$newQuestionTexts->contains($question->question_text)) {
+            if (! $newQuestionTexts->contains($question->question_text)) {
                 $question->delete();
             }
         });
-        
+
         // Add new questions
         foreach ($newQuestions as $index => $questionData) {
             $exists = $existingQuestions->firstWhere('question_text', $questionData['question_text']);
-            
-            if (!$exists) {
+
+            if (! $exists) {
                 $this->createQuestion($wooRequest, $questionData, $index);
             }
         }
@@ -151,18 +151,18 @@ class QuestionExtractionService
     {
         $questions = $wooRequest->questions()->ordered()->get();
         $mergedCount = 0;
-        
+
         foreach ($questions as $question) {
             foreach ($questions as $otherQuestion) {
                 if ($question->id === $otherQuestion->id) {
                     continue;
                 }
-                
+
                 $similarity = $this->calculateSimilarity(
                     $question->question_text,
                     $otherQuestion->question_text
                 );
-                
+
                 if ($similarity >= $similarityThreshold) {
                     // Merge questions by keeping the first one
                     $otherQuestion->delete();
@@ -170,7 +170,7 @@ class QuestionExtractionService
                 }
             }
         }
-        
+
         return $mergedCount;
     }
 
@@ -184,8 +184,7 @@ class QuestionExtractionService
             Str::lower($text2),
             $percentage
         );
-        
+
         return $percentage / 100;
     }
 }
-

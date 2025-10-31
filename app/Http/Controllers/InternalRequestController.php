@@ -15,7 +15,7 @@ class InternalRequestController extends Controller
     public function index(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $wooRequestId = $request->query('woo_request_id');
-        
+
         $query = InternalRequest::with(['wooRequest', 'caseManager', 'submissions']);
 
         if ($wooRequestId) {
@@ -36,7 +36,7 @@ class InternalRequestController extends Controller
     {
         $wooRequestId = $request->query('woo_request_id');
         $wooRequest = null;
-        
+
         if ($wooRequestId) {
             $wooRequest = WooRequest::findOrFail($wooRequestId);
             $this->authorize('update', $wooRequest);

@@ -32,5 +32,3 @@ return static function (RectorConfig $config): void {
         SetList::EARLY_RETURN,
     ]);
 };
-
-

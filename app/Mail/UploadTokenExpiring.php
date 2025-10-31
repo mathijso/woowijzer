@@ -18,8 +18,7 @@ class UploadTokenExpiring extends Mailable
      */
     public function __construct(
         public InternalRequest $internalRequest
-    ) {
-    }
+    ) {}
 
     /**
      * Get the message envelope.
@@ -37,7 +36,7 @@ class UploadTokenExpiring extends Mailable
     public function content(): Content
     {
         $daysLeft = now()->diffInDays($this->internalRequest->token_expires_at);
-        
+
         return new Content(
             markdown: 'emails.token-expiring',
             with: [

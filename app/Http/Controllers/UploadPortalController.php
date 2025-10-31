@@ -7,7 +7,6 @@ use App\Models\Document;
 use App\Models\InternalRequest;
 use App\Models\Submission;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class UploadPortalController extends Controller
 {

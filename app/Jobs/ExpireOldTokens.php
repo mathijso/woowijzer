@@ -76,7 +76,7 @@ class ExpireOldTokens implements ShouldQueue
         foreach ($expiringSoon as $request) {
             // TODO: Send email reminder
             // Mail::to($request->colleague_email)->send(new UploadTokenExpiring($request));
-            
+
             Log::info('Expiry reminder should be sent', [
                 'internal_request_id' => $request->id,
                 'colleague_email' => $request->colleague_email,

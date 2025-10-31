@@ -26,6 +26,7 @@ class DocumentPolicy
         if ($user->isBurger()) {
             return $user->id === $wooRequest->user_id;
         }
+
         // Case managers can view all documents
         return $user->isCaseManager();
     }
