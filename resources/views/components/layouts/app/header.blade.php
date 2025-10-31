@@ -4,16 +4,17 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white">
+
         <flux:header container class="border-b border-rijksgrijs-2 bg-rijksblauw">
-            <flux:sidebar.toggle class="lg:hidden text-white" icon="bars-2" inset="left" />
+            <flux:sidebar.toggle class="text-white lg:hidden" icon="bars-2" inset="left" />
 
             <a href="{{ route('welcome') }}" class="flex items-center space-x-2 ms-2 me-5 rtl:space-x-reverse lg:ms-0" wire:navigate>
                 <x-app-logo />
             </a>
 
-            <flux:navbar class="-mb-px max-lg:hidden text-white">
-                <flux:navbar.item icon="layout-grid" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate class="text-white hover:text-rijksgrijs-1">
-                    {{ __('Dashboard') }}
+            <flux:navbar class="-mb-px text-white max-lg:hidden">
+                <flux:navbar.item :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate class="text-white hover:text-rijksgrijs-1">
+                    <span class="text-white">{{ __('Dashboard') }}</span>
                 </flux:navbar.item>
             </flux:navbar>
 
@@ -27,7 +28,7 @@
             <!-- Desktop User Menu -->
             <flux:dropdown position="top" align="end">
                 <flux:profile
-                    class="cursor-pointer text-white"
+                    class="text-white cursor-pointer"
                     :initials="auth()->user()->initials()"
                 />
                 <flux:menu>
@@ -69,11 +70,11 @@
         </flux:header>
 
         <!-- Mobile Menu -->
-        <flux:sidebar stashable sticky class="lg:hidden border-e border-rijksgrijs-2 bg-white">
+        <flux:sidebar stashable sticky class="bg-white lg:hidden border-e border-rijksgrijs-2">
             <flux:sidebar.toggle class="lg:hidden text-rijksblauw" icon="x-mark" />
 
             <a href="{{ route('welcome') }}" class="flex items-center space-x-2 ms-1 rtl:space-x-reverse" wire:navigate>
-                <div class="flex justify-center items-center rounded-md aspect-square size-8 bg-rijksblauw text-white">
+                <div class="flex justify-center items-center text-white rounded-md aspect-square size-8 bg-rijksblauw">
                     <x-app-logo-icon class="text-white fill-current size-5" />
                 </div>
                 <div class="grid flex-1 text-sm ms-1 text-start">

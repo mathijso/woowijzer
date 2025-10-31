@@ -26,9 +26,9 @@
 {{-- Quick Actions --}}
 <div class="grid gap-4 md:grid-cols-2">
     <a href="{{ route('cases.index') }}"
-       class="rounded-xl bg-blue-600 p-6 shadow-sm transition hover:bg-blue-700">
+       class="rounded-xl p-6 shadow-sm transition bg-rijksblauw hover:bg-rijksdonkerblauw">
         <div class="flex items-center">
-            <div class="rounded-lg bg-white/10 p-3">
+            <div class="p-3 rounded-lg bg-white/10">
                 <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                 </svg>
@@ -41,9 +41,9 @@
     </a>
 
     <a href="{{ route('cases.index', ['unassigned' => true]) }}"
-       class="rounded-xl bg-orange-600 p-6 shadow-sm transition hover:bg-orange-700">
+       class="rounded-xl p-6 shadow-sm transition bg-rijksblauw hover:bg-rijksdonkerblauw">
         <div class="flex items-center">
-            <div class="rounded-lg bg-white/10 p-3">
+            <div class="p-3 rounded-lg bg-white/10">
                 <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
                 </svg>
@@ -60,8 +60,8 @@
 <div class="grid gap-4 md:grid-cols-4">
     <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-neutral-800">
         <div class="flex items-center">
-            <div class="rounded-lg bg-blue-100 p-3 dark:bg-blue-900/20">
-                <svg class="h-6 w-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="p-3 rounded-lg bg-rijksgrijs-1">
+                <svg class="h-6 w-6 text-rijksblauw" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
             </div>
@@ -74,8 +74,8 @@
 
     <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-neutral-800">
         <div class="flex items-center">
-            <div class="rounded-lg bg-gray-100 p-3 dark:bg-gray-900/20">
-                <svg class="h-6 w-6 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="p-3 rounded-lg bg-rijksgrijs-1">
+                <svg class="h-6 w-6 text-rijksblauw" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
             </div>
@@ -88,8 +88,8 @@
 
     <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-neutral-800">
         <div class="flex items-center">
-            <div class="rounded-lg bg-yellow-100 p-3 dark:bg-yellow-900/20">
-                <svg class="h-6 w-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="p-3 rounded-lg bg-rijksgrijs-1">
+                <svg class="h-6 w-6 text-rijksblauw" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
@@ -102,8 +102,8 @@
 
     <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-neutral-800">
         <div class="flex items-center">
-            <div class="rounded-lg bg-green-100 p-3 dark:bg-green-900/20">
-                <svg class="h-6 w-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="p-3 rounded-lg bg-rijksgrijs-1">
+                <svg class="h-6 w-6 text-rijksblauw" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
@@ -156,7 +156,7 @@
         <div class="flex items-center justify-between">
             <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Mijn recente cases</h2>
             <a href="{{ route('cases.index', ['my_cases' => true]) }}"
-               class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
+               class="text-sm text-rijksblauw hover:text-rijksdonkerblauw">
                 Alle cases bekijken →
             </a>
         </div>

@@ -7,7 +7,7 @@
     <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Nieuw verzoek</h2>
     <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">Dien een nieuw WOO-verzoek in</p>
     <a href="{{ route('woo-requests.create') }}"
-       class="inline-flex items-center px-4 py-2 mt-4 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+       class="inline-flex items-center px-4 py-2 mt-4 text-sm font-semibold text-white rounded-lg bg-rijksblauw hover:bg-rijksdonkerblauw">
         <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
         </svg>
@@ -19,8 +19,8 @@
 <div class="grid gap-4 md:grid-cols-3">
     <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
         <div class="flex items-center">
-            <div class="p-3 bg-blue-100 rounded-lg dark:bg-blue-900/20">
-                <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="p-3 rounded-lg bg-rijksgrijs-1">
+                <svg class="w-6 h-6 text-rijksblauw" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                 </svg>
             </div>
@@ -33,8 +33,8 @@
 
     <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
         <div class="flex items-center">
-            <div class="p-3 bg-yellow-100 rounded-lg dark:bg-yellow-900/20">
-                <svg class="w-6 h-6 text-yellow-600 dark:text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="p-3 rounded-lg bg-rijksgrijs-1">
+                <svg class="w-6 h-6 text-rijksblauw" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
@@ -49,8 +49,8 @@
 
     <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
         <div class="flex items-center">
-            <div class="p-3 bg-green-100 rounded-lg dark:bg-green-900/20">
-                <svg class="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="p-3 rounded-lg bg-rijksgrijs-1">
+                <svg class="w-6 h-6 text-rijksblauw" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
                 </svg>
             </div>
@@ -69,7 +69,7 @@
     <div class="p-6 border-b border-neutral-200 dark:border-neutral-700">
         <div class="flex justify-between items-center">
             <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Mijn WOO-verzoeken</h2>
-            <a href="{{ route('woo-requests.index') }}" class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
+            <a href="{{ route('woo-requests.index') }}" class="text-sm text-rijksblauw hover:text-rijksdonkerblauw">
                 Alles bekijken →
             </a>
         </div>
@@ -125,7 +125,7 @@
                 </p>
                 <div class="mt-4">
                     <a href="{{ route('woo-requests.create') }}"
-                       class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                       class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white rounded-lg bg-rijksblauw hover:bg-rijksdonkerblauw">
                         Nieuw verzoek indienen
                     </a>
                 </div>

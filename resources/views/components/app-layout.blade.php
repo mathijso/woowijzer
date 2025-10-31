@@ -57,16 +57,28 @@
                     <nav class="hidden space-x-8 md:flex">
 
                         <a href="{{ route('document.summarize') }}"
-                            class="px-4 py-2 font-medium text-white bg-white rounded-md transition-all duration-200 text-rijksblauw hover:bg-rijkscyaan-600 hover:shadow-md">
+                            class="flex items-center px-4 py-2 font-medium text-white bg-white rounded-md transition-all duration-200 text-rijksblauw hover:bg-rijksblauw hover:shadow-md">
                             Document Samenvatten
                         </a>
-                        <a href="{{ route('about') }}" class="text-white transition-colors duration-200 hover:text-rijkscyaan hover:underline">
+                        <a href="{{ route('about') }}" class="flex items-center text-white transition-colors duration-200 hover:text-rijksblauw hover:underline">
                             Over woohub
                         </a>
                         <a href="{{ route('contact') }}"
-                            class="text-white transition-colors duration-200 hover:text-rijkscyaan hover:underline">
+                            class="flex items-center text-white transition-colors duration-200 hover:text-rijkscyaan hover:underline">
                             Contact
                         </a>
+
+                        @auth
+                            <a href="{{ route('dashboard') }}"
+                                class="px-4 py-2 font-medium text-white rounded-md border border-white transition-all duration-200 hover:bg-white hover:text-rijksblauw">
+                                Mijn Dashboard
+                            </a>
+                        @else
+                            <a href="{{ route('login') }}"
+                                class="px-4 py-2 font-medium text-white rounded-md border border-white transition-all duration-200 hover:bg-white hover:text-rijksblauw">
+                                Inloggen
+                            </a>
+                        @endauth
                     </nav>
 
 
@@ -110,6 +122,18 @@
                         class="block px-3 py-2 text-white transition-colors duration-200 hover:text-rijkscyaan hover:bg-rijkscyaan">
                         Contact
                     </a>
+
+                    @auth
+                        <a href="{{ route('dashboard') }}"
+                            class="block px-3 py-2 font-medium text-white rounded-md border border-white transition-all duration-200 hover:bg-white hover:text-rijksblauw">
+                            Dashboard
+                        </a>
+                    @else
+                        <a href="{{ route('login') }}"
+                            class="block px-3 py-2 font-medium text-white rounded-md border border-white transition-all duration-200 hover:bg-white hover:text-rijksblauw">
+                            Inloggen
+                        </a>
+                    @endauth
                 </div>
             </div>
         </header>
