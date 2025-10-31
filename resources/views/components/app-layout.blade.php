@@ -55,11 +55,11 @@
 
                     <!-- Main Navigation -->
                     <nav class="hidden md:flex space-x-8">
-                        <a href="{{ route('about') }}" class="flex items-center text-white hover:text-rijksblauw hover:underline transition-colors duration-200">
+                        <a href="{{ route('about') }}" class="flex items-center text-white hover:text-rijkscyaan transition-colors duration-200">
                             Over woohub
                         </a>
                         <a href="{{ route('contact') }}"
-                            class="flex items-center text-white hover:text-rijkscyaan hover:underline transition-colors duration-200">
+                            class="flex items-center text-white hover:text-rijkscyaan transition-colors duration-200">
                             Contact
                         </a>
 
