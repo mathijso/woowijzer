@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\GenerateQuestionSummaries;
 use App\Jobs\ProcessWooRequestDocument;
 use App\Models\WooRequest;
+use App\Services\DocumentLinkingService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -135,12 +137,33 @@ class WooRequestController extends Controller
             'caseManager',
             'questions.documents',
             'documents.submission.internalRequest',
-            'internalRequests.submissions',
+            'internalRequests.submissions.documents',
             'caseTimeline',
             'caseDecision',
         ]);
 
-        return view('woo-requests.show', ['wooRequest' => $wooRequest]);
+        // Calculate progress (used by case managers)
+        $totalQuestions = $wooRequest->questions()->count();
+        /** @phpstan-ignore-next-line */
+        $answeredQuestions = $wooRequest->questions()->answered()->count();
+        $progressPercentage = $totalQuestions > 0
+            ? round(($answeredQuestions / $totalQuestions) * 100, 2)
+            : 0;
+
+        // Get question status breakdown
+        $questionStats = [
+            /** @phpstan-ignore-next-line */
+            'unanswered' => $wooRequest->questions()->unanswered()->count(),
+            /** @phpstan-ignore-next-line */
+            'partially_answered' => $wooRequest->questions()->partiallyAnswered()->count(),
+            'answered' => $answeredQuestions,
+        ];
+
+        return view('woo-requests.show', [
+            'wooRequest' => $wooRequest,
+            'progressPercentage' => $progressPercentage,
+            'questionStats' => $questionStats,
+        ]);
     }
 
     /**
@@ -210,5 +233,101 @@ class WooRequestController extends Controller
         return redirect()
             ->route('woo-requests.show', $wooRequest)
             ->with('success', 'Case manager is toegewezen.');
+    }
+
+    /**
+     * Update the status of a WooRequest (case manager only)
+     */
+    public function updateStatus(Request $request, WooRequest $wooRequest)
+    {
+        $this->authorize('update', $wooRequest);
+
+        $validated = $request->validate([
+            'status' => 'required|in:submitted,in_review,in_progress,completed,rejected',
+        ]);
+
+        $oldStatus = $wooRequest->status;
+        $wooRequest->update([
+            'status' => $validated['status'],
+            'completed_at' => $validated['status'] === 'completed' ? now() : null,
+        ]);
+
+        return back()->with('success', sprintf(
+            'Status is gewijzigd van "%s" naar "%s".',
+            config('woo.woo_request_statuses')[$oldStatus] ?? $oldStatus,
+            config('woo.woo_request_statuses')[$validated['status']] ?? $validated['status']
+        ));
+    }
+
+    /**
+     * Auto-link all documents for a case (case manager only)
+     */
+    public function autoLinkDocuments(WooRequest $wooRequest, DocumentLinkingService $linkingService)
+    {
+        $this->authorize('update', $wooRequest);
+
+        $stats = $linkingService->autoLinkAllDocuments($wooRequest);
+
+        return back()->with('success', sprintf(
+            '%d documenten automatisch gekoppeld (%d koppelingen gemaakt).',
+            $stats['total_documents'],
+            $stats['total_links']
+        ));
+    }
+
+    /**
+     * Generate summaries for all questions (case manager only)
+     */
+    public function generateSummaries(WooRequest $wooRequest)
+    {
+        $this->authorize('update', $wooRequest);
+
+        GenerateQuestionSummaries::dispatch($wooRequest);
+
+        return back()->with('success', 'Samenvattingen worden gegenereerd op de achtergrond.');
+    }
+
+    /**
+     * Generate and download a case report (case manager only)
+     */
+    public function generateReport(WooRequest $wooRequest)
+    {
+        $this->authorize('view', $wooRequest);
+
+        $wooRequest->load([
+            'user',
+            'caseManager',
+            'questions.documents',
+            'documents.submission.internalRequest',
+            'internalRequests.submissions.documents',
+        ]);
+
+        // Calculate statistics
+        $totalQuestions = $wooRequest->questions()->count();
+        $answeredQuestions = $wooRequest->questions()->where('status', 'answered')->count();
+        $progressPercentage = $totalQuestions > 0
+            ? round(($answeredQuestions / $totalQuestions) * 100, 2)
+            : 0;
+
+        $questionStats = [
+            'unanswered' => $wooRequest->questions()->where('status', 'unanswered')->count(),
+            'partially_answered' => $wooRequest->questions()->where('status', 'partially_answered')->count(),
+            'answered' => $answeredQuestions,
+        ];
+
+        // Generate HTML report
+        $html = view('cases.report', [
+            'wooRequest' => $wooRequest,
+            'progressPercentage' => $progressPercentage,
+            'questionStats' => $questionStats,
+        ])->render();
+
+        $filename = sprintf('case-report-%s-%s.html', $wooRequest->id, now()->format('Y-m-d'));
+
+        return response()->streamDownload(function () use ($html) {
+            echo $html;
+        }, $filename, [
+            'Content-Type' => 'text/html; charset=utf-8',
+        ]);
     }
 }
