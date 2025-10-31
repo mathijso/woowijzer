@@ -66,6 +66,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('woo-requests.create-manual');
     Route::post('woo-requests-manual/store', [App\Http\Controllers\WooRequestController::class, 'storeManual'])
         ->name('woo-requests.store-manual');
+    Route::post('woo-requests/extract-case-file', [App\Http\Controllers\WooRequestController::class, 'extractCaseFile'])
+        ->name('woo-requests.extract-case-file');
     Route::post('woo-requests/{wooRequest}/assign-case-manager', [App\Http\Controllers\WooRequestController::class, 'assignCaseManager'])
         ->name('woo-requests.assign-case-manager');
     Route::post('woo-requests/{wooRequest}/pickup', [App\Http\Controllers\WooRequestController::class, 'pickupCase'])

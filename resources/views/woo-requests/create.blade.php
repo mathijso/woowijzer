@@ -53,6 +53,33 @@
                     @enderror
                 </div>
 
+                {{-- Extracted Questions Section (Hidden initially) --}}
+                <div id="extracted-questions-section" class="hidden">
+                    <label class="block text-sm font-medium text-neutral-900 dark:text-white">
+                        Geëxtraheerde vragen
+                        <span class="text-sm font-normal text-neutral-500 dark:text-neutral-400">(U kunt deze bewerken of verwijderen)</span>
+                    </label>
+                    <div id="questions-container" class="mt-2 space-y-2">
+                        <!-- Questions will be dynamically added here -->
+                    </div>
+                    <button type="button" 
+                            id="add-question-btn"
+                            class="mt-2 text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                        + Vraag toevoegen
+                    </button>
+                </div>
+
+                {{-- Loading State --}}
+                <div id="extraction-loading" class="hidden p-4 rounded-lg bg-blue-50 dark:bg-blue-900/10">
+                    <div class="flex items-center">
+                        <svg class="w-5 h-5 mr-3 text-blue-600 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        <span class="text-sm text-blue-700 dark:text-blue-300">Document wordt geanalyseerd...</span>
+                    </div>
+                </div>
+
                 {{-- Document Upload --}}
                 <div>
                     <label for="document" class="block text-sm font-medium text-neutral-900 dark:text-white">
@@ -119,13 +146,121 @@
 
     @push('scripts')
     <script>
-        // Show filename when file is selected
-        document.getElementById('document').addEventListener('change', function(e) {
-            const fileName = e.target.files[0]?.name;
-            if (fileName) {
-                const label = document.querySelector('label[for="document"] span');
-                label.textContent = fileName;
+        let extractedData = null;
+        let questionCount = 0;
+
+        // Show filename and extract case file when file is selected
+        document.getElementById('document').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Update label
+            const label = document.querySelector('label[for="document"] span');
+            label.textContent = file.name;
+
+            // Extract case file information
+            await extractCaseFile(file);
+        });
+
+        async function extractCaseFile(file) {
+            const loadingDiv = document.getElementById('extraction-loading');
+            const questionsSection = document.getElementById('extracted-questions-section');
+            
+            // Show loading state
+            loadingDiv.classList.remove('hidden');
+            questionsSection.classList.add('hidden');
+
+            try {
+                const formData = new FormData();
+                formData.append('document', file);
+                formData.append('_token', '{{ csrf_token() }}');
+
+                const response = await fetch('{{ route("woo-requests.extract-case-file") }}', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    extractedData = data.data;
+                    displayExtractedData(data.data);
+                } else {
+                    alert(data.message || 'Er is een fout opgetreden bij het analyseren van het document.');
+                }
+            } catch (error) {
+                console.error('Extraction error:', error);
+                alert('Er is een fout opgetreden bij het analyseren van het document. Probeer het opnieuw.');
+            } finally {
+                loadingDiv.classList.add('hidden');
             }
+        }
+
+        function displayExtractedData(data) {
+            const titleInput = document.getElementById('title');
+            const descriptionInput = document.getElementById('description');
+            const questionsSection = document.getElementById('extracted-questions-section');
+            const questionsContainer = document.getElementById('questions-container');
+
+            // Pre-fill title if empty (fallback behavior)
+            if (!titleInput.value && data.title) {
+                titleInput.value = data.title;
+            }
+
+            // Pre-fill description if empty (fallback behavior)
+            if (!descriptionInput.value && data.description) {
+                descriptionInput.value = data.description;
+            }
+
+            // Display questions
+            if (data.questions && data.questions.length > 0) {
+                questionsContainer.innerHTML = '';
+                questionCount = 0;
+                data.questions.forEach(question => {
+                    addQuestionField(question);
+                });
+                questionsSection.classList.remove('hidden');
+            }
+        }
+
+        function addQuestionField(questionText = '') {
+            const questionsContainer = document.getElementById('questions-container');
+            const questionId = questionCount++;
+
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'flex items-start gap-2';
+            questionDiv.innerHTML = `
+                <input type="text" 
+                       name="questions[]" 
+                       value="${escapeHtml(questionText)}"
+                       placeholder="Voer een vraag in..."
+                       class="flex-1 px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
+                <button type="button" 
+                        onclick="removeQuestion(this)"
+                        class="px-3 py-2 text-sm text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300">
+                    Verwijder
+                </button>
+            `;
+
+            questionsContainer.appendChild(questionDiv);
+        }
+
+        function removeQuestion(button) {
+            button.closest('div').remove();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Add question button handler
+        document.getElementById('add-question-btn').addEventListener('click', function() {
+            addQuestionField();
         });
     </script>
     @endpush

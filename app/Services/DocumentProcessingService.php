@@ -355,6 +355,65 @@ class DocumentProcessingService
     }
 
     /**
+     * Extract case file information (title, description, questions) from uploaded document
+     */
+    public function extractCaseFile(string $caseId, string $filePath): array
+    {
+        try {
+            if (! file_exists($filePath)) {
+                throw new \Exception("File not found: {$filePath}");
+            }
+
+            $response = Http::timeout($this->timeout)
+                ->attach('file', file_get_contents($filePath), basename($filePath))
+                ->post("{$this->baseUrl}/cases/{$caseId}/extract-case-file");
+
+            if ($response->successful()) {
+                $data = $response->json();
+                Log::info('Extracted case file information from WOO Insight API', [
+                    'case_id' => $caseId,
+                    'question_count' => count($data['questions'] ?? []),
+                ]);
+
+                return $data;
+            }
+
+            throw new \Exception('Failed to extract case file: ' . $response->body());
+        } catch (\Exception $e) {
+            Log::error('Error extracting case file from WOO Insight API', [
+                'case_id' => $caseId,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Get previously extracted case file information
+     */
+    public function getCaseFileExtraction(string $caseId): array
+    {
+        try {
+            $response = Http::timeout($this->timeout)
+                ->get("{$this->baseUrl}/cases/{$caseId}/case-file-extraction");
+
+            if ($response->successful()) {
+                return $response->json();
+            }
+
+            throw new \Exception('Failed to get case file extraction: ' . $response->body());
+        } catch (\Exception $e) {
+            Log::error('Error getting case file extraction from WOO Insight API', [
+                'case_id' => $caseId,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
      * Check if API is available
      */
     public function isAvailable(): bool

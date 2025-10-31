@@ -39,6 +39,10 @@ class WooRequest extends Model
         'description',
         'original_file_path',
         'original_file_content_markdown',
+        'extracted_title',
+        'extracted_description',
+        'extracted_questions',
+        'extracted_at',
         'status',
         'submitted_at',
         'completed_at',
@@ -47,6 +51,8 @@ class WooRequest extends Model
     protected function casts(): array
     {
         return [
+            'extracted_questions' => 'array',
+            'extracted_at' => 'datetime',
             'submitted_at' => 'datetime',
             'completed_at' => 'datetime',
         ];
@@ -198,5 +204,10 @@ class WooRequest extends Model
     public function hasDecision(): bool
     {
         return $this->caseDecision()->exists();
+    }
+
+    public function hasExtractedData(): bool
+    {
+        return $this->extracted_at !== null;
     }
 }
