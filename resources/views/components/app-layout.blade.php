@@ -55,11 +55,6 @@
 
                     <!-- Main Navigation -->
                     <nav class="hidden space-x-8 md:flex">
-
-                        <a href="{{ route('document.summarize') }}"
-                            class="flex items-center px-4 py-2 font-medium text-white bg-white rounded-md transition-all duration-200 text-rijksblauw hover:bg-rijksblauw hover:shadow-md">
-                            Document Samenvatten
-                        </a>
                         <a href="{{ route('about') }}" class="flex items-center text-white transition-colors duration-200 hover:text-rijksblauw hover:underline">
                             Over woohub
                         </a>
