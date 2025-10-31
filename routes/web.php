@@ -62,6 +62,10 @@ Route::post('/api/webhook/processing', [App\Http\Controllers\ApiWebhookControlle
 Route::middleware(['auth'])->group(function () {
     // WOO Requests - for burgers
     Route::resource('woo-requests', App\Http\Controllers\WooRequestController::class);
+    Route::get('woo-requests-manual/create', [App\Http\Controllers\WooRequestController::class, 'createManual'])
+        ->name('woo-requests.create-manual');
+    Route::post('woo-requests-manual/store', [App\Http\Controllers\WooRequestController::class, 'storeManual'])
+        ->name('woo-requests.store-manual');
     Route::post('woo-requests/{wooRequest}/assign-case-manager', [App\Http\Controllers\WooRequestController::class, 'assignCaseManager'])
         ->name('woo-requests.assign-case-manager');
 

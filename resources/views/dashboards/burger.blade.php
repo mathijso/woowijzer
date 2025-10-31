@@ -6,13 +6,22 @@
 <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
     <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Nieuw verzoek</h2>
     <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">Dien een nieuw WOO-verzoek in</p>
-    <a href="{{ route('woo-requests.create') }}"
-       class="inline-flex items-center px-4 py-2 mt-4 text-sm font-semibold text-white rounded-lg bg-rijksblauw hover:bg-rijksdonkerblauw">
-        <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-        </svg>
-        Nieuw WOO-verzoek
-    </a>
+    <div class="flex flex-col gap-3 mt-4 sm:flex-row">
+        <a href="{{ route('woo-requests.create') }}"
+           class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white rounded-lg bg-rijksblauw hover:bg-rijksdonkerblauw">
+            <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
+            </svg>
+            Met document
+        </a>
+        <a href="{{ route('woo-requests.create-manual') }}"
+           class="inline-flex items-center justify-center px-4 py-2 text-sm font-semibold border rounded-lg text-rijksblauw border-rijksblauw hover:bg-rijksblauw hover:text-white dark:text-blue-400 dark:border-blue-400 dark:hover:bg-blue-400 dark:hover:text-white">
+            <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
+            </svg>
+            Handmatig aanmaken
+        </a>
+    </div>
 </div>
 
 {{-- Statistics --}}

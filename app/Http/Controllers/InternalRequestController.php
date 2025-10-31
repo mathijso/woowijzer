@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\InternalRequestSent;
 use App\Models\InternalRequest;
 use App\Models\WooRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class InternalRequestController extends Controller
 {
@@ -70,8 +72,16 @@ class InternalRequestController extends Controller
             'sent_at' => now(),
         ]);
 
-        // TODO: Send email notification
-        // Mail::to($internalRequest->colleague_email)->send(new InternalRequestSent($internalRequest));
+        // Send email notification with upload link
+        Mail::to($internalRequest->colleague_email)->send(new InternalRequestSent($internalRequest));
+
+        // Check if we're coming from cases.show and redirect accordingly
+        $referer = $request->input('referer', 'woo-requests.show');
+        if ($referer === 'cases.show') {
+            return redirect()
+                ->route('cases.show', $wooRequest)
+                ->with('success', 'Upload verzoek is verstuurd naar ' . $internalRequest->colleague_email);
+        }
 
         return redirect()
             ->route('woo-requests.show', $wooRequest)
@@ -106,10 +116,10 @@ class InternalRequestController extends Controller
             return back()->with('error', 'Kan geen reminder sturen voor een verlopen verzoek.');
         }
 
-        // TODO: Send email notification
-        // Mail::to($internalRequest->colleague_email)->send(new InternalRequestSent($internalRequest));
+        // Send email notification
+        Mail::to($internalRequest->colleague_email)->send(new InternalRequestSent($internalRequest));
 
-        return back()->with('success', 'Reminder email is verstuurd.');
+        return back()->with('success', 'Reminder email is verstuurd naar ' . $internalRequest->colleague_email);
     }
 
     /**

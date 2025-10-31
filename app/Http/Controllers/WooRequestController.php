@@ -43,6 +43,14 @@ class WooRequestController extends Controller
     }
 
     /**
+     * Show the form for creating a manual case (without document upload).
+     */
+    public function createManual(): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+    {
+        return view('woo-requests.create-manual');
+    }
+
+    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -72,6 +80,46 @@ class WooRequestController extends Controller
         return redirect()
             ->route('woo-requests.show', $wooRequest)
             ->with('success', 'Uw WOO-verzoek is succesvol ingediend en wordt verwerkt.');
+    }
+
+    /**
+     * Store a manually created case (without document upload).
+     */
+    public function storeManual(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'questions' => 'nullable|array',
+            'questions.*' => 'nullable|string|max:1000',
+        ]);
+
+        // Create WOO request without document
+        $wooRequest = WooRequest::create([
+            'user_id' => Auth::id(),
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'status' => 'submitted',
+            'submitted_at' => now(),
+        ]);
+
+        // Create questions if provided
+        if (! empty($validated['questions'])) {
+            $order = 1;
+            foreach ($validated['questions'] as $questionText) {
+                if (! empty(trim($questionText))) {
+                    $wooRequest->questions()->create([
+                        'question_text' => trim($questionText),
+                        'order' => $order++,
+                        'status' => 'unanswered',
+                    ]);
+                }
+            }
+        }
+
+        return redirect()
+            ->route('woo-requests.show', $wooRequest)
+            ->with('success', 'Uw WOO-verzoek is succesvol aangemaakt.');
     }
 
     /**
