@@ -43,11 +43,19 @@
     color: #154273;
 }
 
+.hover\:text-rijksblauw:hover {
+    color: #154273;
+}
+
 .bg-rijkscyaan {
     background-color: #007bc7;
 }
 
 .text-rijkscyaan {
+    color: #007bc7;
+}
+
+.hover\:text-rijkscyaan:hover {
     color: #007bc7;
 }
 
