@@ -169,3 +169,8 @@
 body {
     font-family: 'RijksoverheidSans', 'Arial', sans-serif;
 }
+
+/* Make all buttons have pointer cursor */
+button {
+    cursor: pointer;
+}
