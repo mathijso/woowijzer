@@ -108,6 +108,8 @@ Route::middleware(['auth'])->group(function () {
     // Case-scoped Questions
     Route::get('questions', [App\Http\Controllers\QuestionController::class, 'index'])
         ->name('questions.index');
+    Route::get('case/{wooRequest}/questions/{question}', [App\Http\Controllers\QuestionController::class, 'show'])
+        ->name('cases.questions.show');
     Route::put('case/{wooRequest}/questions/{question}', [App\Http\Controllers\QuestionController::class, 'update'])
         ->name('cases.questions.update');
     Route::post('case/{wooRequest}/questions/{question}/generate-summary', [App\Http\Controllers\QuestionController::class, 'generateSummary'])

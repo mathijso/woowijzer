@@ -63,14 +63,83 @@ class ProcessUploadedDocument implements ShouldQueue
             // Ensure submission exists in API
             $processingService->ensureSubmission($submission);
 
-            // Upload document to API (processing happens synchronously)
+            // Upload document to API (processing happens asynchronously in background)
             $uploadResult = $processingService->uploadDocument($this->document);
+            $documentAlreadyExists = isset($uploadResult['already_exists']) && $uploadResult['already_exists'];
+
             Log::info('Document uploaded successfully', [
                 'document_id' => $this->document->id,
                 'upload_result' => $uploadResult,
+                'already_exists' => $documentAlreadyExists,
             ]);
 
-            // Fetch detailed document information
+            // Poll document status until processing is complete
+            // Even if document already existed, it might still be processing
+            // API docs: processing typically takes 5-15 seconds, can be up to 120 seconds
+            $maxWaitTime = 120; // seconds (2 minutes)
+            $pollInterval = 2; // seconds
+            $maxAttempts = (int) ($maxWaitTime / $pollInterval); // 60 attempts max
+            $attempt = 0;
+            $statusCompleted = false;
+
+            Log::info('Polling document processing status', [
+                'document_id' => $this->document->id,
+                'external_document_id' => $this->document->external_document_id,
+                'max_wait_time' => $maxWaitTime,
+                'poll_interval' => $pollInterval,
+            ]);
+
+            while ($attempt < $maxAttempts && ! $statusCompleted) {
+                $attempt++;
+                sleep($pollInterval);
+
+                try {
+                    $statusData = $processingService->getDocumentStatus($this->document->external_document_id);
+                    $status = $statusData['status'] ?? 'unknown';
+
+                    Log::debug('Document status check', [
+                        'document_id' => $this->document->id,
+                        'attempt' => $attempt,
+                        'status' => $status,
+                        'elapsed_seconds' => $attempt * $pollInterval,
+                    ]);
+
+                    if ($status === 'completed') {
+                        $statusCompleted = true;
+                        Log::info('Document processing completed', [
+                            'document_id' => $this->document->id,
+                            'attempts' => $attempt,
+                            'elapsed_seconds' => $attempt * $pollInterval,
+                        ]);
+                    } elseif ($status === 'failed') {
+                        throw new \Exception('Document processing failed on API side');
+                    }
+                    // If status is 'uploaded' or 'processing', continue polling
+                } catch (\Exception $e) {
+                    // If status endpoint returns 404, document might still be processing
+                    // Continue polling unless we're at max attempts
+                    if ($attempt >= $maxAttempts) {
+                        Log::warning('Document status polling reached max attempts, proceeding anyway', [
+                            'document_id' => $this->document->id,
+                            'attempts' => $attempt,
+                            'error' => $e->getMessage(),
+                        ]);
+                        // Break and try to fetch details anyway
+                        break;
+                    }
+                    // Otherwise continue polling
+                    continue;
+                }
+            }
+
+            if (! $statusCompleted) {
+                Log::warning('Document processing did not complete within timeout, fetching details anyway', [
+                    'document_id' => $this->document->id,
+                    'elapsed_seconds' => $attempt * $pollInterval,
+                ]);
+            }
+
+            // Fetch detailed document information (now that processing should be done)
             $documentDetails = $processingService->getDocumentDetails($this->document->external_document_id);
 
             // Fetch markdown content

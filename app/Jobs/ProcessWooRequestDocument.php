@@ -42,27 +42,87 @@ class ProcessWooRequestDocument implements ShouldQueue
             ]);
 
             // Ensure case exists in WOO Insight API
-            $processingService->ensureCase($this->wooRequest);
+            // This also extracts and stores case_file data if available (new API format)
+            $caseData = $processingService->ensureCase($this->wooRequest);
 
-            // Get the full file path
-            $filePath = \Illuminate\Support\Facades\Storage::disk('woo-documents')->path($this->wooRequest->original_file_path);
+            // Refresh model to get any updates from ensureCase
+            $this->wooRequest->refresh();
 
-            // Extract case file information through API
-            $caseId = (string) $this->wooRequest->id;
-            $result = $processingService->extractCaseFile($caseId, $filePath);
+            // If case_file data wasn't in the case response, extract it separately
+            if (empty($this->wooRequest->extracted_at)) {
+                $filePath = \Illuminate\Support\Facades\Storage::disk('woo-documents')->path($this->wooRequest->original_file_path);
+                $caseId = (string) $this->wooRequest->id;
+                
+                // Start extraction (may be async)
+                $result = $processingService->extractCaseFile($caseId, $filePath);
 
-            // Store extracted case file data
-            $this->wooRequest->update([
-                'extracted_title' => $result['title'] ?? null,
-                'extracted_description' => $result['description'] ?? null,
-                'extracted_at' => now(),
-            ]);
+                // Check if extraction is async (new API behavior)
+                if (isset($result['status']) && $result['status'] === 'extraction_started') {
+                    Log::info('Case file extraction started in background, polling for results');
+                    
+                    // Poll for results (max 30 seconds, check every 2 seconds)
+                    $maxAttempts = 15;
+                    $attempt = 0;
+                    $extracted = false;
 
-            // Extract and create questions
-            if (! empty($result['questions'])) {
-                $questionService->extractQuestionsFromApiResponse($this->wooRequest, $result);
-            } elseif ($this->wooRequest->original_file_content_markdown) {
-                // Fallback: extract questions from markdown
+                    while ($attempt < $maxAttempts && ! $extracted) {
+                        $attempt++;
+                        sleep(2); // Wait 2 seconds between attempts
+
+                        try {
+                            // Use suppressNotFoundErrors=true to avoid error logs during polling
+                            $result = $processingService->getCaseFileExtraction($caseId, true);
+                            
+                            // Check if we have valid data
+                            if (! empty($result['title']) || ! empty($result['questions'])) {
+                                $extracted = true;
+                                Log::info('Case file extraction completed', [
+                                    'attempt' => $attempt,
+                                    'time_seconds' => $attempt * 2,
+                                    'question_count' => count($result['questions'] ?? []),
+                                ]);
+                            }
+                        } catch (\Exception $e) {
+                            // Expected during polling - extraction not ready yet
+                            if ($attempt >= $maxAttempts) {
+                                Log::warning('Case file extraction timeout after ' . $maxAttempts . ' attempts (' . ($maxAttempts * 2) . ' seconds)');
+                            }
+                        }
+                    }
+
+                    if (! $extracted) {
+                        Log::warning('No case file data extracted, continuing without questions');
+                        $result = []; // Reset to empty so we don't store invalid data
+                    }
+                }
+
+                // Store extracted case file data
+                $this->wooRequest->update([
+                    'extracted_title' => $result['title'] ?? null,
+                    'extracted_description' => $result['description'] ?? null,
+                    'extracted_at' => now(),
+                ]);
+
+                // Extract questions from API response
+                if (! empty($result['questions'])) {
+                    $questionService->extractQuestionsFromApiResponse($this->wooRequest, $result);
+                }
+            } else {
+                Log::info('Case file data already extracted from case response', [
+                    'woo_request_id' => $this->wooRequest->id,
+                    'question_count' => count($this->wooRequest->extracted_questions ?? []),
+                ]);
+
+                // Create questions from already extracted data
+                if (! empty($this->wooRequest->extracted_questions)) {
+                    $questionService->extractQuestionsFromApiResponse($this->wooRequest, [
+                        'questions' => $this->wooRequest->extracted_questions,
+                    ]);
+                }
+            }
+
+            // Fallback: extract questions from markdown if no questions yet
+            if ($this->wooRequest->questions()->count() === 0 && $this->wooRequest->original_file_content_markdown) {
                 $questionService->extractQuestionsFromMarkdown(
                     $this->wooRequest,
                     $this->wooRequest->original_file_content_markdown
