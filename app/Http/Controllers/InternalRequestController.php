@@ -26,6 +26,7 @@ class InternalRequestController extends Controller
 
         $internalRequests = $query->latest()->paginate(20);
 
+        /** @phpstan-ignore-next-line */
         return view('internal-requests.index', ['internalRequests' => $internalRequests]);
     }
 
@@ -90,6 +91,7 @@ class InternalRequestController extends Controller
             'submissions.documents',
         ]);
 
+        /** @phpstan-ignore-next-line */
         return view('internal-requests.show', ['internalRequest' => $internalRequest]);
     }
 

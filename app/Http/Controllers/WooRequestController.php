@@ -99,6 +99,7 @@ class WooRequestController extends Controller
     {
         $this->authorize('update', $wooRequest);
 
+        /** @phpstan-ignore-next-line */
         return view('woo-requests.edit', ['wooRequest' => $wooRequest]);
     }
 

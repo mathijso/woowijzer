@@ -55,9 +55,9 @@ class ProcessUploadedDocument implements ShouldQueue
 
             // Update submission's internal request status
             $submission = $this->document->submission;
-            $internalRequest = $submission->internalRequest;
+            $internalRequest = $submission?->internalRequest;
 
-            if ($internalRequest->status === 'pending') {
+            if ($internalRequest && $internalRequest->status === 'pending') {
                 $internalRequest->update(['status' => 'submitted']);
             }
         } catch (\Exception $e) {

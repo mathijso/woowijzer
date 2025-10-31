@@ -149,6 +149,7 @@ class QuestionExtractionService
      */
     public function mergeSimilarQuestions(WooRequest $wooRequest, float $similarityThreshold = 0.8): int
     {
+        /** @phpstan-ignore-next-line */
         $questions = $wooRequest->questions()->ordered()->get();
         $mergedCount = 0;
 

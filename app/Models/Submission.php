@@ -6,6 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property int $internal_request_id
+ * @property string|null $submitted_by_email
+ * @property string|null $submitted_by_name
+ * @property string|null $submission_notes
+ * @property string|null $ip_address
+ * @property string|null $user_agent
+ * @property int $documents_count
+ * @property-read InternalRequest $internalRequest
+ * @property-read \Illuminate\Support\Collection<int, Document> $documents
+ */
 class Submission extends Model
 {
     protected $fillable = [

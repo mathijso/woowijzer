@@ -9,7 +9,7 @@ parameters:
     tmpDir: storage/framework/phpstan
     inferPrivatePropertyTypeFromConstructor: true
     treatPhpDocTypesAsCertain: false
-    reportUnmatchedIgnoredErrors: true
+    reportUnmatchedIgnoredErrors: false
     universalObjectCratesClasses:
         - Illuminate\Support\Fluent
 

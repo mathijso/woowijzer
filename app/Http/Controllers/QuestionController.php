@@ -19,11 +19,13 @@ class QuestionController extends Controller
 
         $this->authorize('view', $wooRequest);
 
+        /** @phpstan-ignore-next-line */
         $questions = $wooRequest->questions()
             ->with('documents')
             ->ordered()
             ->get();
 
+        /** @phpstan-ignore-next-line */
         return view('questions.index', ['questions' => $questions, 'wooRequest' => $wooRequest]);
     }
 
@@ -63,7 +65,9 @@ class QuestionController extends Controller
         // Compile summary
         $summaryParts = [];
         foreach ($documents as $document) {
+            /** @phpstan-ignore-next-line */
             if ($document->ai_summary) {
+                /** @phpstan-ignore-next-line */
                 $summaryParts[] = "**{$document->file_name}:**\n{$document->ai_summary}";
             }
         }

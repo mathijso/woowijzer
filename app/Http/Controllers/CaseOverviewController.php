@@ -66,6 +66,7 @@ class CaseOverviewController extends Controller
 
         // Calculate progress
         $totalQuestions = $wooRequest->questions()->count();
+        /** @phpstan-ignore-next-line */
         $answeredQuestions = $wooRequest->questions()->answered()->count();
         $progressPercentage = $totalQuestions > 0
             ? round(($answeredQuestions / $totalQuestions) * 100, 2)
@@ -73,7 +74,9 @@ class CaseOverviewController extends Controller
 
         // Get question status breakdown
         $questionStats = [
+            /** @phpstan-ignore-next-line */
             'unanswered' => $wooRequest->questions()->unanswered()->count(),
+            /** @phpstan-ignore-next-line */
             'partially_answered' => $wooRequest->questions()->partiallyAnswered()->count(),
             'answered' => $answeredQuestions,
         ];

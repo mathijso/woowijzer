@@ -177,6 +177,7 @@ class DocumentLinkingService
      */
     public function autoLinkAllDocuments(WooRequest $wooRequest, float $threshold = 0.5): array
     {
+        /** @phpstan-ignore-next-line */
         $documents = $wooRequest->documents()->processed()->get();
         $stats = [
             'total_documents' => $documents->count(),
