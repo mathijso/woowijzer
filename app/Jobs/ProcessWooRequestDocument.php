@@ -51,6 +51,13 @@ class ProcessWooRequestDocument implements ShouldQueue
             $caseId = (string) $this->wooRequest->id;
             $result = $processingService->extractCaseFile($caseId, $filePath);
 
+            // Store extracted case file data
+            $this->wooRequest->update([
+                'extracted_title' => $result['title'] ?? null,
+                'extracted_description' => $result['description'] ?? null,
+                'extracted_at' => now(),
+            ]);
+
             // Extract and create questions
             if (! empty($result['questions'])) {
                 $questionService->extractQuestionsFromApiResponse($this->wooRequest, $result);

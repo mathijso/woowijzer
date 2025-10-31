@@ -79,6 +79,7 @@ class ProcessUploadedDocument implements ShouldQueue
             // Extract data from API responses
             $contentMarkdown = $markdownData['markdown_text'] ?? null;
             $aiSummary = $documentDetails['processing']['summary'] ?? null;
+            $relevanceScore = $documentDetails['processing']['relevance_score'] ?? null;
             $timelineEvents = $documentDetails['timeline'] ?? [];
             $processingMetadata = [
                 'confidence_score' => $documentDetails['processing']['confidence_score'] ?? null,
@@ -93,6 +94,7 @@ class ProcessUploadedDocument implements ShouldQueue
             $this->document->update([
                 'content_markdown' => $contentMarkdown,
                 'ai_summary' => $aiSummary,
+                'relevance_score' => $relevanceScore,
                 'timeline_events_json' => $timelineEvents,
                 'processing_metadata_json' => $processingMetadata,
                 'processed_at' => now(),

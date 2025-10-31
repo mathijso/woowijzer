@@ -68,7 +68,7 @@ class DocumentProcessingService
             // Parse error response for better error messages
             $errorBody = $response->body();
             $statusCode = $response->status();
-            
+
             // Check for database schema mismatch errors
             if (str_contains($errorBody, 'UndefinedColumn') || str_contains($errorBody, 'does not exist')) {
                 // This error typically occurs AFTER the case is created successfully,
@@ -81,10 +81,10 @@ class DocumentProcessingService
                         'error_body' => $errorBody,
                         'note' => 'The case was likely created but API failed to serialize response due to missing database columns',
                     ]);
-                    
+
                     // Update local record and return minimal success response
                     $wooRequest->update(['woo_insight_case_id' => $caseId]);
-                    
+
                     return [
                         'case_id' => $caseId,
                         'title' => $wooRequest->title,
@@ -93,7 +93,7 @@ class DocumentProcessingService
                         'warning' => 'Case created but API response serialization failed due to schema mismatch',
                     ];
                 }
-                
+
                 Log::error('WOO Insight API database schema mismatch detected', [
                     'case_id' => $caseId,
                     'status_code' => $statusCode,
@@ -299,6 +299,40 @@ class DocumentProcessingService
         } catch (\Exception $e) {
             Log::error('Error getting document markdown from WOO Insight API', [
                 'external_document_id' => $externalDocumentId,
+                'error' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Get comprehensive case status including relevance statistics
+     */
+    public function getCaseStatus(WooRequest $wooRequest): array
+    {
+        try {
+            $caseId = (string) $wooRequest->id;
+
+            $response = Http::timeout($this->timeout)
+                ->get("{$this->baseUrl}/cases/{$caseId}/status");
+
+            if ($response->successful()) {
+                $data = $response->json();
+                Log::info('Retrieved case status from WOO Insight API', [
+                    'case_id' => $caseId,
+                    'overall_status' => $data['overall_status'] ?? null,
+                    'document_count' => $data['document_count'] ?? 0,
+                    'relevance_stats' => $data['relevance_stats'] ?? null,
+                ]);
+
+                return $data;
+            }
+
+            throw new \Exception('Failed to get case status: ' . $response->body());
+        } catch (\Exception $e) {
+            Log::error('Error getting case status from WOO Insight API', [
+                'case_id' => $wooRequest->id,
                 'error' => $e->getMessage(),
             ]);
 
