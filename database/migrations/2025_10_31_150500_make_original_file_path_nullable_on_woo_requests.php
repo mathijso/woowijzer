@@ -10,8 +10,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Use raw SQL to avoid requiring doctrine/dbal for change()
-        DB::statement('ALTER TABLE `woo_requests` MODIFY `original_file_path` VARCHAR(255) NULL');
+        $driver = DB::connection()->getDriverName();
+        
+        if ($driver === 'sqlite') {
+            // SQLite doesn't support MODIFY, but columns are nullable by default
+            // So we don't need to do anything for SQLite
+            // However, if we need to ensure it's nullable, we can update existing NOT NULL constraints
+            // For now, SQLite columns are nullable by default unless explicitly set
+            return;
+        }
+        
+        if ($driver === 'mysql') {
+            DB::statement('ALTER TABLE `woo_requests` MODIFY `original_file_path` VARCHAR(255) NULL');
+        } elseif ($driver === 'pgsql') {
+            DB::statement('ALTER TABLE woo_requests ALTER COLUMN original_file_path DROP NOT NULL');
+        }
     }
 
     /**
@@ -19,8 +32,18 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Revert to NOT NULL with empty string default to prevent failures
-        DB::statement("ALTER TABLE `woo_requests` MODIFY `original_file_path` VARCHAR(255) NOT NULL");
+        $driver = DB::connection()->getDriverName();
+        
+        if ($driver === 'sqlite') {
+            // SQLite doesn't support MODIFY
+            return;
+        }
+        
+        if ($driver === 'mysql') {
+            DB::statement("ALTER TABLE `woo_requests` MODIFY `original_file_path` VARCHAR(255) NOT NULL");
+        } elseif ($driver === 'pgsql') {
+            DB::statement('ALTER TABLE woo_requests ALTER COLUMN original_file_path SET NOT NULL');
+        }
     }
 };
 

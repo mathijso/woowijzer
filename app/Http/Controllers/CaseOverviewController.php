@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\GenerateQuestionSummaries;
+use App\Models\User;
 use App\Models\WooRequest;
 use App\Services\DocumentLinkingService;
 use Illuminate\Http\Request;
@@ -46,7 +47,14 @@ class CaseOverviewController extends Controller
             'in_progress' => WooRequest::where('status', 'in_progress')->count(),
         ];
 
-        return view('cases.index', ['wooRequests' => $wooRequests, 'stats' => $stats]);
+        // Get all case managers for assignment dropdown
+        $caseManagers = User::caseManagers()->orderBy('name')->get();
+
+        return view('cases.index', [
+            'wooRequests' => $wooRequests,
+            'stats' => $stats,
+            'caseManagers' => $caseManagers,
+        ]);
     }
 
     /**
@@ -180,5 +188,53 @@ class CaseOverviewController extends Controller
         }, $filename, [
             'Content-Type' => 'text/html; charset=utf-8',
         ]);
+    }
+
+    /**
+     * Pick up a case (assign to current case manager)
+     */
+    public function pickupCase(WooRequest $wooRequest)
+    {
+        $user = Auth::user();
+
+        if (! $user->isCaseManager()) {
+            abort(403, 'Alleen case managers kunnen cases oppakken.');
+        }
+
+        $this->authorize('update', $wooRequest);
+
+        $wooRequest->update(['case_manager_id' => $user->id]);
+
+        return back()->with('success', 'Case is toegewezen aan u.');
+    }
+
+    /**
+     * Assign case to another case manager
+     */
+    public function assignCase(Request $request, WooRequest $wooRequest)
+    {
+        $user = Auth::user();
+
+        if (! $user->isCaseManager()) {
+            abort(403, 'Alleen case managers kunnen cases toewijzen.');
+        }
+
+        $this->authorize('update', $wooRequest);
+
+        $validated = $request->validate([
+            'case_manager_id' => 'nullable|exists:users,id',
+        ]);
+
+        // If case_manager_id is provided, verify it's a case manager
+        if ($validated['case_manager_id']) {
+            $caseManager = User::caseManagers()->findOrFail($validated['case_manager_id']);
+            $wooRequest->update(['case_manager_id' => $caseManager->id]);
+            $message = sprintf('Case is toegewezen aan %s.', $caseManager->name);
+        } else {
+            $wooRequest->update(['case_manager_id' => null]);
+            $message = 'Case is niet meer toegewezen.';
+        }
+
+        return back()->with('success', $message);
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Support\Str;
 
 /**
  * @property int $id
+ * @property string $uuid
  * @property int $woo_request_id
  * @property int $case_manager_id
  * @property string $colleague_email
@@ -26,6 +27,7 @@ use Illuminate\Support\Str;
 class InternalRequest extends Model
 {
     protected $fillable = [
+        'uuid',
         'woo_request_id',
         'case_manager_id',
         'colleague_email',
@@ -48,6 +50,14 @@ class InternalRequest extends Model
     }
 
     /**
+     * Route key name for model binding
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
+    /**
      * Boot method
      */
     protected static function boot()
@@ -55,6 +65,10 @@ class InternalRequest extends Model
         parent::boot();
 
         static::creating(function ($internalRequest): void {
+            if (empty($internalRequest->uuid)) {
+                $internalRequest->uuid = (string) Str::uuid();
+            }
+
             if (empty($internalRequest->upload_token)) {
                 $internalRequest->upload_token = Str::random(64);
             }

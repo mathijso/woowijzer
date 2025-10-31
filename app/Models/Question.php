@@ -5,9 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
+ * @property string $uuid
  * @property int $woo_request_id
  * @property string $question_text
  * @property int|null $order
@@ -24,12 +26,35 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Question extends Model
 {
     protected $fillable = [
+        'uuid',
         'woo_request_id',
         'question_text',
         'order',
         'status',
         'ai_summary',
     ];
+
+    /**
+     * Route key name for model binding
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
+    /**
+     * Boot method
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($question): void {
+            if (empty($question->uuid)) {
+                $question->uuid = (string) Str::uuid();
+            }
+        });
+    }
 
     /**
      * Relationships

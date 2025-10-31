@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\GenerateQuestionSummaries;
 use App\Jobs\ProcessWooRequestDocument;
+use App\Models\User;
 use App\Models\WooRequest;
 use App\Services\DocumentLinkingService;
 use Illuminate\Http\Request;
@@ -66,22 +67,23 @@ class WooRequestController extends Controller
         // Store the uploaded file
         $filePath = $request->file('document')->store('woo-requests', 'woo-documents');
 
-        // Create WOO request
+        // Create WOO request with pending processing status
         $wooRequest = WooRequest::create([
             'user_id' => Auth::id(),
             'title' => $validated['title'],
             'description' => $validated['description'],
             'original_file_path' => $filePath,
             'status' => 'submitted',
+            'processing_status' => 'pending',
             'submitted_at' => now(),
         ]);
 
-        // Dispatch job to process document
+        // Dispatch job to process document in the background
         ProcessWooRequestDocument::dispatch($wooRequest);
 
         return redirect()
             ->route('woo-requests.show', $wooRequest)
-            ->with('success', 'Uw WOO-verzoek is succesvol ingediend en wordt verwerkt.');
+            ->with('success', 'Uw WOO-verzoek is succesvol ingediend. Het document wordt verwerkt op de achtergrond.');
     }
 
     /**
@@ -159,10 +161,16 @@ class WooRequestController extends Controller
             'answered' => $answeredQuestions,
         ];
 
+        // Get all case managers for assignment dropdown (if user is case manager)
+        $caseManagers = Auth::user()->isCaseManager()
+            ? User::caseManagers()->orderBy('name')->get()
+            : collect();
+
         return view('woo-requests.show', [
             'wooRequest' => $wooRequest,
             'progressPercentage' => $progressPercentage,
             'questionStats' => $questionStats,
+            'caseManagers' => $caseManagers,
         ]);
     }
 
@@ -225,14 +233,42 @@ class WooRequestController extends Controller
         $this->authorize('update', $wooRequest);
 
         $validated = $request->validate([
-            'case_manager_id' => 'required|exists:users,id',
+            'case_manager_id' => 'nullable|exists:users,id',
         ]);
 
-        $wooRequest->update($validated);
+        // If case_manager_id is provided, verify it's a case manager
+        if ($validated['case_manager_id']) {
+            $caseManager = User::caseManagers()->findOrFail($validated['case_manager_id']);
+            $wooRequest->update(['case_manager_id' => $caseManager->id]);
+            $message = sprintf('Case is toegewezen aan %s.', $caseManager->name);
+        } else {
+            $wooRequest->update(['case_manager_id' => null]);
+            $message = 'Case is niet meer toegewezen.';
+        }
 
         return redirect()
             ->route('woo-requests.show', $wooRequest)
-            ->with('success', 'Case manager is toegewezen.');
+            ->with('success', $message);
+    }
+
+    /**
+     * Pick up a case (assign to current case manager)
+     */
+    public function pickupCase(WooRequest $wooRequest)
+    {
+        $user = Auth::user();
+
+        if (! $user->isCaseManager()) {
+            abort(403, 'Alleen case managers kunnen cases oppakken.');
+        }
+
+        $this->authorize('update', $wooRequest);
+
+        $wooRequest->update(['case_manager_id' => $user->id]);
+
+        return redirect()
+            ->route('woo-requests.show', $wooRequest)
+            ->with('success', 'Case is toegewezen aan u.');
     }
 
     /**
@@ -330,4 +366,47 @@ class WooRequestController extends Controller
             'Content-Type' => 'text/html; charset=utf-8',
         ]);
     }
+
+    /**
+     * Retry processing a failed WOO request document (case manager only)
+     */
+    public function retryProcessing(WooRequest $wooRequest)
+    {
+        $this->authorize('update', $wooRequest);
+
+        if (! $wooRequest->hasProcessingFailed()) {
+            return back()->with('error', 'Dit document kan niet opnieuw verwerkt worden.');
+        }
+
+        // Reset processing status to pending
+        $wooRequest->update([
+            'processing_status' => 'pending',
+            'processing_error' => null,
+        ]);
+
+        // Dispatch job to process document again
+        ProcessWooRequestDocument::dispatch($wooRequest);
+
+        return back()->with('success', 'Documentverwerking is opnieuw gestart.');
+    }
+
+    /**
+     * Download the original WOO request document
+     */
+    public function downloadDocument(WooRequest $wooRequest)
+    {
+        $this->authorize('view', $wooRequest);
+
+        if (! $wooRequest->original_file_path) {
+            abort(404, 'Document niet gevonden.');
+        }
+
+        $fileName = $wooRequest->title . '.pdf';
+
+        return Storage::disk('woo-documents')->download(
+            $wooRequest->original_file_path,
+            $fileName
+        );
+    }
+
 }

@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
+ * @property string $uuid
  * @property string|null $woo_insight_case_id
  * @property int $user_id
  * @property int|null $case_manager_id
@@ -32,6 +34,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class WooRequest extends Model
 {
     protected $fillable = [
+        'uuid',
         'woo_insight_case_id',
         'user_id',
         'case_manager_id',
@@ -39,7 +42,14 @@ class WooRequest extends Model
         'description',
         'original_file_path',
         'original_file_content_markdown',
+        'extracted_title',
+        'extracted_description',
+        'extracted_questions',
+        'extracted_at',
         'status',
+        'processing_status',
+        'processing_error',
+        'processed_at',
         'submitted_at',
         'completed_at',
     ];
@@ -47,9 +57,34 @@ class WooRequest extends Model
     protected function casts(): array
     {
         return [
+            'extracted_questions' => 'array',
+            'extracted_at' => 'datetime',
+            'processed_at' => 'datetime',
             'submitted_at' => 'datetime',
             'completed_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Route key name for model binding
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
+    /**
+     * Boot method
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($wooRequest): void {
+            if (empty($wooRequest->uuid)) {
+                $wooRequest->uuid = (string) Str::uuid();
+            }
+        });
     }
 
     /**
@@ -198,5 +233,52 @@ class WooRequest extends Model
     public function hasDecision(): bool
     {
         return $this->caseDecision()->exists();
+    }
+
+    public function hasExtractedData(): bool
+    {
+        return $this->extracted_at !== null;
+    }
+
+    public function isProcessing(): bool
+    {
+        return $this->processing_status === 'processing';
+    }
+
+    public function hasProcessingFailed(): bool
+    {
+        return $this->processing_status === 'failed';
+    }
+
+    public function isProcessed(): bool
+    {
+        return $this->processing_status === 'completed';
+    }
+
+    public function isPendingProcessing(): bool
+    {
+        return $this->processing_status === 'pending';
+    }
+
+    public function getProcessingStatusBadgeClass(): string
+    {
+        return match ($this->processing_status) {
+            'pending' => 'text-gray-700 bg-gray-100 dark:bg-gray-900/20 dark:text-gray-400',
+            'processing' => 'text-blue-700 bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400',
+            'completed' => 'text-green-700 bg-green-100 dark:bg-green-900/20 dark:text-green-400',
+            'failed' => 'text-red-700 bg-red-100 dark:bg-red-900/20 dark:text-red-400',
+            default => 'text-neutral-700 bg-neutral-100 dark:bg-neutral-900/20 dark:text-neutral-300',
+        };
+    }
+
+    public function getProcessingStatusLabel(): string
+    {
+        return match ($this->processing_status) {
+            'pending' => 'In wachtrij',
+            'processing' => 'Wordt verwerkt',
+            'completed' => 'Verwerkt',
+            'failed' => 'Verwerking mislukt',
+            default => ucfirst((string) $this->processing_status),
+        };
     }
 }

@@ -68,6 +68,8 @@ Route::middleware(['auth'])->group(function () {
         ->name('woo-requests.store-manual');
     Route::post('woo-requests/{wooRequest}/assign-case-manager', [App\Http\Controllers\WooRequestController::class, 'assignCaseManager'])
         ->name('woo-requests.assign-case-manager');
+    Route::post('woo-requests/{wooRequest}/pickup', [App\Http\Controllers\WooRequestController::class, 'pickupCase'])
+        ->name('woo-requests.pickup');
 
     // Case manager actions on WOO requests
     Route::post('woo-requests/{wooRequest}/update-status', [App\Http\Controllers\WooRequestController::class, 'updateStatus'])
@@ -78,34 +80,91 @@ Route::middleware(['auth'])->group(function () {
         ->name('woo-requests.generate-summaries');
     Route::get('woo-requests/{wooRequest}/generate-report', [App\Http\Controllers\WooRequestController::class, 'generateReport'])
         ->name('woo-requests.generate-report');
+    Route::post('woo-requests/{wooRequest}/retry-processing', [App\Http\Controllers\WooRequestController::class, 'retryProcessing'])
+        ->name('woo-requests.retry-processing');
+    Route::get('woo-requests/{wooRequest}/download-document', [App\Http\Controllers\WooRequestController::class, 'downloadDocument'])
+        ->name('woo-requests.download-document');
 
-    // Questions
-    Route::get('questions', [App\Http\Controllers\QuestionController::class, 'index'])
-        ->name('questions.index');
-    Route::put('questions/{question}', [App\Http\Controllers\QuestionController::class, 'update'])
-        ->name('questions.update');
-    Route::post('questions/{question}/generate-summary', [App\Http\Controllers\QuestionController::class, 'generateSummary'])
-        ->name('questions.generate-summary');
-    Route::delete('questions/{question}', [App\Http\Controllers\QuestionController::class, 'destroy'])
-        ->name('questions.destroy');
-
-    // Documents
+    // Case-scoped Documents
     Route::get('documents', [App\Http\Controllers\DocumentController::class, 'index'])
         ->name('documents.index');
-    Route::get('documents/{document}', [App\Http\Controllers\DocumentController::class, 'show'])
-        ->name('documents.show');
-    Route::delete('documents/{document}', [App\Http\Controllers\DocumentController::class, 'destroy'])
-        ->name('documents.destroy');
-    Route::get('documents/{document}/download', [App\Http\Controllers\DocumentController::class, 'download'])
-        ->name('documents.download');
+    Route::get('case/{wooRequest}/documents', [App\Http\Controllers\DocumentController::class, 'index'])
+        ->name('cases.documents.index');
+    Route::get('case/{wooRequest}/documents/{document}', [App\Http\Controllers\DocumentController::class, 'show'])
+        ->name('cases.documents.show');
+    Route::delete('case/{wooRequest}/documents/{document}', [App\Http\Controllers\DocumentController::class, 'destroy'])
+        ->name('cases.documents.destroy');
+    Route::get('case/{wooRequest}/documents/{document}/download', [App\Http\Controllers\DocumentController::class, 'download'])
+        ->name('cases.documents.download');
 
-    // Document-Question linking
-    Route::post('documents/{document}/link-to-question', [App\Http\Controllers\DocumentController::class, 'linkToQuestion'])
-        ->name('documents.link-to-question');
-    Route::delete('documents/{document}/unlink-from-question/{question}', [App\Http\Controllers\DocumentController::class, 'unlinkFromQuestion'])
-        ->name('documents.unlink-from-question');
-    Route::post('documents/{document}/confirm-link/{question}', [App\Http\Controllers\DocumentController::class, 'confirmLink'])
-        ->name('documents.confirm-link');
+    // Document-Question linking (case-scoped)
+    Route::post('case/{wooRequest}/documents/{document}/link-to-question', [App\Http\Controllers\DocumentController::class, 'linkToQuestion'])
+        ->name('cases.documents.link-to-question');
+    Route::delete('case/{wooRequest}/documents/{document}/unlink-from-question/{question}', [App\Http\Controllers\DocumentController::class, 'unlinkFromQuestion'])
+        ->name('cases.documents.unlink-from-question');
+    Route::post('case/{wooRequest}/documents/{document}/confirm-link/{question}', [App\Http\Controllers\DocumentController::class, 'confirmLink'])
+        ->name('cases.documents.confirm-link');
+
+    // Case-scoped Questions
+    Route::get('questions', [App\Http\Controllers\QuestionController::class, 'index'])
+        ->name('questions.index');
+    Route::put('case/{wooRequest}/questions/{question}', [App\Http\Controllers\QuestionController::class, 'update'])
+        ->name('cases.questions.update');
+    Route::post('case/{wooRequest}/questions/{question}/generate-summary', [App\Http\Controllers\QuestionController::class, 'generateSummary'])
+        ->name('cases.questions.generate-summary');
+    Route::delete('case/{wooRequest}/questions/{question}', [App\Http\Controllers\QuestionController::class, 'destroy'])
+        ->name('cases.questions.destroy');
+
+    // Backwards compatibility: Redirect old ID-based routes to UUID routes
+    Route::get('documents/{id}', function ($id) {
+        if (is_numeric($id)) {
+            $document = App\Models\Document::find($id);
+            if ($document && $document->wooRequest) {
+                return redirect()->route('cases.documents.show', [$document->wooRequest, $document], 301);
+            }
+        }
+        abort(404);
+    })->where('id', '[0-9]+')->name('documents.show.legacy');
+
+    Route::get('woo-requests/{id}', function ($id) {
+        if (is_numeric($id)) {
+            $wooRequest = App\Models\WooRequest::find($id);
+            if ($wooRequest) {
+                return redirect()->route('woo-requests.show', $wooRequest, 301);
+            }
+        }
+        abort(404);
+    })->where('id', '[0-9]+')->name('woo-requests.show.legacy');
+
+    Route::get('questions/{id}', function ($id) {
+        if (is_numeric($id)) {
+            $question = App\Models\Question::find($id);
+            if ($question && $question->wooRequest) {
+                return redirect()->route('cases.questions.update', [$question->wooRequest, $question], 301);
+            }
+        }
+        abort(404);
+    })->where('id', '[0-9]+')->name('questions.show.legacy');
+
+    Route::get('internal-requests/{id}', function ($id) {
+        if (is_numeric($id)) {
+            $internalRequest = App\Models\InternalRequest::find($id);
+            if ($internalRequest) {
+                return redirect()->route('internal-requests.show', $internalRequest, 301);
+            }
+        }
+        abort(404);
+    })->where('id', '[0-9]+')->name('internal-requests.show.legacy');
+
+    Route::get('cases/{id}', function ($id) {
+        if (is_numeric($id)) {
+            $wooRequest = App\Models\WooRequest::find($id);
+            if ($wooRequest) {
+                return redirect()->route('woo-requests.show', $wooRequest, 301);
+            }
+        }
+        abort(404);
+    })->where('id', '[0-9]+')->name('cases.show.legacy');
 });
 
 // Case Manager routes
@@ -128,6 +187,12 @@ Route::middleware(['auth', App\Http\Middleware\EnsureCaseManager::class])->group
         ->name('cases.update-status');
     Route::get('cases/{wooRequest}/generate-report', [App\Http\Controllers\WooRequestController::class, 'generateReport'])
         ->name('cases.generate-report');
+
+    // Case assignment actions
+    Route::post('cases/{wooRequest}/pickup', [App\Http\Controllers\CaseOverviewController::class, 'pickupCase'])
+        ->name('cases.pickup');
+    Route::post('cases/{wooRequest}/assign', [App\Http\Controllers\CaseOverviewController::class, 'assignCase'])
+        ->name('cases.assign');
 
     // Internal requests
     Route::resource('internal-requests', App\Http\Controllers\InternalRequestController::class)
