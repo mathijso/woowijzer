@@ -25,8 +25,8 @@
         {{-- Document Processing Status Banner --}}
         @if($wooRequest->original_file_path)
             @if($wooRequest->isPendingProcessing())
-                <div class="p-4 mb-6 text-sm bg-gray-50 rounded-lg dark:bg-gray-900/20">
-                    <div class="flex gap-2 items-center text-gray-700 dark:text-gray-400">
+                <div class="bg-gray-50 dark:bg-gray-900/20 mb-6 p-4 rounded-lg text-sm">
+                    <div class="flex items-center gap-2 text-gray-700 dark:text-gray-400">
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
                         </svg>
@@ -35,8 +35,8 @@
                 </div>
                 <meta http-equiv="refresh" content="5">
             @elseif($wooRequest->isProcessing())
-                <div class="p-4 mb-6 text-sm bg-blue-50 rounded-lg dark:bg-blue-900/20">
-                    <div class="flex gap-2 items-center text-blue-700 dark:text-blue-400">
+                <div class="bg-blue-50 dark:bg-blue-900/20 mb-6 p-4 rounded-lg text-sm">
+                    <div class="flex items-center gap-2 text-blue-700 dark:text-blue-400">
                         <svg class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -46,8 +46,8 @@
                 </div>
                 <meta http-equiv="refresh" content="5">
             @elseif($wooRequest->hasProcessingFailed())
-                <div class="p-4 mb-6 text-sm bg-red-50 rounded-lg dark:bg-red-900/20">
-                    <div class="flex gap-2 items-start text-red-700 dark:text-red-400">
+                <div class="bg-red-50 dark:bg-red-900/20 mb-6 p-4 rounded-lg text-sm">
+                    <div class="flex items-start gap-2 text-red-700 dark:text-red-400">
                         <svg class="flex-shrink-0 w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
                         </svg>
@@ -60,7 +60,7 @@
                                 @if(auth()->user()->isCaseManager())
                                     <form action="{{ route('woo-requests.retry-processing', $wooRequest) }}" method="POST" class="mt-2">
                                         @csrf
-                                        <button type="submit" class="text-xs font-medium text-red-700 underline hover:text-red-600 dark:text-red-400 dark:hover:text-red-300">
+                                        <button type="submit" class="font-medium text-red-700 hover:text-red-600 dark:hover:text-red-300 dark:text-red-400 text-xs underline">
                                             Opnieuw proberen
                                         </button>
                                     </form>
@@ -463,16 +463,16 @@
                         <h2 class="font-semibold text-neutral-900 dark:text-white text-lg">
                             Documenten ({{ $wooRequest->documents->count() }})
                         </h2>
-                        <div class="flex gap-4 items-center">
+                        <div class="flex items-center gap-4">
                             <a href="{{ route('cases.documents.index', $wooRequest) }}"
-                               class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
+                               class="text-blue-600 hover:text-blue-700 dark:text-blue-400 text-sm">
                                 Alle documenten →
                             </a>
                             @auth
                                 @if(auth()->user()->isCaseManager())
                                     <form action="{{ route('woo-requests.auto-link-documents', $wooRequest) }}" method="POST" class="inline">
                                         @csrf
-                                        <button type="submit" class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
+                                        <button type="submit" class="font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 text-sm">
                                             Auto-link documenten
                                         </button>
                                     </form>
@@ -484,7 +484,7 @@
                     <div class="space-y-3">
                         @forelse($wooRequest->documents->take(5) as $document)
                             <a href="{{ route('cases.documents.show', [$wooRequest, $document]) }}"
-                               class="flex gap-3 items-center p-3 rounded-lg transition bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">
+                               class="flex items-center gap-3 bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800 p-3 rounded-lg transition">
                                 <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                                 </svg>
@@ -744,8 +744,8 @@
             <div class="space-y-6">
                 {{-- Original Document --}}
                 @if($wooRequest->original_file_path)
-                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
-                    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Origineel verzoek</h3>
+                <div class="bg-white dark:bg-neutral-800 shadow-sm p-6 rounded-xl">
+                    <h3 class="font-semibold text-neutral-900 dark:text-white text-sm">Origineel verzoek</h3>
                     <a href="{{ route('woo-requests.download-document', $wooRequest) }}"
                        download
                        class="flex items-center gap-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/10 dark:hover:bg-blue-900/20 mt-3 p-3 rounded-lg transition">
@@ -780,22 +780,22 @@
                 {{-- Actions (Case Managers Only) --}}
                 @auth
                     @if(auth()->user()->isCaseManager())
-                        <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
-                            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Acties</h3>
-                            <div class="mt-4 space-y-3">
+                        <div class="bg-white dark:bg-neutral-800 shadow-sm p-6 rounded-xl">
+                            <h3 class="font-semibold text-neutral-900 dark:text-white text-sm">Acties</h3>
+                            <div class="space-y-3 mt-4">
                                 {{-- Case Assignment --}}
                                 @if(!$wooRequest->case_manager_id)
                                     {{-- Not assigned - show pickup and assign options --}}
                                     <div>
-                                        <label class="block mb-1 text-xs font-medium text-neutral-700 dark:text-neutral-300">
+                                        <label class="block mb-1 font-medium text-neutral-700 dark:text-neutral-300 text-xs">
                                             Case toewijzing
                                         </label>
                                         <div class="flex gap-2">
                                             <form action="{{ route('woo-requests.pickup', $wooRequest) }}" method="POST" class="flex-1">
                                                 @csrf
                                                 <button type="submit"
-                                                        class="inline-flex items-center justify-center w-full px-4 py-2 text-sm font-medium rounded-lg bg-rijksblauw text-white hover:bg-rijksblauw/90 transition-colors">
-                                                    <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        class="inline-flex justify-center items-center bg-rijksblauw hover:bg-rijksblauw/90 px-4 py-2 rounded-lg w-full font-medium text-white text-sm transition-colors">
+                                                    <svg class="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                                     </svg>
                                                     Case oppakken
@@ -805,7 +805,7 @@
                                                 @csrf
                                                 <select name="case_manager_id"
                                                         onchange="this.form.submit()"
-                                                        class="block px-3 py-2 w-full text-sm rounded-lg border shadow-sm border-neutral-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-white">
+                                                        class="block dark:bg-neutral-900 shadow-sm px-3 py-2 border border-neutral-300 focus:border-blue-500 dark:border-neutral-600 rounded-lg focus:ring-2 focus:ring-blue-500 w-full dark:text-white text-sm">
                                                     <option value="">Toewijzen aan...</option>
                                                     @foreach($caseManagers as $manager)
                                                         <option value="{{ $manager->id }}">{{ $manager->name }}</option>
@@ -817,14 +817,14 @@
                                 @elseif($wooRequest->case_manager_id === auth()->id())
                                     {{-- Assigned to current user - show reassign option --}}
                                     <div>
-                                        <label class="block mb-1 text-xs font-medium text-neutral-700 dark:text-neutral-300">
+                                        <label class="block mb-1 font-medium text-neutral-700 dark:text-neutral-300 text-xs">
                                             Case herverdelen
                                         </label>
                                         <form action="{{ route('woo-requests.assign-case-manager', $wooRequest) }}" method="POST">
                                             @csrf
                                             <select name="case_manager_id"
                                                     onchange="this.form.submit()"
-                                                    class="block px-3 py-2 w-full text-sm rounded-lg border shadow-sm border-neutral-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-white">
+                                                    class="block dark:bg-neutral-900 shadow-sm px-3 py-2 border border-neutral-300 focus:border-blue-500 dark:border-neutral-600 rounded-lg focus:ring-2 focus:ring-blue-500 w-full dark:text-white text-sm">
                                                 <option value="{{ $wooRequest->case_manager_id }}">Toegewezen aan: {{ $wooRequest->caseManager->name }}</option>
                                                 <option value="">---</option>
                                                 @foreach($caseManagers->where('id', '!=', auth()->id()) as $manager)
@@ -837,17 +837,17 @@
                                 @else
                                     {{-- Assigned to someone else - show current assignment and option to take over --}}
                                     <div>
-                                        <label class="block mb-1 text-xs font-medium text-neutral-700 dark:text-neutral-300">
+                                        <label class="block mb-1 font-medium text-neutral-700 dark:text-neutral-300 text-xs">
                                             Case toewijzing
                                         </label>
                                         <div class="flex gap-2">
-                                            <div class="flex-1 px-3 py-2 text-sm rounded-lg border border-neutral-300 bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-300">
+                                            <div class="flex-1 bg-neutral-50 dark:bg-neutral-700 px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-lg dark:text-neutral-300 text-sm">
                                                 Toegewezen aan: {{ $wooRequest->caseManager->name }}
                                             </div>
                                             <form action="{{ route('woo-requests.pickup', $wooRequest) }}" method="POST">
                                                 @csrf
                                                 <button type="submit"
-                                                        class="px-4 py-2 text-sm font-medium rounded-lg bg-rijksblauw text-white hover:bg-rijksblauw/90 transition-colors">
+                                                        class="bg-rijksblauw hover:bg-rijksblauw/90 px-4 py-2 rounded-lg font-medium text-white text-sm transition-colors">
                                                     Overnemen
                                                 </button>
                                             </form>
