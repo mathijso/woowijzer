@@ -4,7 +4,7 @@
         <div class="mb-6">
             @if($wooRequest)
                 <div class="mb-4">
-                    <a href="{{ route('woo-requests.show', $wooRequest) }}" 
+                    <a href="{{ route('woo-requests.show', $wooRequest) }}"
                        class="inline-flex items-center text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white">
                         <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -29,18 +29,18 @@
         <div class="mb-6 p-4 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
             <form method="GET" class="flex flex-wrap gap-4">
                 @if($wooRequest)
-                    <input type="hidden" name="woo_request_id" value="{{ $wooRequest->id }}">
+                    <input type="hidden" name="woo_request_id" value="{{ $wooRequest->uuid }}">
                 @endif
-                
+
                 <div class="flex-1 min-w-64">
-                    <input type="text" 
-                           name="search" 
+                    <input type="text"
+                           name="search"
                            value="{{ request('search') }}"
                            placeholder="Zoek op bestandsnaam..."
                            class="block w-full px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
                 </div>
 
-                <select name="processed" 
+                <select name="processed"
                         class="px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
                     <option value="">Alle statussen</option>
                     <option value="1" {{ request('processed') === '1' ? 'selected' : '' }}>Verwerkt</option>
@@ -48,27 +48,27 @@
                 </select>
 
                 @if($wooRequest)
-                <select name="sort" 
+                <select name="sort"
                         class="px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
                     <option value="relevance" {{ $sortBy === 'relevance' ? 'selected' : '' }}>Relevantie</option>
                     <option value="date" {{ $sortBy === 'date' ? 'selected' : '' }}>Datum</option>
                     <option value="name" {{ $sortBy === 'name' ? 'selected' : '' }}>Naam</option>
                 </select>
 
-                <select name="order" 
+                <select name="order"
                         class="px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
                     <option value="desc" {{ $sortOrder === 'desc' ? 'selected' : '' }}>Hoog → Laag</option>
                     <option value="asc" {{ $sortOrder === 'asc' ? 'selected' : '' }}>Laag → Hoog</option>
                 </select>
                 @endif
 
-                <button type="submit" 
+                <button type="submit"
                         class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
                     Filteren
                 </button>
 
                 @if(request()->hasAny(['search', 'processed', 'sort', 'order']))
-                    <a href="{{ request()->url() }}{{ $wooRequest ? '?woo_request_id=' . $wooRequest->id : '' }}" 
+                    <a href="{{ request()->url() }}{{ $wooRequest ? '?woo_request_id=' . $wooRequest->uuid : '' }}"
                        class="px-4 py-2 text-sm font-medium text-neutral-700 bg-white border rounded-lg border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-600">
                         Reset
                     </a>
@@ -80,7 +80,7 @@
         <div class="bg-white rounded-xl shadow-sm dark:bg-neutral-800">
             <div class="divide-y divide-neutral-200 dark:divide-neutral-700">
                 @forelse($documents as $document)
-                    <a href="{{ route('documents.show', $document) }}" 
+                    <a href="{{ $wooRequest ? route('cases.documents.show', [$wooRequest, $document]) : route('documents.show', $document) }}"
                        class="block p-6 transition hover:bg-neutral-50 dark:hover:bg-neutral-700/50">
                         <div class="flex items-start gap-4">
                             {{-- File Icon --}}

@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Str;
 
 /**
  * @property int $id
+ * @property string $uuid
  * @property string|null $woo_insight_case_id
  * @property int $user_id
  * @property int|null $case_manager_id
@@ -32,6 +34,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class WooRequest extends Model
 {
     protected $fillable = [
+        'uuid',
         'woo_insight_case_id',
         'user_id',
         'case_manager_id',
@@ -60,6 +63,28 @@ class WooRequest extends Model
             'submitted_at' => 'datetime',
             'completed_at' => 'datetime',
         ];
+    }
+
+    /**
+     * Route key name for model binding
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
+    /**
+     * Boot method
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($wooRequest): void {
+            if (empty($wooRequest->uuid)) {
+                $wooRequest->uuid = (string) Str::uuid();
+            }
+        });
     }
 
     /**

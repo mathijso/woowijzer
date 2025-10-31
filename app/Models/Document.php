@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 
 /**
  * @property int $id
+ * @property string $uuid
  * @property string|null $external_document_id
  * @property int|null $woo_request_id
  * @property int|null $submission_id
@@ -38,6 +39,7 @@ use Illuminate\Support\Str;
 class Document extends Model
 {
     protected $fillable = [
+        'uuid',
         'external_document_id',
         'woo_request_id',
         'submission_id',
@@ -180,6 +182,14 @@ class Document extends Model
     }
 
     /**
+     * Route key name for model binding
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
+    /**
      * Boot method
      */
     protected static function boot()
@@ -188,6 +198,11 @@ class Document extends Model
 
         static::creating(function ($document): void {
             // Generate UUID if not set
+            if (empty($document->uuid)) {
+                $document->uuid = (string) Str::uuid();
+            }
+
+            // Generate external_document_id if not set
             if (empty($document->external_document_id)) {
                 $document->external_document_id = (string) Str::uuid();
             }

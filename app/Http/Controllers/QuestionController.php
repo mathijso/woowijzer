@@ -15,7 +15,13 @@ class QuestionController extends Controller
     public function index(Request $request): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         $wooRequestId = $request->query('woo_request_id');
-        $wooRequest = WooRequest::findOrFail($wooRequestId);
+
+        // Support both numeric ID and UUID
+        if (is_numeric($wooRequestId)) {
+            $wooRequest = WooRequest::findOrFail($wooRequestId);
+        } else {
+            $wooRequest = WooRequest::where('uuid', $wooRequestId)->firstOrFail();
+        }
 
         $this->authorize('view', $wooRequest);
 
@@ -32,9 +38,14 @@ class QuestionController extends Controller
     /**
      * Update question
      */
-    public function update(Request $request, Question $question)
+    public function update(Request $request, WooRequest $wooRequest, Question $question)
     {
-        $this->authorize('update', $question->wooRequest);
+        // Validate that question belongs to the case
+        if ($question->woo_request_id !== $wooRequest->id) {
+            abort(404, 'Question does not belong to this case.');
+        }
+
+        $this->authorize('update', $wooRequest);
 
         $validated = $request->validate([
             'status' => 'sometimes|in:unanswered,partially_answered,answered',
@@ -50,9 +61,14 @@ class QuestionController extends Controller
     /**
      * Generate summary for a question
      */
-    public function generateSummary(Question $question, DocumentLinkingService $linkingService)
+    public function generateSummary(WooRequest $wooRequest, Question $question, DocumentLinkingService $linkingService)
     {
-        $this->authorize('update', $question->wooRequest);
+        // Validate that question belongs to the case
+        if ($question->woo_request_id !== $wooRequest->id) {
+            abort(404, 'Question does not belong to this case.');
+        }
+
+        $this->authorize('update', $wooRequest);
 
         $documents = $question->documents()
             ->wherePivot('confirmed_by_case_manager', true)
@@ -83,15 +99,19 @@ class QuestionController extends Controller
     /**
      * Delete question
      */
-    public function destroy(Question $question)
+    public function destroy(WooRequest $wooRequest, Question $question)
     {
-        $this->authorize('delete', $question->wooRequest);
+        // Validate that question belongs to the case
+        if ($question->woo_request_id !== $wooRequest->id) {
+            abort(404, 'Question does not belong to this case.');
+        }
 
-        $wooRequestId = $question->woo_request_id;
+        $this->authorize('delete', $wooRequest);
+
         $question->delete();
 
         return redirect()
-            ->route('questions.index', ['woo_request_id' => $wooRequestId])
+            ->route('questions.index', ['woo_request_id' => $wooRequest->uuid])
             ->with('success', 'Vraag is verwijderd.');
     }
 }

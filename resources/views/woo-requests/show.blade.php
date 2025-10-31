@@ -464,7 +464,7 @@
                             Documenten ({{ $wooRequest->documents->count() }})
                         </h2>
                         <div class="flex gap-4 items-center">
-                            <a href="{{ route('documents.index', ['woo_request_id' => $wooRequest->id]) }}"
+                            <a href="{{ route('cases.documents.index', $wooRequest) }}"
                                class="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
                                 Alle documenten →
                             </a>
@@ -483,7 +483,7 @@
 
                     <div class="space-y-3">
                         @forelse($wooRequest->documents->take(5) as $document)
-                            <a href="{{ route('documents.show', $document) }}"
+                            <a href="{{ route('cases.documents.show', [$wooRequest, $document]) }}"
                                class="flex gap-3 items-center p-3 rounded-lg transition bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-900 dark:hover:bg-neutral-800">
                                 <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
