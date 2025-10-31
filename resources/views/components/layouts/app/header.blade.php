@@ -17,11 +17,16 @@
                     <span class="text-white">{{ __('Dashboard') }}</span>
                 </flux:navbar.item>
                 @auth
-                @if (auth()->user()->role === 'burger')
-                <flux:navbar.item href="{{ url('/woo-requests') }}" :current="request()->is('woo-requests*')" wire:navigate class="text-white hover:text-rijksgrijs-1">
-                    <span class="text-white">{{ __('Mijn Woo-verzoeken') }}</span>
-                </flux:navbar.item>
-                @endif
+                    @if (auth()->user()->role === 'burger')
+                    <flux:navbar.item href="{{ url('/woo-requests') }}" :current="request()->is('woo-requests*')" wire:navigate class="text-white hover:text-rijksgrijs-1">
+                        <span class="text-white">{{ __('Mijn Woo-verzoeken') }}</span>
+                    </flux:navbar.item>
+                    @endif
+                    @if (auth()->user()->role === 'case_manager')
+                    <flux:navbar.item href="{{ url('/cases') }}" :current="request()->is('cases*')" wire:navigate class="text-white hover:text-rijksgrijs-1">
+                        <span class="text-white">{{ __('Mijn Cases') }}</span>
+                    </flux:navbar.item>
+                    @endif
                 @endauth
             </flux:navbar>
 
