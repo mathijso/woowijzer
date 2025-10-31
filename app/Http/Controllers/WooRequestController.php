@@ -99,6 +99,7 @@ class WooRequestController extends Controller
             'user_id' => Auth::id(),
             'title' => $validated['title'],
             'description' => $validated['description'],
+            'original_file_path' => null,
             'status' => 'submitted',
             'submitted_at' => now(),
         ]);
