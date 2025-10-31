@@ -116,3 +116,23 @@ Route::middleware(['auth', App\Http\Middleware\EnsureCaseManager::class])->group
     Route::post('internal-requests/{internalRequest}/complete', [App\Http\Controllers\InternalRequestController::class, 'complete'])
         ->name('internal-requests.complete');
 });
+
+// Mail preview routes (for demo purposes)
+Route::prefix('mail')->name('preview.mail.')->group(function () {
+    Route::get('document-uploaded/{submission}', function (App\Models\Submission $submission) {
+        $submission->loadCount('documents');
+        return new App\Mail\DocumentUploaded($submission);
+    })->name('document-uploaded');
+
+    Route::get('internal-request-sent/{internalRequest}', function (App\Models\InternalRequest $internalRequest) {
+        return new App\Mail\InternalRequestSent($internalRequest);
+    })->name('internal-request-sent');
+
+    Route::get('upload-token-expiring/{internalRequest}', function (App\Models\InternalRequest $internalRequest) {
+        return new App\Mail\UploadTokenExpiring($internalRequest);
+    })->name('upload-token-expiring');
+
+    Route::get('woo-request-status-changed/{wooRequest}/{old}/{new}', function (App\Models\WooRequest $wooRequest, string $old, string $new) {
+        return new App\Mail\WooRequestStatusChanged($wooRequest, $old, $new);
+    })->name('woo-request-status-changed');
+});
