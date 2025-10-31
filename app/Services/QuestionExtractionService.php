@@ -16,7 +16,14 @@ class QuestionExtractionService
     {
         $questions = collect($apiResponse['questions'] ?? []);
 
-        return $questions->map(fn (array $questionData, int $index): \App\Models\Question => $this->createQuestion($wooRequest, $questionData, $index));
+        return $questions->map(function ($questionData, int $index) use ($wooRequest): \App\Models\Question {
+            // API returns questions as strings according to documentation
+            if (is_string($questionData)) {
+                $questionData = ['question_text' => $questionData];
+            }
+
+            return $this->createQuestion($wooRequest, $questionData, $index);
+        });
     }
 
     /**
