@@ -69,6 +69,16 @@ Route::middleware(['auth'])->group(function () {
     Route::post('woo-requests/{wooRequest}/assign-case-manager', [App\Http\Controllers\WooRequestController::class, 'assignCaseManager'])
         ->name('woo-requests.assign-case-manager');
 
+    // Case manager actions on WOO requests
+    Route::post('woo-requests/{wooRequest}/update-status', [App\Http\Controllers\WooRequestController::class, 'updateStatus'])
+        ->name('woo-requests.update-status');
+    Route::post('woo-requests/{wooRequest}/auto-link-documents', [App\Http\Controllers\WooRequestController::class, 'autoLinkDocuments'])
+        ->name('woo-requests.auto-link-documents');
+    Route::post('woo-requests/{wooRequest}/generate-summaries', [App\Http\Controllers\WooRequestController::class, 'generateSummaries'])
+        ->name('woo-requests.generate-summaries');
+    Route::get('woo-requests/{wooRequest}/generate-report', [App\Http\Controllers\WooRequestController::class, 'generateReport'])
+        ->name('woo-requests.generate-report');
+
     // Questions
     Route::get('questions', [App\Http\Controllers\QuestionController::class, 'index'])
         ->name('questions.index');
@@ -103,12 +113,21 @@ Route::middleware(['auth', App\Http\Middleware\EnsureCaseManager::class])->group
     // Case management dashboard
     Route::get('cases', [App\Http\Controllers\CaseOverviewController::class, 'index'])
         ->name('cases.index');
-    Route::get('cases/{wooRequest}', [App\Http\Controllers\CaseOverviewController::class, 'show'])
-        ->name('cases.show');
-    Route::post('cases/{wooRequest}/auto-link-documents', [App\Http\Controllers\CaseOverviewController::class, 'autoLinkDocuments'])
+
+    // Backwards compatibility - redirect cases.show to woo-requests.show
+    Route::get('cases/{wooRequest}', function (App\Models\WooRequest $wooRequest) {
+        return redirect()->route('woo-requests.show', $wooRequest, 301);
+    })->name('cases.show');
+
+    // Backwards compatibility - route aliases for case actions
+    Route::post('cases/{wooRequest}/auto-link-documents', [App\Http\Controllers\WooRequestController::class, 'autoLinkDocuments'])
         ->name('cases.auto-link-documents');
-    Route::post('cases/{wooRequest}/generate-summaries', [App\Http\Controllers\CaseOverviewController::class, 'generateSummaries'])
+    Route::post('cases/{wooRequest}/generate-summaries', [App\Http\Controllers\WooRequestController::class, 'generateSummaries'])
         ->name('cases.generate-summaries');
+    Route::post('cases/{wooRequest}/update-status', [App\Http\Controllers\WooRequestController::class, 'updateStatus'])
+        ->name('cases.update-status');
+    Route::get('cases/{wooRequest}/generate-report', [App\Http\Controllers\WooRequestController::class, 'generateReport'])
+        ->name('cases.generate-report');
 
     // Internal requests
     Route::resource('internal-requests', App\Http\Controllers\InternalRequestController::class)

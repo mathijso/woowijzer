@@ -62,6 +62,8 @@ class CaseOverviewController extends Controller
             'questions.documents',
             'documents.submission.internalRequest',
             'internalRequests.submissions.documents',
+            'caseTimeline',
+            'caseDecision',
         ]);
 
         // Calculate progress
@@ -110,5 +112,73 @@ class CaseOverviewController extends Controller
         GenerateQuestionSummaries::dispatch($wooRequest);
 
         return back()->with('success', 'Samenvattingen worden gegenereerd op de achtergrond.');
+    }
+
+    /**
+     * Update the status of a WooRequest
+     */
+    public function updateStatus(Request $request, WooRequest $wooRequest)
+    {
+        $this->authorize('update', $wooRequest);
+
+        $validated = $request->validate([
+            'status' => 'required|in:submitted,in_review,in_progress,completed,rejected',
+        ]);
+
+        $oldStatus = $wooRequest->status;
+        $wooRequest->update([
+            'status' => $validated['status'],
+            'completed_at' => $validated['status'] === 'completed' ? now() : null,
+        ]);
+
+        return back()->with('success', sprintf(
+            'Status is gewijzigd van "%s" naar "%s".',
+            config('woo.woo_request_statuses')[$oldStatus] ?? $oldStatus,
+            config('woo.woo_request_statuses')[$validated['status']] ?? $validated['status']
+        ));
+    }
+
+    /**
+     * Generate and download a case report
+     */
+    public function generateReport(WooRequest $wooRequest)
+    {
+        $this->authorize('view', $wooRequest);
+
+        $wooRequest->load([
+            'user',
+            'caseManager',
+            'questions.documents',
+            'documents.submission.internalRequest',
+            'internalRequests.submissions.documents',
+        ]);
+
+        // Calculate statistics
+        $totalQuestions = $wooRequest->questions()->count();
+        $answeredQuestions = $wooRequest->questions()->where('status', 'answered')->count();
+        $progressPercentage = $totalQuestions > 0
+            ? round(($answeredQuestions / $totalQuestions) * 100, 2)
+            : 0;
+
+        $questionStats = [
+            'unanswered' => $wooRequest->questions()->where('status', 'unanswered')->count(),
+            'partially_answered' => $wooRequest->questions()->where('status', 'partially_answered')->count(),
+            'answered' => $answeredQuestions,
+        ];
+
+        // Generate HTML report
+        $html = view('cases.report', [
+            'wooRequest' => $wooRequest,
+            'progressPercentage' => $progressPercentage,
+            'questionStats' => $questionStats,
+        ])->render();
+
+        $filename = sprintf('case-report-%s-%s.html', $wooRequest->id, now()->format('Y-m-d'));
+
+        return response()->streamDownload(function () use ($html) {
+            echo $html;
+        }, $filename, [
+            'Content-Type' => 'text/html; charset=utf-8',
+        ]);
     }
 }
