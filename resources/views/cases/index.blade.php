@@ -2,14 +2,14 @@
     <div class="mx-auto max-w-7xl">
         {{-- Header --}}
         <div class="mb-6">
-            <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">Case Management</h1>
-            <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+            <h1 class="font-bold text-neutral-900 dark:text-white text-2xl">Case Management</h1>
+            <p class="mt-1 text-neutral-600 dark:text-neutral-400 text-sm">
                 Beheer en volg alle WOO-verzoeken
             </p>
         </div>
 
         {{-- Filters --}}
-        <div class="mb-6 flex flex-wrap items-center gap-4 rounded-xl bg-white p-4 shadow-sm dark:bg-neutral-800">
+        <div class="flex flex-wrap items-center gap-4 bg-white dark:bg-neutral-800 shadow-sm mb-6 p-4 rounded-xl">
             <a href="{{ route('cases.index') }}"
                class="rounded-lg px-4 py-2 text-sm font-medium transition {{ !request()->has('status') && !request()->has('my_cases') && !request()->has('unassigned') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }}">
                 Alle cases
@@ -22,13 +22,13 @@
                class="rounded-lg px-4 py-2 text-sm font-medium transition {{ request()->has('unassigned') ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }}">
                 Niet toegewezen
                 @if($stats['unassigned'] > 0)
-                    <span class="ml-1 inline-flex items-center justify-center rounded-full bg-orange-600 px-2 py-0.5 text-xs font-bold text-white">
+                    <span class="inline-flex justify-center items-center bg-orange-600 ml-1 px-2 py-0.5 rounded-full font-bold text-white text-xs">
                         {{ $stats['unassigned'] }}
                     </span>
                 @endif
             </a>
 
-            <div class="ml-auto flex gap-2">
+            <div class="flex gap-2 ml-auto">
                 <a href="{{ route('cases.index', ['status' => 'submitted']) }}"
                    class="rounded-lg px-4 py-2 text-sm font-medium transition {{ request('status') === 'submitted' ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }}">
                     Ingediend
@@ -45,16 +45,16 @@
         </div>
 
         {{-- Cases List --}}
-        <div class="grid gap-4">
+        <div class="gap-4 grid">
             @forelse($wooRequests as $request)
                 <a href="{{ route('cases.show', $request) }}"
-                   class="block rounded-xl bg-white p-6 shadow-sm transition hover:shadow-md dark:bg-neutral-800">
-                    <div class="flex items-start justify-between">
+                   class="block bg-white dark:bg-neutral-800 shadow-sm hover:shadow-md p-6 rounded-xl transition">
+                    <div class="flex justify-between items-start">
                         <div class="flex-1">
-                            <div class="flex items-start justify-between">
+                            <div class="flex justify-between items-start">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-3">
-                                        <h3 class="text-lg font-semibold text-neutral-900 dark:text-white">
+                                        <h3 class="font-semibold text-neutral-900 dark:text-white text-lg">
                                             {{ $request->title }}
                                         </h3>
                                         @php
@@ -71,45 +71,45 @@
                                             {{ $statusLabels[$request->status] ?? $request->status }}
                                         </span>
                                         @if(!$request->case_manager_id)
-                                            <span class="inline-flex rounded-full bg-orange-100 px-2 py-1 text-xs font-semibold text-orange-700 dark:bg-orange-900/20 dark:text-orange-400">
+                                            <span class="inline-flex bg-orange-100 dark:bg-orange-900/20 px-2 py-1 rounded-full font-semibold text-orange-700 dark:text-orange-400 text-xs">
                                                 Niet toegewezen
                                             </span>
                                         @endif
                                     </div>
-                                    <div class="mt-2 flex items-center gap-4 text-sm text-neutral-600 dark:text-neutral-400">
+                                    <div class="flex items-center gap-4 mt-2 text-neutral-600 dark:text-neutral-400 text-sm">
                                         <span class="flex items-center">
-                                            <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                                             </svg>
                                             {{ $request->user->name }}
                                         </span>
                                         <span class="flex items-center">
-                                            <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
                                             </svg>
                                             {{ $request->submitted_at?->format('d-m-Y') ?? $request->created_at->format('d-m-Y') }}
                                         </span>
                                         <span class="flex items-center">
-                                            <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                             </svg>
                                             {{ $request->questions_count ?? 0 }} vragen
                                         </span>
                                         <span class="flex items-center">
-                                            <svg class="mr-1 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                                             </svg>
                                             {{ $request->documents_count ?? 0 }} documenten
                                         </span>
                                     </div>
                                     @if($request->questions_count > 0)
-                                        <div class="mt-3 flex items-center gap-2">
-                                            <div class="h-2 flex-1 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
-                                                <div class="h-full rounded-full bg-blue-600 transition-all"
+                                        <div class="flex items-center gap-2 mt-3">
+                                            <div class="flex-1 bg-neutral-200 dark:bg-neutral-700 rounded-full h-2 overflow-hidden">
+                                                <div class="bg-rijksblauw rounded-full h-full transition-all"
                                                      style="width: {{ $request->progress_percentage ?? 0 }}%">
                                                 </div>
                                             </div>
-                                            <span class="text-sm font-medium text-neutral-600 dark:text-neutral-400">
+                                            <span class="font-medium text-neutral-600 dark:text-neutral-400 text-sm">
                                                 {{ round($request->progress_percentage ?? 0) }}%
                                             </span>
                                         </div>
@@ -118,21 +118,21 @@
                             </div>
                         </div>
                         <div class="ml-4">
-                            <svg class="h-5 w-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                             </svg>
                         </div>
                     </div>
                 </a>
             @empty
-                <div class="rounded-xl bg-white p-12 text-center shadow-sm dark:bg-neutral-800">
-                    <svg class="mx-auto h-16 w-16 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="bg-white dark:bg-neutral-800 shadow-sm p-12 rounded-xl text-center">
+                    <svg class="mx-auto w-16 h-16 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                     </svg>
-                    <h3 class="mt-4 text-lg font-semibold text-neutral-900 dark:text-white">
+                    <h3 class="mt-4 font-semibold text-neutral-900 dark:text-white text-lg">
                         Geen cases gevonden
                     </h3>
-                    <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+                    <p class="mt-2 text-neutral-600 dark:text-neutral-400 text-sm">
                         Er zijn geen cases die aan uw filters voldoen.
                     </p>
                 </div>

@@ -63,7 +63,7 @@
                     <span class="text-sm font-semibold text-neutral-900 dark:text-white">{{ $progressPercentage }}%</span>
                 </div>
                 <div class="overflow-hidden h-3 rounded-full bg-neutral-200 dark:bg-neutral-700">
-                    <div class="h-full bg-blue-600 rounded-full transition-all" style="width: {{ $progressPercentage }}%"></div>
+                    <div class="h-full bg-rijksblauw rounded-full transition-all" style="width: {{ $progressPercentage }}%"></div>
                 </div>
                 <div class="grid grid-cols-3 gap-2 mt-2 text-xs text-center">
                     <div>
@@ -264,7 +264,7 @@
 
                             <div class="flex justify-end">
                                 <button type="submit"
-                                        class="inline-flex gap-2 items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                        class="inline-flex gap-2 items-center px-4 py-2 text-sm font-medium text-white bg-rijksblauw rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                     </svg>
@@ -434,7 +434,7 @@
                 <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
                     <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Acties</h3>
                     <div class="mt-4 space-y-2">
-                        <button class="px-4 py-2 w-full text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                        <button class="px-4 py-2 w-full text-sm font-medium text-white bg-rijksblauw rounded-lg hover:bg-blue-700">
                             Verzoek documenten
                         </button>
                         <button class="px-4 py-2 w-full text-sm font-medium rounded-lg border border-neutral-300 text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700">

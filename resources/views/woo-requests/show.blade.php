@@ -50,7 +50,7 @@
                             <span class="font-semibold">{{ round($wooRequest->progress_percentage) }}%</span>
                         </div>
                         <div class="overflow-hidden mt-2 w-full bg-neutral-200 rounded-full h-2.5 dark:bg-neutral-700">
-                            <div class="h-full bg-blue-600 rounded-full transition-all" 
+                            <div class="h-full bg-rijksblauw rounded-full transition-all" 
                                  style="width: {{ $wooRequest->progress_percentage }}%"></div>
                         </div>
                         <div class="grid grid-cols-3 gap-4 mt-4">

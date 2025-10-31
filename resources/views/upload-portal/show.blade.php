@@ -145,7 +145,7 @@
                         {{-- Submit --}}
                         <div class="flex justify-end pt-4 border-t border-neutral-200 dark:border-neutral-700">
                             <button type="submit" 
-                                    class="px-6 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    class="px-6 py-2 text-sm font-semibold text-white bg-rijksblauw rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 Documenten uploaden
                             </button>
                         </div>
