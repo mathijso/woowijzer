@@ -23,6 +23,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -60,5 +61,59 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    /**
+     * Relationships
+     */
+    public function wooRequests()
+    {
+        return $this->hasMany(WooRequest::class);
+    }
+
+    public function managedWooRequests()
+    {
+        return $this->hasMany(WooRequest::class, 'case_manager_id');
+    }
+
+    public function internalRequests()
+    {
+        return $this->hasMany(InternalRequest::class, 'case_manager_id');
+    }
+
+    /**
+     * Scopes
+     */
+    public function scopeBurgers($query)
+    {
+        return $query->where('role', 'burger');
+    }
+
+    public function scopeCaseManagers($query)
+    {
+        return $query->where('role', 'case_manager');
+    }
+
+    public function scopeColleagues($query)
+    {
+        return $query->where('role', 'colleague');
+    }
+
+    /**
+     * Helpers
+     */
+    public function isBurger(): bool
+    {
+        return $this->role === 'burger';
+    }
+
+    public function isCaseManager(): bool
+    {
+        return $this->role === 'case_manager';
+    }
+
+    public function isColleague(): bool
+    {
+        return $this->role === 'colleague';
     }
 }

@@ -1,0 +1,132 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Storage;
+
+class Document extends Model
+{
+    protected $fillable = [
+        'woo_request_id',
+        'submission_id',
+        'file_path',
+        'file_name',
+        'file_type',
+        'file_size',
+        'content_markdown',
+        'ai_summary',
+        'processed_at',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'processed_at' => 'datetime',
+            'file_size' => 'integer',
+        ];
+    }
+
+    /**
+     * Relationships
+     */
+    public function wooRequest(): BelongsTo
+    {
+        return $this->belongsTo(WooRequest::class);
+    }
+
+    public function submission(): BelongsTo
+    {
+        return $this->belongsTo(Submission::class);
+    }
+
+    public function questions(): BelongsToMany
+    {
+        return $this->belongsToMany(Question::class, 'document_question_links')
+            ->withPivot('relevance_score', 'confirmed_by_case_manager', 'notes')
+            ->withTimestamps();
+    }
+
+    /**
+     * Scopes
+     */
+    public function scopeProcessed($query)
+    {
+        return $query->whereNotNull('processed_at');
+    }
+
+    public function scopeUnprocessed($query)
+    {
+        return $query->whereNull('processed_at');
+    }
+
+    public function scopeByType($query, $type)
+    {
+        return $query->where('file_type', $type);
+    }
+
+    /**
+     * Helpers
+     */
+    public function isProcessed(): bool
+    {
+        return $this->processed_at !== null;
+    }
+
+    public function getFileSizeFormatted(): string
+    {
+        $bytes = $this->file_size;
+        $units = ['B', 'KB', 'MB', 'GB'];
+        
+        for ($i = 0; $bytes > 1024 && $i < count($units) - 1; $i++) {
+            $bytes /= 1024;
+        }
+        
+        return round($bytes, 2) . ' ' . $units[$i];
+    }
+
+    public function getFileUrl(): string
+    {
+        return Storage::disk('woo-documents')->url($this->file_path);
+    }
+
+    public function hasContent(): bool
+    {
+        return !empty($this->content_markdown);
+    }
+
+    public function hasSummary(): bool
+    {
+        return !empty($this->ai_summary);
+    }
+
+    public function isLinkedToQuestions(): bool
+    {
+        return $this->questions()->exists();
+    }
+
+    /**
+     * Boot method
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function ($document) {
+            // Update submission documents count
+            $document->submission->updateDocumentsCount();
+        });
+
+        static::deleted(function ($document) {
+            // Update submission documents count
+            if ($document->submission) {
+                $document->submission->updateDocumentsCount();
+            }
+            
+            // Delete file from storage
+            Storage::disk('woo-documents')->delete($document->file_path);
+        });
+    }
+}
