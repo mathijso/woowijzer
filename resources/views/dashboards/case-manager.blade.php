@@ -26,7 +26,7 @@
 {{-- Quick Actions --}}
 <div class="grid gap-4 md:grid-cols-2">
     <a href="{{ route('cases.index') }}"
-       class="rounded-xl p-6 shadow-sm transition bg-rijksblauw hover:bg-rijksdonkerblauw">
+       class="rounded-xl p-6 shadow-sm transition bg-rijksblauw hover:bg-rijksdonkerblauw focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
         <div class="flex items-center">
             <div class="p-3 rounded-lg bg-white/10">
                 <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -41,7 +41,7 @@
     </a>
 
     <a href="{{ route('cases.index', ['unassigned' => true]) }}"
-       class="rounded-xl p-6 shadow-sm transition bg-rijksblauw hover:bg-rijksdonkerblauw">
+       class="rounded-xl p-6 shadow-sm transition bg-rijksblauw hover:bg-rijksdonkerblauw focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
         <div class="flex items-center">
             <div class="p-3 rounded-lg bg-white/10">
                 <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,7 +133,7 @@
                     <div class="flex items-center justify-between">
                         <span>{{ Str::limit($case->title, 50) }} - {{ $case->user->name }}</span>
                         <a href="{{ route('cases.show', $case) }}"
-                           class="font-medium text-orange-900 hover:text-orange-700 dark:text-orange-200">
+                           class="font-medium text-orange-900 hover:text-orange-700 dark:text-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded">
                             Bekijk →
                         </a>
                     </div>
@@ -141,7 +141,7 @@
             </div>
             <div class="mt-3">
                 <a href="{{ route('cases.index', ['unassigned' => true]) }}"
-                   class="text-sm font-semibold text-orange-900 hover:text-orange-700 dark:text-orange-200">
+                   class="text-sm font-semibold text-orange-900 hover:text-orange-700 dark:text-orange-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 rounded">
                     Bekijk alle niet toegewezen verzoeken →
                 </a>
             </div>
@@ -156,7 +156,7 @@
         <div class="flex items-center justify-between">
             <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Mijn recente cases</h2>
             <a href="{{ route('cases.index', ['my_cases' => true]) }}"
-               class="text-sm text-rijksblauw hover:text-rijksdonkerblauw">
+               class="text-sm text-rijksblauw hover:text-rijksdonkerblauw focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
                 Alle cases bekijken →
             </a>
         </div>
@@ -165,7 +165,7 @@
     <div class="divide-y divide-neutral-200 dark:divide-neutral-700">
         @forelse($recentCases as $case)
             <a href="{{ route('cases.show', $case) }}"
-               class="block p-6 transition hover:bg-neutral-50 dark:hover:bg-neutral-700/50">
+               class="block p-6 transition hover:bg-neutral-50 dark:hover:bg-neutral-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg">
                 <div class="flex items-start justify-between">
                     <div class="flex-1">
                         <div class="flex items-center gap-3">

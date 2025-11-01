@@ -2,7 +2,7 @@
     <div class="mx-auto max-w-3xl">
         <div class="mb-6">
             <a href="{{ route('woo-requests.index') }}"
-               class="inline-flex items-center text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white">
+               class="inline-flex items-center text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
                 <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
@@ -61,7 +61,7 @@
                         </label>
                         <button type="button"
                                 id="add-question-btn"
-                                class="inline-flex items-center px-3 py-1 text-sm font-medium text-rijksblauw bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30">
+                                class="inline-flex items-center px-3 py-1 text-sm font-medium text-rijksblauw bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                             <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                             </svg>
@@ -77,7 +77,7 @@
                                    class="block flex-1 px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
                                    placeholder="bijv. Welke documenten zijn er beschikbaar over...">
                             <button type="button"
-                                    class="remove-question-btn flex-shrink-0 px-3 py-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
+                                    class="remove-question-btn flex-shrink-0 px-3 py-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                                     title="Verwijder vraag">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -117,7 +117,7 @@
                 {{-- Submit Button --}}
                 <div class="flex justify-end gap-4 pt-4 border-t border-neutral-200 dark:border-neutral-700">
                     <a href="{{ route('woo-requests.index') }}"
-                       class="px-4 py-2 text-sm font-medium text-neutral-700 bg-white border rounded-lg border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-600 dark:hover:bg-neutral-700">
+                       class="px-4 py-2 text-sm font-medium text-neutral-700 bg-white border rounded-lg border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-600 dark:hover:bg-neutral-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                         Annuleren
                     </a>
                     <button type="submit"
@@ -145,7 +145,7 @@
                            class="block flex-1 px-4 py-2 border rounded-lg border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
                            placeholder="bijv. Welke documenten zijn er beschikbaar over...">
                     <button type="button"
-                            class="remove-question-btn flex-shrink-0 px-3 py-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
+                            class="remove-question-btn flex-shrink-0 px-3 py-2 text-red-600 bg-red-50 rounded-lg hover:bg-red-100 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                             title="Verwijder vraag">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>

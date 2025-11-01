@@ -11,15 +11,15 @@
         {{-- Filters --}}
         <div class="mb-6 flex flex-wrap items-center gap-4 rounded-xl bg-white p-4 shadow-sm dark:bg-neutral-800">
             <a href="{{ route('cases.index') }}"
-               class="rounded-lg px-4 py-2 text-sm font-medium transition {{ !request()->has('status') && !request()->has('my_cases') && !request()->has('unassigned') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }}">
+               class="rounded-lg px-4 py-2 text-sm font-medium transition {{ !request()->has('status') && !request()->has('my_cases') && !request()->has('unassigned') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                 Alle cases
             </a>
             <a href="{{ route('cases.index', ['my_cases' => true]) }}"
-               class="rounded-lg px-4 py-2 text-sm font-medium transition {{ request()->has('my_cases') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }}">
+               class="rounded-lg px-4 py-2 text-sm font-medium transition {{ request()->has('my_cases') ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                 Mijn cases
             </a>
             <a href="{{ route('cases.index', ['unassigned' => true]) }}"
-               class="rounded-lg px-4 py-2 text-sm font-medium transition {{ request()->has('unassigned') ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }}">
+               class="rounded-lg px-4 py-2 text-sm font-medium transition {{ request()->has('unassigned') ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/20 dark:text-orange-400' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }} focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2">
                 Niet toegewezen
                 @if($stats['unassigned'] > 0)
                     <span class="ml-1 inline-flex items-center justify-center rounded-full bg-orange-600 px-2 py-0.5 text-xs font-bold text-white">
@@ -30,15 +30,15 @@
 
             <div class="ml-auto flex gap-2">
                 <a href="{{ route('cases.index', ['status' => 'submitted']) }}"
-                   class="rounded-lg px-4 py-2 text-sm font-medium transition {{ request('status') === 'submitted' ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }}">
+                   class="rounded-lg px-4 py-2 text-sm font-medium transition {{ request('status') === 'submitted' ? 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }} focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
                     Ingediend
                 </a>
                 <a href="{{ route('cases.index', ['status' => 'in_progress']) }}"
-                   class="rounded-lg px-4 py-2 text-sm font-medium transition {{ request('status') === 'in_progress' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }}">
+                   class="rounded-lg px-4 py-2 text-sm font-medium transition {{ request('status') === 'in_progress' ? 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }} focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2">
                     In behandeling
                 </a>
                 <a href="{{ route('cases.index', ['status' => 'completed']) }}"
-                   class="rounded-lg px-4 py-2 text-sm font-medium transition {{ request('status') === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }}">
+                   class="rounded-lg px-4 py-2 text-sm font-medium transition {{ request('status') === 'completed' ? 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400' : 'text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-700' }} focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                     Afgerond
                 </a>
             </div>
@@ -49,7 +49,7 @@
             @forelse($wooRequests as $request)
                 <div class="rounded-xl bg-white p-6 shadow-sm transition hover:shadow-md dark:bg-neutral-800">
                     <div class="flex items-start justify-between">
-                        <a href="{{ route('cases.show', $request) }}" class="flex-1">
+                        <a href="{{ route('cases.show', $request) }}" class="flex-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1">
                                     <div class="flex items-center gap-3">
@@ -122,7 +122,7 @@
                                 <form action="{{ route('cases.pickup', $request) }}" method="POST" class="inline">
                                     @csrf
                                     <button type="submit"
-                                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg bg-rijksblauw text-white hover:bg-blue-700 transition-colors">
+                                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg bg-rijksblauw text-white hover:bg-blue-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                         <svg class="mr-1.5 h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                         </svg>
@@ -157,7 +157,7 @@
                                     </select>
                                 </form>
                             @endif
-                            <a href="{{ route('cases.show', $request) }}" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300">
+                            <a href="{{ route('cases.show', $request) }}" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
                                 </svg>

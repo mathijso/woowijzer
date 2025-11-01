@@ -5,7 +5,7 @@
             @if($wooRequest)
                 <div class="mb-4">
                     <a href="{{ route('woo-requests.show', $wooRequest) }}"
-                       class="inline-flex items-center text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white">
+                       class="inline-flex items-center text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
                         <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                         </svg>
@@ -63,13 +63,13 @@
                 @endif
 
                 <button type="submit"
-                        class="px-4 py-2 text-sm font-medium text-white bg-rijksblauw rounded-lg hover:bg-blue-700">
+                        class="px-4 py-2 text-sm font-medium text-white bg-rijksblauw rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     Filteren
                 </button>
 
                 @if(request()->hasAny(['search', 'processed', 'sort', 'order']))
                     <a href="{{ request()->url() }}{{ $wooRequest ? '?woo_request_id=' . $wooRequest->uuid : '' }}"
-                       class="px-4 py-2 text-sm font-medium bg-white rounded-lg border text-neutral-700 border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-600">
+                       class="px-4 py-2 text-sm font-medium bg-white rounded-lg border text-neutral-700 border-neutral-300 hover:bg-neutral-50 dark:bg-neutral-800 dark:text-neutral-300 dark:border-neutral-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                         Reset
                     </a>
                 @endif
@@ -81,7 +81,7 @@
             <div class="divide-y divide-neutral-200 dark:divide-neutral-700">
                 @forelse($documents as $document)
                     <a href="{{ $wooRequest ? route('cases.documents.show', [$wooRequest, $document]) : route('documents.show', $document) }}"
-                       class="block p-6 transition hover:bg-neutral-50 dark:hover:bg-neutral-700/50">
+                       class="block p-6 transition hover:bg-neutral-50 dark:hover:bg-neutral-700/50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg">
                         <div class="flex gap-4 items-start">
                             {{-- File Icon --}}
                             <div class="flex-shrink-0">

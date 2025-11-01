@@ -8,14 +8,14 @@
     <p class="mt-1 text-neutral-600 dark:text-neutral-400 text-sm">Dien een nieuw WOO-verzoek in</p>
     <div class="flex sm:flex-row flex-col gap-3 mt-4">
         <a href="{{ route('woo-requests.create') }}"
-           class="inline-flex justify-center items-center bg-rijksblauw hover:bg-rijksdonkerblauw px-4 py-2 rounded-lg font-semibold text-white text-sm">
+           class="inline-flex justify-center items-center bg-rijksblauw hover:bg-rijksdonkerblauw px-4 py-2 rounded-lg font-semibold text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
             <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
             </svg>
             Met document
         </a>
         <a href="{{ route('woo-requests.create-manual') }}"
-           class="inline-flex justify-center items-center bg-blue-50 hover:bg-blue-100 hover:bg-rijksblauw dark:hover:bg-blue-400 px-4 py-2 dark:border-blue-400 rounded-lg font-semibold text-rijksblauw hover:text-white dark:hover:text-white dark:text-blue-400 text-sm">
+           class="inline-flex justify-center items-center bg-blue-50 hover:bg-blue-100 hover:bg-rijksblauw dark:hover:bg-blue-400 px-4 py-2 dark:border-blue-400 rounded-lg font-semibold text-rijksblauw hover:text-white dark:hover:text-white dark:text-blue-400 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
             <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
             </svg>
@@ -78,7 +78,7 @@
     <div class="p-6 border-neutral-200 dark:border-neutral-700 border-b">
         <div class="flex justify-between items-center">
             <h2 class="font-semibold text-neutral-900 dark:text-white text-lg">Mijn WOO-verzoeken</h2>
-            <a href="{{ route('woo-requests.index') }}" class="text-rijksblauw hover:text-rijksdonkerblauw text-sm">
+            <a href="{{ route('woo-requests.index') }}" class="text-rijksblauw hover:text-rijksdonkerblauw text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
                 Alles bekijken →
             </a>
         </div>
@@ -87,7 +87,7 @@
     <div class="divide-y divide-neutral-200 dark:divide-neutral-700">
         @forelse($wooRequests->take(5) as $request)
             <a href="{{ route('woo-requests.show', $request) }}"
-               class="block hover:bg-neutral-50 dark:hover:bg-neutral-700/50 p-6 transition">
+               class="block hover:bg-neutral-50 dark:hover:bg-neutral-700/50 p-6 transition focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-lg">
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
                         <h3 class="font-semibold text-neutral-900 dark:text-white">{{ $request->title }}</h3>
@@ -134,7 +134,7 @@
                 </p>
                 <div class="mt-4">
                     <a href="{{ route('woo-requests.create') }}"
-                       class="inline-flex items-center bg-rijksblauw hover:bg-rijksdonkerblauw px-4 py-2 rounded-lg font-semibold text-white text-sm">
+                       class="inline-flex items-center bg-rijksblauw hover:bg-rijksdonkerblauw px-4 py-2 rounded-lg font-semibold text-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                         Nieuw verzoek indienen
                     </a>
                 </div>

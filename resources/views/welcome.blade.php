@@ -27,7 +27,7 @@
                                 <div class="flex sm:flex-row flex-col gap-4">
                                     @auth
                                         <a href="{{ route('dashboard') }}"
-                                           class="inline-flex items-center bg-white hover:bg-rijksblauw px-8 py-4 rounded-lg font-medium text-rijksblauw hover:text-white transition-colors duration-200">
+                                           class="inline-flex items-center bg-white hover:bg-rijksblauw px-8 py-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-rijksblauw font-medium text-rijksblauw hover:text-white transition-colors duration-200">
                                             Naar Dashboard
                                             <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -35,7 +35,7 @@
                                     </a>
                                     @else
                                         <a href="{{ route('login') }}"
-                                           class="inline-flex items-center bg-white hover:bg-rijksblauw px-8 py-4 rounded-lg font-medium text-rijksblauw hover:text-white transition-colors duration-200">
+                                           class="inline-flex items-center bg-white hover:bg-rijksblauw px-8 py-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-rijksblauw font-medium text-rijksblauw hover:text-white transition-colors duration-200">
                                             Inloggen
                                             <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
@@ -43,7 +43,7 @@
                                     </a>
                                     @endauth
                                     <a href="{{ route('about') }}"
-                                       class="inline-flex items-center hover:bg-white px-8 py-4 border-2 border-white rounded-lg font-medium text-white hover:text-rijksblauw transition-colors duration-200">
+                                       class="inline-flex items-center hover:bg-white px-8 py-4 border-2 border-white rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 font-medium text-white hover:text-rijksblauw transition-colors duration-200">
                                         Meer informatie
                                     </a>
                                 </div>
@@ -155,7 +155,7 @@
                 </p>
                 @auth
                     <a href="{{ route('dashboard') }}"
-                       class="inline-flex items-center bg-white hover:bg-rijksblauw px-8 py-4 rounded-lg font-medium text-rijksblauw hover:text-white transition-colors duration-200">
+                       class="inline-flex items-center bg-white hover:bg-rijksblauw px-8 py-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-rijksblauw font-medium text-rijksblauw hover:text-white transition-colors duration-200">
                         <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -163,7 +163,7 @@
                     </a>
                 @else
                     <a href="{{ route('login') }}"
-                       class="inline-flex items-center bg-white hover:bg-rijksblauw px-8 py-4 rounded-lg font-medium text-rijksblauw hover:text-white transition-colors duration-200">
+                       class="inline-flex items-center bg-white hover:bg-rijksblauw px-8 py-4 rounded-lg focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-rijksblauw font-medium text-rijksblauw hover:text-white transition-colors duration-200">
                         <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"></path>
                         </svg>

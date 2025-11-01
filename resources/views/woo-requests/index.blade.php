@@ -11,14 +11,14 @@
                 </div>
                 <div class="flex gap-2">
                     <a href="{{ route('woo-requests.create') }}"
-                       class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-rijksblauw rounded-lg hover:bg-blue-700">
+                       class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-rijksblauw rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                         <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/>
                         </svg>
                         Met document
                     </a>
                     <a href="{{ route('woo-requests.create-manual') }}"
-                       class="inline-flex items-center px-4 py-2 text-sm font-semibold text-rijksblauw bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30">
+                       class="inline-flex items-center px-4 py-2 text-sm font-semibold text-rijksblauw bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                         <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                         </svg>
@@ -32,19 +32,19 @@
         <div class="mb-6 border-b border-neutral-200 dark:border-neutral-700">
             <nav class="flex -mb-px space-x-8">
                 <a href="{{ route('woo-requests.index') }}"
-                   class="px-1 py-4 text-sm font-medium border-b-2 {{ !request('status') ? 'text-rijksblauw border-rijksblauw' : 'text-neutral-600 border-transparent hover:text-neutral-900 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-white' }}">
+                   class="px-1 py-4 text-sm font-medium border-b-2 {{ !request('status') ? 'text-rijksblauw border-rijksblauw' : 'text-neutral-600 border-transparent hover:text-neutral-900 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-white' }} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-t">
                     Alle verzoeken
                 </a>
                 <a href="{{ route('woo-requests.index', ['status' => 'submitted']) }}"
-                   class="px-1 py-4 text-sm font-medium border-b-2 {{ request('status') === 'submitted' ? 'text-rijksblauw border-rijksblauw' : 'text-neutral-600 border-transparent hover:text-neutral-900 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-white' }}">
+                   class="px-1 py-4 text-sm font-medium border-b-2 {{ request('status') === 'submitted' ? 'text-rijksblauw border-rijksblauw' : 'text-neutral-600 border-transparent hover:text-neutral-900 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-white' }} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-t">
                     In afwachting
                 </a>
                 <a href="{{ route('woo-requests.index', ['status' => 'in_progress']) }}"
-                   class="px-1 py-4 text-sm font-medium border-b-2 {{ request('status') === 'in_progress' ? 'text-rijksblauw border-rijksblauw' : 'text-neutral-600 border-transparent hover:text-neutral-900 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-white' }}">
+                   class="px-1 py-4 text-sm font-medium border-b-2 {{ request('status') === 'in_progress' ? 'text-rijksblauw border-rijksblauw' : 'text-neutral-600 border-transparent hover:text-neutral-900 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-white' }} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-t">
                     In behandeling
                 </a>
                 <a href="{{ route('woo-requests.index', ['status' => 'completed']) }}"
-                   class="px-1 py-4 text-sm font-medium border-b-2 {{ request('status') === 'completed' ? 'text-rijksblauw border-rijksblauw' : 'text-neutral-600 border-transparent hover:text-neutral-900 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-white' }}">
+                   class="px-1 py-4 text-sm font-medium border-b-2 {{ request('status') === 'completed' ? 'text-rijksblauw border-rijksblauw' : 'text-neutral-600 border-transparent hover:text-neutral-900 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-white' }} focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-t">
                     Afgerond
                 </a>
             </nav>
@@ -54,7 +54,7 @@
         <div class="space-y-4">
             @forelse($wooRequests as $request)
                 <a href="{{ route('woo-requests.show', $request) }}"
-                   class="block p-6 transition bg-white rounded-xl shadow-sm hover:shadow-md dark:bg-neutral-800">
+                   class="block p-6 transition bg-white rounded-xl shadow-sm hover:shadow-md dark:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                     <div class="flex items-start justify-between">
                         <div class="flex-1">
                             <div class="flex items-start gap-4">
@@ -135,11 +135,11 @@
                     </p>
                     <div class="flex gap-2 justify-center mt-6">
                         <a href="{{ route('woo-requests.create') }}"
-                           class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-rijksblauw rounded-lg hover:bg-blue-700">
+                           class="inline-flex items-center px-4 py-2 text-sm font-semibold text-white bg-rijksblauw rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                             Met document
                         </a>
                         <a href="{{ route('woo-requests.create-manual') }}"
-                           class="inline-flex items-center px-4 py-2 text-sm font-semibold text-rijksblauw bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30">
+                           class="inline-flex items-center px-4 py-2 text-sm font-semibold text-rijksblauw bg-blue-50 rounded-lg hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/30 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                             Handmatig
                         </a>
                     </div>
