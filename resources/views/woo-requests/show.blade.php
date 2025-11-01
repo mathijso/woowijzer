@@ -404,7 +404,7 @@ $statusLabels = config('woo.woo_request_statuses');
                     @if($wooRequest->hasTimeline() && $activeTab === 'timeline')
                     <div id="tab-timeline" class="tab-content">
                         <div class="p-6">
-                            <div class="flex justify-between items-start mb-4">
+                            <div class="flex justify-between items-start mb-6">
                                 <div>
                                     <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Complete Timeline</h2>
                                     <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
@@ -418,56 +418,7 @@ $statusLabels = config('woo.woo_request_statuses');
                                 @endif
                             </div>
 
-                            @if($wooRequest->caseTimeline && $wooRequest->caseTimeline->hasEvents())
-                            <div class="mt-4 space-y-4">
-                                @foreach($wooRequest->caseTimeline->getEvents() as $event)
-                                <div class="flex gap-3 p-4 rounded-lg bg-neutral-50 dark:bg-neutral-900">
-                                    <div class="flex flex-col items-center pt-1">
-                                        <div class="flex justify-center items-center w-8 h-8 bg-blue-100 rounded-full dark:bg-blue-900/20">
-                                            <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
-                                            </svg>
-                                        </div>
-                                        @if(!$loop->last)
-                                        <div class="flex-1 mt-2 w-px bg-neutral-200 dark:bg-neutral-700"></div>
-                                        @endif
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="flex justify-between items-start">
-                                            <div>
-                                                <p class="font-medium text-neutral-900 dark:text-white">{{ $event['title'] ?? 'Gebeurtenis' }}</p>
-                                                <p class="text-xs text-neutral-600 dark:text-neutral-400">
-                                                    {{ $event['date'] ?? 'Onbekende datum' }}
-                                                    @if(isset($event['type']))
-                                                        <span class="px-2 py-0.5 ml-2 text-xs font-medium text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
-                                                            {{ $event['type'] }}
-                                                        </span>
-                                                    @endif
-                                                </p>
-                                            </div>
-                                            @if(isset($event['confidence']))
-                                            <span class="text-xs text-neutral-500 dark:text-neutral-400">
-                                                {{ round($event['confidence'] * 100) }}%
-                                            </span>
-                                            @endif
-                                        </div>
-                                        @if(isset($event['summary']))
-                                        <p class="mt-2 text-sm text-neutral-700 dark:text-neutral-300">{{ $event['summary'] }}</p>
-                                        @endif
-                                        @if(isset($event['actors']) && !empty($event['actors']))
-                                        <div class="flex flex-wrap gap-1 mt-2">
-                                            @foreach($event['actors'] as $actor)
-                                            <span class="px-2 py-1 text-xs rounded-full bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
-                                                {{ $actor }}
-                                            </span>
-                                            @endforeach
-                                        </div>
-                                        @endif
-                                    </div>
-                                </div>
-                                @endforeach
-                            </div>
-                            @endif
+                            <livewire:timeline-list :woo-request="$wooRequest" />
                         </div>
                     </div>
                     @endif
@@ -715,15 +666,7 @@ $statusLabels = config('woo.woo_request_statuses');
                                                                value="{{ route('upload.show', $internalRequest->upload_token) }}"
                                                                id="upload-link-{{ $internalRequest->id }}"
                                                                class="flex-1 px-3 py-1.5 font-mono text-xs rounded-lg border border-neutral-300 bg-neutral-50 text-neutral-700 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-300">
-                                                        <button type="button"
-                                                                onclick="copyUploadLink({{ $internalRequest->id }}, this)"
-                                                                class="inline-flex gap-1 items-center px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors border-neutral-300 text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700"
-                                                                id="copy-btn-{{ $internalRequest->id }}">
-                                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                                            </svg>
-                                                            <span class="copy-text">Kopieer</span>
-                                                        </button>
+
                                                         <a href="{{ route('upload.show', $internalRequest->upload_token) }}"
                                                            target="_blank"
                                                            class="inline-flex gap-1 items-center px-3 py-1.5 text-xs font-medium rounded-lg border border-neutral-300 text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700">
