@@ -780,25 +780,8 @@ $statusLabels = config('woo.woo_request_statuses');
                                     </div>
                                 @endif
 
-                                {{-- Status Dropdown --}}
-                                <div>
-                                    <label for="status-select" class="block mb-1 text-xs font-medium text-neutral-700 dark:text-neutral-300">
-                                        Status wijzigen
-                                    </label>
-                                    <form action="{{ route('woo-requests.update-status', $wooRequest) }}" method="POST" id="status-form">
-                                        @csrf
-                                        <select name="status"
-                                                id="status-select"
-                                                onchange="this.form.submit()"
-                                                class="block px-3 py-2 w-full text-sm rounded-lg border shadow-sm border-neutral-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-white">
-                                            @foreach(config('woo.woo_request_statuses') as $key => $label)
-                                                <option value="{{ $key }}" {{ $wooRequest->status === $key ? 'selected' : '' }}>
-                                                    {{ $label }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </form>
-                                </div>
+                                {{-- Status Buttons --}}
+                                @livewire('woo-request-status-buttons', ['wooRequest' => $wooRequest])
 
                                 <a href="{{ route('woo-requests.generate-report', $wooRequest) }}" class="inline-block px-4 py-2 w-full text-sm font-medium text-center rounded-lg border border-neutral-300 text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700">
                                     Genereer rapport
