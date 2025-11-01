@@ -66,7 +66,7 @@ class DocumentController extends Controller
     /**
      * Display the specified document
      */
-    public function show(WooRequest $wooRequest, Document $document): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
+    public function show(Request $request, WooRequest $wooRequest, Document $document, ?string $tab = null): \Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View
     {
         // Validate that document belongs to the case
         if ($document->woo_request_id !== $wooRequest->id) {
@@ -74,6 +74,17 @@ class DocumentController extends Controller
         }
 
         $this->authorize('view', $wooRequest);
+
+        // Get tab from request parameter if not in URL
+        if (!$tab) {
+            $tab = $request->query('tab', 'overview');
+        }
+
+        // Validate tab
+        $validTabs = ['overview', 'summary', 'timeline', 'content', 'questions'];
+        if (!in_array($tab, $validTabs)) {
+            $tab = 'overview';
+        }
 
         $document->load([
             'wooRequest',
@@ -84,6 +95,7 @@ class DocumentController extends Controller
         return view('documents.show', [
             'document' => $document,
             'wooRequest' => $wooRequest,
+            'activeTab' => $tab,
         ]);
     }
 
@@ -103,7 +115,7 @@ class DocumentController extends Controller
         $document->delete();
 
         return redirect()
-            ->route('cases.documents.index', $wooRequest)
+            ->route('woo-requests.show.tab', [$wooRequest, 'documents'])
             ->with('success', 'Document is verwijderd.');
     }
 

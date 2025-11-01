@@ -93,8 +93,12 @@ Route::middleware(['auth'])->group(function () {
     // Case-scoped Documents
     Route::get('documents', [App\Http\Controllers\DocumentController::class, 'index'])
         ->name('documents.index');
-    Route::get('case/{wooRequest}/documents', [App\Http\Controllers\DocumentController::class, 'index'])
-        ->name('cases.documents.index');
+    Route::get('case/{wooRequest}/documents', function (App\Models\WooRequest $wooRequest) {
+        return redirect()->route('woo-requests.show.tab', [$wooRequest, 'documents'], 301);
+    })->name('cases.documents.index');
+    Route::get('case/{wooRequest}/documents/{document}/{tab}', [App\Http\Controllers\DocumentController::class, 'show'])
+        ->where('tab', 'overview|summary|timeline|content|questions')
+        ->name('cases.documents.show.tab');
     Route::get('case/{wooRequest}/documents/{document}', [App\Http\Controllers\DocumentController::class, 'show'])
         ->name('cases.documents.show');
     Route::delete('case/{wooRequest}/documents/{document}', [App\Http\Controllers\DocumentController::class, 'destroy'])

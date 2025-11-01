@@ -15,7 +15,7 @@
             <div class="flex justify-between items-start">
                 <div class="flex-1">
                     <div class="flex gap-3 items-start">
-                        <div class="flex flex-shrink-0 justify-center items-center w-10 h-10 text-lg font-semibold text-blue-600 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
+                        <div class="flex flex-shrink-0 justify-center items-center w-10 h-10 text-lg font-semibold text-rijksblauw bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
                             {{ $question->order }}
                         </div>
                         <div class="flex-1">
@@ -71,7 +71,7 @@
                                 <div class="flex-1">
                                     <a href="{{ route('cases.documents.show', [$wooRequest, $document]) }}"
                                        class="block">
-                                        <p class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                                        <p class="text-sm font-medium text-rijksblauw hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
                                             {{ $document->file_name }}
                                         </p>
                                     </a>
@@ -115,7 +115,7 @@
                                 </div>
                                 <div class="ml-4">
                                     <a href="{{ route('cases.documents.show', [$wooRequest, $document]) }}"
-                                       class="inline-flex items-center px-3 py-2 text-sm font-medium text-neutral-700 rounded-lg border border-neutral-300 hover:bg-neutral-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700">
+                                       class="inline-flex items-center px-3 py-2 text-sm font-medium rounded-lg border text-neutral-700 border-neutral-300 hover:bg-neutral-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700">
                                         <svg class="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
@@ -207,7 +207,7 @@
 
                                 <div class="flex gap-2">
                                     <button type="submit"
-                                            class="inline-flex justify-center items-center px-4 py-2 w-full text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                            class="inline-flex justify-center items-center px-4 py-2 w-full text-sm font-medium text-white bg-rijksblauw rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                         Opslaan
                                     </button>
                                 </div>
@@ -217,7 +217,7 @@
                             <form action="{{ route('cases.questions.generate-summary', [$wooRequest, $question]) }}" method="POST" class="mt-4">
                                 @csrf
                                 <button type="submit"
-                                        class="inline-flex justify-center items-center px-4 py-2 w-full text-sm font-medium text-neutral-700 rounded-lg border border-neutral-300 bg-neutral-50 hover:bg-neutral-100 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">
+                                        class="inline-flex justify-center items-center px-4 py-2 w-full text-sm font-medium rounded-lg border text-neutral-700 border-neutral-300 bg-neutral-50 hover:bg-neutral-100 dark:border-neutral-600 dark:bg-neutral-900 dark:text-neutral-300 dark:hover:bg-neutral-800">
                                     Genereer samenvatting
                                 </button>
                             </form>
@@ -230,7 +230,7 @@
                 <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
                     <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">WOO Verzoek</h3>
                     <a href="{{ route('woo-requests.show', [$wooRequest, 'questions']) }}"
-                       class="block mt-3 text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
+                       class="block mt-3 text-sm text-rijksblauw hover:text-blue-700 dark:text-blue-400">
                         {{ $wooRequest->title }} →
                     </a>
                 </div>
