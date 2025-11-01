@@ -21,6 +21,7 @@ use Illuminate\Support\Str;
  * @property string|null $content_markdown
  * @property string|null $ai_summary
  * @property float|null $relevance_score
+ * @property string|null $relevance_explanation
  * @property \Carbon\CarbonInterface|null $processed_at
  * @property string $api_processing_status
  * @property string|null $api_processing_error
@@ -50,6 +51,7 @@ class Document extends Model
         'content_markdown',
         'ai_summary',
         'relevance_score',
+        'relevance_explanation',
         'processed_at',
         'api_processing_status',
         'api_processing_error',

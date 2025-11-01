@@ -2,10 +2,7 @@ ToDo list voor ontwikkeling
 
 app
 
--   maak progressbar functioneel
--   api key van thom toevoegen
--   api relevance explaination toevoegen
--   label onbeantwoord van vragen altijd rood in overview
+-   'thuisbezorgd' status overzicht voor burger toevoegen
 
 devops
 

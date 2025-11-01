@@ -386,6 +386,24 @@
                             </dd>
                         </div>
                         @endif
+                        @if($document->relevance_score !== null)
+                        <div>
+                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">Relevantie Score</dt>
+                            <dd class="mt-1">
+                                <span class="px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
+                                    {{ round($document->relevance_score * 100) }}%
+                                </span>
+                            </dd>
+                        </div>
+                        @endif
+                        @if($document->relevance_explanation)
+                        <div>
+                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">Relevantie Uitleg</dt>
+                            <dd class="mt-1 text-sm text-neutral-900 dark:text-white whitespace-pre-wrap">
+                                {{ $document->relevance_explanation }}
+                            </dd>
+                        </div>
+                        @endif
                     </dl>
                 </div>
 

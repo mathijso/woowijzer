@@ -149,6 +149,7 @@ class ProcessUploadedDocument implements ShouldQueue
             $contentMarkdown = $markdownData['markdown_text'] ?? null;
             $aiSummary = $documentDetails['processing']['summary'] ?? null;
             $relevanceScore = $documentDetails['processing']['relevance_score'] ?? null;
+            $relevanceExplanation = $documentDetails['processing']['relevance_explanation'] ?? null;
             $timelineEvents = $documentDetails['timeline'] ?? [];
             $processingMetadata = [
                 'confidence_score' => $documentDetails['processing']['confidence_score'] ?? null,
@@ -164,6 +165,7 @@ class ProcessUploadedDocument implements ShouldQueue
                 'content_markdown' => $contentMarkdown,
                 'ai_summary' => $aiSummary,
                 'relevance_score' => $relevanceScore,
+                'relevance_explanation' => $relevanceExplanation,
                 'timeline_events_json' => $timelineEvents,
                 'processing_metadata_json' => $processingMetadata,
                 'processed_at' => now(),
