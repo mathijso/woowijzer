@@ -4,7 +4,8 @@ app
 
 -   maak progressbar functioneel
 -   api key van thom toevoegen
--
+-   api relevance explaination toevoegen
+-   label onbeantwoord van vragen altijd rood in overview
 
 devops
 

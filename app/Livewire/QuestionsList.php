@@ -13,11 +13,34 @@ class QuestionsList extends Component
 
     public WooRequest $wooRequest;
     public string $search = '';
+    public string $statusFilter = '';
 
-    protected $queryString = ['search'];
+    protected $queryString = ['search', 'statusFilter'];
+
+    protected $listeners = [
+        'filter-questions-by-status' => 'filterByStatus',
+    ];
 
     public function updatingSearch(): void
     {
+        $this->resetPage();
+    }
+
+    public function updatingStatusFilter(): void
+    {
+        $this->resetPage();
+    }
+
+    public function filterByStatus(string $status): void
+    {
+        // Set the status filter ('all', 'unanswered', 'partially_answered', 'answered')
+        $this->statusFilter = $status === 'all' ? '' : $status;
+        $this->resetPage();
+    }
+
+    public function clearFilter(): void
+    {
+        $this->statusFilter = '';
         $this->resetPage();
     }
 
@@ -32,6 +55,10 @@ class QuestionsList extends Component
                 $q->where('question_text', 'like', '%' . $this->search . '%')
                     ->orWhere('ai_summary', 'like', '%' . $this->search . '%');
             });
+        }
+
+        if ($this->statusFilter) {
+            $query->where('status', $this->statusFilter);
         }
 
         $questions = $query->paginate(10);

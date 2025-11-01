@@ -155,23 +155,6 @@ class WooRequestController extends Controller
             'caseDecision',
         ]);
 
-        // Calculate progress (used by case managers)
-        $totalQuestions = $wooRequest->questions()->count();
-        /** @phpstan-ignore-next-line */
-        $answeredQuestions = $wooRequest->questions()->answered()->count();
-        $progressPercentage = $totalQuestions > 0
-            ? round(($answeredQuestions / $totalQuestions) * 100, 2)
-            : 0;
-
-        // Get question status breakdown
-        $questionStats = [
-            /** @phpstan-ignore-next-line */
-            'unanswered' => $wooRequest->questions()->unanswered()->count(),
-            /** @phpstan-ignore-next-line */
-            'partially_answered' => $wooRequest->questions()->partiallyAnswered()->count(),
-            'answered' => $answeredQuestions,
-        ];
-
         // Get all case managers for assignment dropdown (if user is case manager)
         $caseManagers = Auth::user()->isCaseManager()
             ? User::caseManagers()->orderBy('name')->get()
@@ -179,8 +162,6 @@ class WooRequestController extends Controller
 
         return view('woo-requests.show', [
             'wooRequest' => $wooRequest,
-            'progressPercentage' => $progressPercentage,
-            'questionStats' => $questionStats,
             'caseManagers' => $caseManagers,
             'activeTab' => $tab,
         ]);

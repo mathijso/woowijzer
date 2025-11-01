@@ -14,6 +14,7 @@ return [
 
     'woo_insight_api' => [
         'base_url' => env('WOO_INSIGHT_API_URL', 'https://api.woo-hub.nl'),
+        'api_key' => env('WOO_INSIGHT_API_KEY'),
         'timeout' => env('WOO_INSIGHT_API_TIMEOUT', 120), // seconds
         'retry_interval_minutes' => env('WOO_INSIGHT_RETRY_INTERVAL', 10),
     ],

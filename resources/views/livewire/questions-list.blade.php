@@ -1,8 +1,36 @@
-<div>
+<div id="questions-section">
+    {{-- Active Filter Badge --}}
+    @if($statusFilter)
+        <div class="p-3 mb-4 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800">
+            <div class="flex justify-between items-center">
+                <div class="flex gap-2 items-center">
+                    <svg class="w-4 h-4 text-rijksblauw dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="text-sm font-medium text-rijksblauw dark:text-blue-400">
+                        Filter actief:
+                        @php
+                            $filterLabels = [
+                                'unanswered' => 'Onbeantwoord',
+                                'partially_answered' => 'Gedeeltelijk beantwoord',
+                                'answered' => 'Beantwoord',
+                            ];
+                        @endphp
+                        {{ $filterLabels[$statusFilter] ?? ucfirst($statusFilter) }}
+                    </span>
+                </div>
+                <button wire:click="clearFilter"
+                        class="text-xs font-medium transition-colors text-rijksblauw hover:text-rijksdonkerblauw dark:text-blue-400 dark:hover:text-blue-300">
+                    Wis filter
+                </button>
+            </div>
+        </div>
+    @endif
+
     {{-- Search Input --}}
     <div class="mb-4">
         <div class="relative">
-            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <div class="flex absolute inset-y-0 left-0 items-center pl-3 pointer-events-none">
                 <svg class="w-5 h-5 text-neutral-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -34,7 +62,7 @@
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
                         <div class="flex gap-4 items-start">
-                            <div class="flex flex-shrink-0 justify-center items-center w-8 h-8 text-sm font-semibold text-rijksblauw bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
+                            <div class="flex flex-shrink-0 justify-center items-center w-8 h-8 text-sm font-semibold bg-blue-100 rounded-full text-rijksblauw dark:bg-blue-900/20 dark:text-blue-400">
                                 {{ $displayNumber }}
                             </div>
                             <div class="flex-1">
