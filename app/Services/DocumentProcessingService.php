@@ -338,7 +338,24 @@ class DocumentProcessingService
                 ->get("{$this->baseUrl}/documents/{$externalDocumentId}");
 
             if ($response->successful()) {
-                return $response->json();
+                $data = $response->json();
+                
+                // Log the structure to help debug relevance issues
+                Log::debug('Document details API response structure', [
+                    'external_document_id' => $externalDocumentId,
+                    'response_keys' => array_keys($data),
+                    'has_processing' => isset($data['processing']),
+                    'processing_structure' => isset($data['processing']) ? [
+                        'keys' => array_keys($data['processing']),
+                        'relevance_score' => $data['processing']['relevance_score'] ?? 'MISSING',
+                        'relevance_explanation' => isset($data['processing']['relevance_explanation']) 
+                            ? 'PRESENT (' . strlen($data['processing']['relevance_explanation']) . ' chars)' 
+                            : 'MISSING',
+                    ] : 'NOT PRESENT',
+                    'full_response_sample' => json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE),
+                ]);
+
+                return $data;
             }
 
             throw new \Exception('Failed to get document details: ' . $response->body());

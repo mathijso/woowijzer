@@ -399,8 +399,27 @@
                         @if($document->relevance_explanation)
                         <div>
                             <dt class="text-xs text-neutral-600 dark:text-neutral-400">Relevantie Uitleg</dt>
-                            <dd class="mt-1 text-sm text-neutral-900 dark:text-white whitespace-pre-wrap">
-                                {{ $document->relevance_explanation }}
+                            <dd class="mt-1">
+                                <div x-data="{ expanded: false }" class="p-2 bg-blue-50 rounded-lg border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800">
+                                    <div class="flex gap-2 items-start">
+                                        <svg class="flex-shrink-0 mt-0.5 w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                        <div class="flex-1 min-w-0">
+                                            <p class="mb-1 text-xs font-medium text-blue-900 dark:text-blue-300">Relevantie uitleg:</p>
+                                            <div class="text-sm text-neutral-700 dark:text-neutral-300">
+                                                <p x-show="!expanded" class="line-clamp-3">{{ Str::limit($document->relevance_explanation, 200) }}</p>
+                                                <p x-show="expanded" x-cloak class="whitespace-pre-wrap">{{ $document->relevance_explanation }}</p>
+                                            </div>
+                                            @if(strlen($document->relevance_explanation) > 200)
+                                                <button @click="expanded = !expanded" class="mt-1 text-xs font-medium text-rijksblauw hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                                                    <span x-show="!expanded">Toon meer</span>
+                                                    <span x-show="expanded" x-cloak>Toon minder</span>
+                                                </button>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
                             </dd>
                         </div>
                         @endif
