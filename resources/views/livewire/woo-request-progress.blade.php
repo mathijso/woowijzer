@@ -25,7 +25,7 @@
                         <div class="relative z-10 flex-shrink-0 mb-2">
                             <div class="flex items-center justify-center w-7 h-7 rounded-full transition-all duration-500
                                 {{ $phase['completed']
-                                    ? 'bg-rijksblauw dark:bg-rijkscyaan text-white dark:text-neutral-900 shadow-md'
+                                    ? 'bg-green-700 dark:bg-rijkscyaan text-white dark:text-neutral-900 shadow-md'
                                     : ($phase['current']
                                         ? 'bg-blue-100 dark:bg-blue-900/30 text-rijksblauw dark:text-rijkscyaan border-2 border-rijksblauw dark:border-rijkscyaan animate-pulse'
                                         : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-400 dark:text-neutral-500')
@@ -69,44 +69,7 @@
                                 {{ $phase['description'] }}
                             </p>
 
-                            {{-- Extra info for processing phase --}}
-                            {{-- @if($phase['key'] === 'processing' && ($phase['current'] || $phase['completed']))
-                                <div class="p-2 mt-2 bg-blue-50 rounded dark:bg-blue-900/20">
-                                    <div class="flex justify-between items-center mb-1 text-[10px] font-medium text-blue-700 dark:text-blue-300">
-                                        <span>Vragen status</span>
-                                        <span>{{ $questionStats['answered'] }}/{{ $questionStats['total'] }}</span>
-                                    </div>
-                                    <div class="overflow-hidden mb-1.5 h-1 bg-blue-200 rounded-full dark:bg-blue-900/40">
-                                        <div class="h-full rounded-full transition-all duration-700 bg-rijksblauw dark:bg-rijkscyaan"
-                                             style="width: {{ $progressPercentage }}%"></div>
-                                    </div>
-                                    <div class="flex flex-col gap-1 text-[10px]">
-                                        <button
-                                            wire:click="filterByStatus('unanswered')"
-                                            class="px-1.5 py-0.5 rounded transition-colors hover:bg-red-100 dark:hover:bg-red-900/30"
-                                            title="Filter onbeantwoord">
-                                            <span class="font-semibold text-red-600 dark:text-red-400">{{ $questionStats['unanswered'] }}</span>
-                                            <span class="text-neutral-600 dark:text-neutral-400"> open</span>
-                                        </button>
-                                        @if($questionStats['partially_answered'] > 0)
-                                            <button
-                                                wire:click="filterByStatus('partially_answered')"
-                                                class="px-1.5 py-0.5 rounded transition-colors hover:bg-yellow-100 dark:hover:bg-yellow-900/30"
-                                                title="Filter gedeeltelijk">
-                                                <span class="font-semibold text-yellow-600 dark:text-yellow-400">{{ $questionStats['partially_answered'] }}</span>
-                                                <span class="text-neutral-600 dark:text-neutral-400"> gedeeltelijk</span>
-                                            </button>
-                                        @endif
-                                        <button
-                                            wire:click="filterByStatus('answered')"
-                                            class="px-1.5 py-0.5 rounded transition-colors hover:bg-green-100 dark:hover:bg-green-900/30"
-                                            title="Filter beantwoord">
-                                            <span class="font-semibold text-green-600 dark:text-green-400">{{ $questionStats['answered'] }}</span>
-                                            <span class="text-neutral-600 dark:text-neutral-400"> klaar</span>
-                                        </button>
-                                    </div>
-                                </div>
-                            @endif --}}
+
                         </div>
                     </div>
                 @endforeach
@@ -137,7 +100,7 @@
                         <div class="relative z-10 flex-shrink-0">
                             <div class="flex items-center justify-center w-10 h-10 rounded-full transition-all duration-500
                                 {{ $phase['completed']
-                                    ? 'bg-rijksblauw dark:bg-rijkscyaan text-white dark:text-neutral-900 shadow-lg scale-110'
+                                    ? 'bg-green-700 dark:bg-rijkscyaan text-white dark:text-neutral-900 shadow-lg scale-110'
                                     : ($phase['current']
                                         ? 'bg-blue-100 dark:bg-blue-900/30 text-rijksblauw dark:text-rijkscyaan border-2 border-rijksblauw dark:border-rijkscyaan animate-pulse'
                                         : 'bg-neutral-100 dark:bg-neutral-700 text-neutral-400 dark:text-neutral-500')

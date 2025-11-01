@@ -117,19 +117,7 @@
                         @endif
                     </div>
                 </div>
-                @php
-$statusColors = [
-    'submitted' => 'bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300',
-    'in_review' => 'bg-blue-100 text-blue-800 dark:bg-blue-900/20 dark:text-blue-400',
-    'in_progress' => 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400',
-    'completed' => 'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400',
-    'rejected' => 'bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400',
-];
-$statusLabels = config('woo.woo_request_statuses');
-                @endphp
-                <span class="inline-flex rounded-full px-4 py-2 text-sm font-semibold {{ $statusColors[$wooRequest->status] ?? 'bg-gray-100 text-gray-800' }}">
-                    {{ $statusLabels[$wooRequest->status] ?? $wooRequest->status }}
-                </span>
+
             </div>
 
             {{-- Progress Bar (Case Managers Only - Detailed) --}}
