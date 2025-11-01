@@ -131,8 +131,6 @@ $activeTab = $activeTab ?? 'overview';
                     @if($activeTab === 'overview')
                     <div id="tab-overview" class="tab-content">
                         <div class="p-6 space-y-6">
-
-
                             {{-- Timeline Events --}}
                             @if($document->hasTimelineEvents())
                             <div>
