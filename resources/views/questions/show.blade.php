@@ -59,38 +59,8 @@
 
             {{-- Sidebar --}}
             <div class="space-y-6">
-                {{-- Question Info --}}
-                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
-                    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Vraag Informatie</h3>
-                    <dl class="mt-4 space-y-3">
-                        <div>
-                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">Volgnummer</dt>
-                            <dd class="mt-1 text-sm font-medium text-neutral-900 dark:text-white">{{ $question->order }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">Status</dt>
-                            <dd class="mt-1">
-                                @livewire('question-status-badge', ['question' => $question, 'size' => 'sm'])
-                            </dd>
-                        </div>
-                        <div>
-                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">Gekoppelde documenten</dt>
-                            <dd class="mt-1 text-sm font-medium text-neutral-900 dark:text-white">
-                                {{ $question->documents->count() }}
-                            </dd>
-                        </div>
-                        <div>
-                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">Aangemaakt</dt>
-                            <dd class="mt-1 text-sm font-medium text-neutral-900 dark:text-white">{{ $question->created_at->format('d-m-Y H:i') }}</dd>
-                        </div>
-                        @if($question->updated_at && $question->updated_at->ne($question->created_at))
-                        <div>
-                            <dt class="text-xs text-neutral-600 dark:text-neutral-400">Laatst bijgewerkt</dt>
-                            <dd class="mt-1 text-sm font-medium text-neutral-900 dark:text-white">{{ $question->updated_at->format('d-m-Y H:i') }}</dd>
-                        </div>
-                        @endif
-                    </dl>
-                </div>
+
+
 
                 {{-- Answer Question Form --}}
                 @auth
@@ -103,23 +73,9 @@
 
                                 @livewire('question-status-buttons', ['question' => $question, 'wooRequest' => $wooRequest])
 
-                                <div>
-                                    <label for="ai_summary" class="block text-sm font-medium text-neutral-700 dark:text-neutral-300">
-                                        AI Samenvatting (optioneel)
-                                    </label>
-                                    <textarea name="ai_summary"
-                                              id="ai_summary"
-                                              rows="4"
-                                              class="block px-3 py-2 mt-1 w-full text-sm rounded-lg border shadow-sm border-neutral-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-white"
-                                              placeholder="Voeg een samenvatting toe...">{{ old('ai_summary', $question->ai_summary) }}</textarea>
-                                </div>
 
-                                <div class="flex gap-2">
-                                    <button type="submit"
-                                            class="inline-flex justify-center items-center px-4 py-2 w-full text-sm font-medium text-white rounded-lg bg-rijksblauw hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                                        Opslaan
-                                    </button>
-                                </div>
+
+
                             </form>
 
                             @if($question->documents->where('pivot.confirmed_by_case_manager', true)->count() > 0)

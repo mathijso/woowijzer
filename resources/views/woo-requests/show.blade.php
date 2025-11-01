@@ -188,7 +188,7 @@ $activeTab = $activeTab ?? 'documents';
                             @if($wooRequest->hasTimeline())
                             <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'timeline']) }}"
                                class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'timeline' ? 'border-blue-500 text-rijksblauw dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
-                                Complete Timeline
+                                Tijdslijn
                             </a>
                             @endif
                             @auth
@@ -335,7 +335,7 @@ $activeTab = $activeTab ?? 'documents';
                         <div class="p-6">
                             <div class="flex justify-between items-start mb-6">
                                 <div>
-                                    <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Complete Timeline</h2>
+                                    <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Tijdslijn</h2>
                                     <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
                                         Geaggregeerd uit alle documenten • WOO Insight API
                                     </p>
@@ -584,27 +584,7 @@ $activeTab = $activeTab ?? 'documents';
                 </div>
                 @endif
 
-                {{-- Aanvrager Info --}}
-                @if(auth()->user()->isCaseManager())
-                @if($wooRequest->user)
-                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
-                    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Aanvrager</h3>
-                    <div class="flex gap-3 items-center mt-3">
-                        <div class="flex justify-center items-center w-10 h-10 text-sm font-semibold bg-blue-100 rounded-full text-rijksblauw dark:bg-blue-900/20 dark:text-blue-400">
-                            {{ $wooRequest->user->initials() }}
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-neutral-900 dark:text-white">
-                                {{ $wooRequest->user->name }}
-                            </p>
-                            <p class="text-xs text-neutral-600 dark:text-neutral-400">
-                                {{ $wooRequest->user->email }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                @endif
-                @endif
+
 
                 {{-- Actions (Case Managers Only) --}}
                 @auth
@@ -701,68 +681,29 @@ $activeTab = $activeTab ?? 'documents';
                         </div>
                     @endif
                 @endauth
-
-                {{-- Timeline --}}
-                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
-                    <h3 class="mb-4 text-sm font-semibold text-neutral-900 dark:text-white">Timeline</h3>
-                    <div class="space-y-4">
-                        <div class="flex gap-3">
-                            <div class="flex flex-col items-center">
-                                <div class="flex justify-center items-center w-8 h-8 bg-blue-100 rounded-full dark:bg-blue-900/20">
-                                    <svg class="w-4 h-4 text-rijksblauw dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
+                        {{-- Aanvrager Info --}}
+                        @if(auth()->user()->isCaseManager())
+                            @if($wooRequest->user)
+                                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+                                    <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Aanvrager</h3>
+                                    <div class="flex gap-3 items-center mt-3">
+                                        <div
+                                            class="flex justify-center items-center w-10 h-10 text-sm font-semibold bg-blue-100 rounded-full text-rijksblauw dark:bg-blue-900/20 dark:text-blue-400">
+                                            {{ $wooRequest->user->initials() }}
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-medium text-neutral-900 dark:text-white">
+                                                {{ $wooRequest->user->name }}
+                                            </p>
+                                            <p class="text-xs text-neutral-600 dark:text-neutral-400">
+                                                {{ $wooRequest->user->email }}
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="w-px h-full bg-neutral-200 dark:bg-neutral-700"></div>
-                            </div>
-                            <div class="pb-4">
-                                <p class="text-xs font-medium text-neutral-900 dark:text-white">Ingediend</p>
-                                <p class="text-xs text-neutral-600 dark:text-neutral-400">
-                                    {{ $wooRequest->submitted_at?->format('d-m-Y H:i') ?? $wooRequest->created_at->format('d-m-Y H:i') }}
-                                </p>
-                            </div>
-                        </div>
-
-                        @if($wooRequest->caseManager)
-                        <div class="flex gap-3">
-                            <div class="flex flex-col items-center">
-                                <div class="flex justify-center items-center w-8 h-8 bg-blue-100 rounded-full dark:bg-blue-900/20">
-                                    <svg class="w-4 h-4 text-rijksblauw dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
-                                @if($wooRequest->status !== 'completed')
-                                <div class="w-px h-full bg-neutral-200 dark:bg-neutral-700"></div>
-                                @endif
-                            </div>
-                            <div class="{{ $wooRequest->status !== 'completed' ? 'pb-4' : '' }}">
-                                <p class="text-xs font-medium text-neutral-900 dark:text-white">Toegewezen</p>
-                                <p class="text-xs text-neutral-600 dark:text-neutral-400">
-                                    Aan {{ $wooRequest->caseManager->name }}
-                                </p>
-                            </div>
-                        </div>
+                            @endif
                         @endif
 
-                        @if($wooRequest->status === 'completed')
-                        <div class="flex gap-3">
-                            <div class="flex justify-center items-center w-8 h-8 bg-green-100 rounded-full dark:bg-green-900/20">
-                                <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-xs font-medium text-neutral-900 dark:text-white">Afgerond</p>
-                                <p class="text-xs text-neutral-600 dark:text-neutral-400">
-                                    {{ $wooRequest->completed_at?->format('d-m-Y H:i') }}
-                                </p>
-                            </div>
-                        </div>
-                        @endif
-                    </div>
-                </div>
-
-                {{-- Stats --}}
 
         </div>
     </div>

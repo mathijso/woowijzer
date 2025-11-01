@@ -61,35 +61,8 @@
                     @csrf
 
                     <div class="space-y-6">
-                        {{-- Name --}}
-                        <div>
-                            <label for="submitted_by_name" class="block text-sm font-medium text-neutral-900 dark:text-white">
-                                Uw naam (optioneel)
-                            </label>
-                            <input type="text"
-                                   name="submitted_by_name"
-                                   id="submitted_by_name"
-                                   value="{{ old('submitted_by_name', $internalRequest->colleague_name) }}"
-                                   class="block px-4 py-2 mt-1 w-full rounded-lg border border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white">
-                            @error('submitted_by_name')
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                            @enderror
-                        </div>
 
-                        {{-- Notes --}}
-                        <div>
-                            <label for="submission_notes" class="block text-sm font-medium text-neutral-900 dark:text-white">
-                                Notities bij upload (optioneel)
-                            </label>
-                            <textarea name="submission_notes"
-                                      id="submission_notes"
-                                      rows="3"
-                                      class="block px-4 py-2 mt-1 w-full rounded-lg border border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
-                                      placeholder="Eventuele opmerkingen over de geüploade documenten...">{{ old('submission_notes') }}</textarea>
-                            @error('submission_notes')
-                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                            @enderror
-                        </div>
+
 
                         {{-- File Upload --}}
                         <div>
@@ -103,7 +76,7 @@
                                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                         <div class="flex text-sm text-neutral-600 dark:text-neutral-400">
-                                            <label for="documents" class="relative font-medium text-rijksblauw rounded-md cursor-pointer hover:text-blue-500">
+                                            <label for="documents" class="relative font-medium rounded-md cursor-pointer text-rijksblauw hover:text-blue-500">
                                                 <span>Upload bestanden</span>
                                                 <input id="documents" name="documents[]" type="file" multiple required class="sr-only">
                                             </label>
@@ -123,12 +96,36 @@
                                 <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                             @enderror
                         </div>
+                        {{-- Notes --}}
+                        <div>
+                            <label for="submission_notes" class="block text-sm font-medium text-neutral-900 dark:text-white">
+                                Notities bij upload (optioneel)
+                            </label>
+                            <textarea name="submission_notes" id="submission_notes" rows="3"
+                                class="block px-4 py-2 mt-1 w-full rounded-lg border border-neutral-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-white"
+                                placeholder="Eventuele opmerkingen over de geüploade documenten...">{{ old('submission_notes') }}</textarea>
+                            @error('submission_notes')
+                                <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                            @enderror
+                        </div>
 
+
+
+
+                        {{-- Submit --}}
+                        <div class="flex justify-start pt-4 border-t border-neutral-200 dark:border-neutral-700">
+                            <button type="submit"
+                                    class="px-8 py-3 text-sm font-semibold text-white rounded-lg transition-transform duration-150 transform bg-rijksblauw hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 hover:scale-105 hover:cursor-pointer">
+                                Documenten uploaden
+                            </button>
+                        </div>
                         {{-- Info --}}
                         <div class="p-4 bg-blue-50 rounded-lg dark:bg-blue-900/10">
                             <div class="flex">
                                 <svg class="flex-shrink-0 w-5 h-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                        clip-rule="evenodd" />
                                 </svg>
                                 <div class="ml-3 text-sm text-blue-700 dark:text-blue-300">
                                     <p class="font-medium">Let op:</p>
@@ -140,14 +137,6 @@
                                     </ul>
                                 </div>
                             </div>
-                        </div>
-
-                        {{-- Submit --}}
-                        <div class="flex justify-end pt-4 border-t border-neutral-200 dark:border-neutral-700">
-                            <button type="submit"
-                                    class="px-6 py-2 text-sm font-semibold text-white bg-rijksblauw rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                Documenten uploaden
-                            </button>
                         </div>
                     </div>
                 </form>

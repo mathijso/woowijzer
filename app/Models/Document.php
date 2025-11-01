@@ -175,7 +175,16 @@ class Document extends Model
 
     public function getTimelineEvents(): array
     {
-        return $this->timeline_events_json ?? [];
+        // Handle both formats: direct array or wrapped in 'events' key
+        $timelineData = $this->timeline_events_json ?? [];
+        
+        // If timeline_events_json has an 'events' key, extract it
+        if (isset($timelineData['events']) && is_array($timelineData['events'])) {
+            return $timelineData['events'];
+        }
+        
+        // Otherwise return the data as-is (for backward compatibility)
+        return $timelineData;
     }
 
     public function getProcessingMetadata(): array
