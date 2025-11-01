@@ -37,15 +37,15 @@
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
                         <div class="flex gap-4 items-start">
-                            <div class="flex flex-shrink-0 justify-center items-center w-8 h-8 text-sm font-semibold bg-blue-100 rounded-full text-rijksblauw dark:bg-blue-900/20 dark:text-blue-400">
+                            <div class="flex flex-shrink-0 justify-center items-center mt-3 w-8 h-8 text-sm font-semibold bg-blue-100 rounded-full border-1 border-rijksblauw text-rijksblauw dark:bg-blue-900/20 dark:text-blue-400">
                                 {{ $displayNumber }}
                             </div>
-                            <div class="flex-1">
+                            <div class="flex-1 ml-2">
                                 <p class="text-sm font-medium text-neutral-900 dark:text-white">{{ $question->question_text }}</p>
                                 <div class="flex gap-2 items-center mt-2">
                                     @if($relevanceScore)
-                                        <span class="px-2 py-1 text-xs font-medium text-white rounded-full bg-rijksblauw dark:bg-blue-900/20 dark:text-blue-400">
-                                            {{ round($relevanceScore * 100) }}% relevant
+                                        <span class="px-2 py-1 text-xs font-medium bg-blue-100 rounded-full text-rijksblauw border-rijksblauw dark:bg-blue-900/20 dark:text-blue-400">
+                                            <strong>{{ round($relevanceScore * 100) }}%</strong> relevant
                                         </span>
                                     @endif
                                     <span class="inline-flex rounded-full px-2 py-1 text-xs font-medium {{ $questionStatusColors[$question->status] ?? 'bg-gray-100 text-gray-600' }}">
@@ -56,11 +56,7 @@
                                             Bevestigd
                                         </span>
                                     @endif
-                                    @if($question->documents_count > 0)
-                                        <span class="text-xs text-neutral-600 dark:text-neutral-400">
-                                            {{ $question->documents_count }} document(en) gekoppeld
-                                        </span>
-                                    @endif
+
                                 </div>
                                 @if($question->ai_summary)
                                     <div class="p-3 mt-3 text-xs bg-blue-50 rounded-lg text-neutral-700 dark:bg-blue-900/10 dark:text-neutral-300">
