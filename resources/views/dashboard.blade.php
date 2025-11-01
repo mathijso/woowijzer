@@ -1,11 +1,11 @@
 <x-layouts.app :title="__('Dashboard')">
-    <div class="flex h-full w-full flex-1 flex-col gap-6">
+    <div class="flex flex-col flex-1 gap-6 mx-auto w-full max-w-7xl h-full">
         {{-- Welkomstbericht --}}
-        <div class="rounded-xl bg-white p-6 shadow-sm dark:bg-neutral-800">
-            <h1 class="text-2xl font-bold text-neutral-900 dark:text-white">
+        <div class="bg-white dark:bg-neutral-800 shadow-sm p-6 rounded-xl">
+            <h1 class="font-bold text-neutral-900 dark:text-white text-2xl">
                 Welkom terug, {{ Auth::user()->name }}
             </h1>
-            <p class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+            <p class="mt-1 text-neutral-600 dark:text-neutral-400 text-sm">
                 @if(Auth::user()->isBurger())
                     Hier kunt u uw WOO-verzoeken bekijken en beheren.
                 @elseif(Auth::user()->isCaseManager())
@@ -20,8 +20,8 @@
             @include('dashboards.case-manager')
         @else
             {{-- Colleague view --}}
-            <div class="rounded-xl bg-white p-8 text-center shadow-sm dark:bg-neutral-800">
-                <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Welkom</h2>
+            <div class="bg-white dark:bg-neutral-800 shadow-sm p-8 rounded-xl text-center">
+                <h2 class="font-semibold text-neutral-900 dark:text-white text-lg">Welkom</h2>
                 <p class="mt-2 text-neutral-600 dark:text-neutral-400">
                     U ontvangt een e-mail wanneer er een verzoek tot het uploaden van documenten voor u klaarstaat.
                 </p>

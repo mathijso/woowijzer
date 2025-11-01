@@ -22,18 +22,18 @@
     @livewireStyles
 </head>
 
-<body class="h-full antialiased text-black bg-white font-rijks">
+<body class="bg-white h-full font-rijks text-black antialiased">
     <div class="min-h-full">
-            <div class="p-0 m-0 mx-auto bg-white">
-                <div class="flex justify-center items-center p-0 m-0">
-                    <div class="flex justify-center items-center p-0 m-0 logo">
-                        <div class="p-0 m-0 logo__wrapper">
-                            <figure class="flex items-center p-0 m-0 logo__figure">
+            <div class="bg-white m-0 mx-auto p-0">
+                <div class="flex justify-center items-center m-0 p-0">
+                    <div class="flex justify-center items-center m-0 p-0 logo">
+                        <div class="m-0 p-0 logo__wrapper">
+                            <figure class="flex items-center m-0 p-0 logo__figure">
                                 <img src="{{ asset('images/beeldmerk-rijksoverheid-desktop.svg') }}"
-                                    alt="Logo Rijksoverheid" class="p-0 m-0 w-auto h-20">
-                                <figcaption class="p-0 m-0 ml-3 logo__text">
+                                    alt="Logo Rijksoverheid" class="m-0 p-0 w-auto h-20">
+                                <figcaption class="m-0 ml-3 p-0 logo__text">
                                     <span
-                                        class="p-0 m-0 font-bold text-left logo__sender text-rijksblauw">Rijksoverheid</span>
+                                        class="m-0 p-0 font-bold text-rijksblauw text-left logo__sender">Rijksoverheid</span>
                                 </figcaption>
                             </figure>
                         </div>
@@ -44,34 +44,34 @@
 
         <!-- Navigation Bar -->
         <header class="bg-rijksblauw">
-            <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
                 <div class="flex justify-between items-center h-16">
                     <!-- Home Link -->
                     <div class="flex items-center">
                         <a href="{{ route('welcome') }}"
-                            class="font-medium text-white transition-colors duration-200 hover:text-rijkscyaan">
+                            class="font-medium text-white hover:text-rijkscyaan transition-colors duration-200">
                             Home
                         </a>
                     </div>
 
                     <!-- Main Navigation -->
-                    <nav class="hidden space-x-8 md:flex">
-                        <a href="{{ route('about') }}" class="flex items-center text-white transition-colors duration-200 hover:text-rijksblauw hover:underline">
+                    <nav class="hidden md:flex space-x-8">
+                        <a href="{{ route('about') }}" class="flex items-center text-white hover:text-rijkscyaan transition-colors duration-200">
                             Over woohub
                         </a>
                         <a href="{{ route('contact') }}"
-                            class="flex items-center text-white transition-colors duration-200 hover:text-rijkscyaan hover:underline">
+                            class="flex items-center text-white hover:text-rijkscyaan transition-colors duration-200">
                             Contact
                         </a>
 
                         @auth
                             <a href="{{ route('dashboard') }}"
-                                class="px-4 py-2 font-medium text-white rounded-md border border-white transition-all duration-200 hover:bg-white hover:text-rijksblauw">
+                                class="hover:bg-white px-4 py-2 border border-white rounded-md font-medium text-white hover:text-rijksblauw transition-all duration-200">
                                 Mijn Dashboard
                             </a>
                         @else
                             <a href="{{ route('login') }}"
-                                class="px-4 py-2 font-medium text-white rounded-md border border-white transition-all duration-200 hover:bg-white hover:text-rijksblauw">
+                                class="hover:bg-white px-4 py-2 border border-white rounded-md font-medium text-white hover:text-rijksblauw transition-all duration-200">
                                 Inloggen
                             </a>
                         @endauth
@@ -81,7 +81,7 @@
                     <!-- Mobile menu button -->
                     <div class="md:hidden">
                         <button type="button" id="mobile-menu-button"
-                            class="text-white hover:text-rijkscyaan focus:outline-none focus:ring-2 focus:ring-rijkscyaan focus:ring-offset-2">
+                            class="focus:outline-none focus:ring-2 focus:ring-rijkscyaan focus:ring-offset-2 text-white hover:text-rijkscyaan">
                             <span class="sr-only">Open main menu</span>
                             <!-- Hamburger icon -->
                             <svg id="hamburger-icon" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -100,33 +100,33 @@
             </div>
 
             <!-- Mobile menu -->
-            <div id="mobile-menu" class="hidden border-t md:hidden border-rijkscyaan bg-rijksblauw">
-                <div class="px-2 pt-2 pb-3 space-y-1">
+            <div id="mobile-menu" class="hidden md:hidden bg-rijksblauw border-rijkscyaan border-t">
+                <div class="space-y-1 px-2 pt-2 pb-3">
                     <a href="{{ route('welcome') }}"
-                        class="block px-3 py-2 text-white transition-colors duration-200 hover:text-rijkscyaan hover:bg-rijkscyaan">
+                        class="block hover:bg-rijkscyaan px-3 py-2 text-white hover:text-rijkscyaan transition-colors duration-200">
                         Home
                     </a>
                     <a href="{{ route('about') }}"
-                        class="block px-3 py-2 text-white transition-colors duration-200 hover:text-rijkscyaan hover:bg-rijkscyaan">
+                        class="block hover:bg-rijkscyaan px-3 py-2 text-white hover:text-rijkscyaan transition-colors duration-200">
                         Over woohub
                     </a>
                     <a href="{{ route('document.summarize') }}"
-                        class="block px-3 py-2 font-medium text-white rounded-md transition-all duration-200 bg-rijkscyaan hover:bg-rijkscyaan-600 hover:shadow-md">
+                        class="block bg-rijkscyaan hover:bg-rijkscyaan-600 hover:shadow-md px-3 py-2 rounded-md font-medium text-white transition-all duration-200">
                         Document Samenvatten
                     </a>
                     <a href="{{ route('contact') }}"
-                        class="block px-3 py-2 text-white transition-colors duration-200 hover:text-rijkscyaan hover:bg-rijkscyaan">
+                        class="block hover:bg-rijkscyaan px-3 py-2 text-white hover:text-rijkscyaan transition-colors duration-200">
                         Contact
                     </a>
 
                     @auth
                         <a href="{{ route('dashboard') }}"
-                            class="block px-3 py-2 font-medium text-white rounded-md border border-white transition-all duration-200 hover:bg-white hover:text-rijksblauw">
+                            class="block hover:bg-white px-3 py-2 border border-white rounded-md font-medium text-white hover:text-rijksblauw transition-all duration-200">
                             Dashboard
                         </a>
                     @else
                         <a href="{{ route('login') }}"
-                            class="block px-3 py-2 font-medium text-white rounded-md border border-white transition-all duration-200 hover:bg-white hover:text-rijksblauw">
+                            class="block hover:bg-white px-3 py-2 border border-white rounded-md font-medium text-white hover:text-rijksblauw transition-all duration-200">
                             Inloggen
                         </a>
                     @endauth
@@ -140,17 +140,17 @@
         </main>
 
         <!-- Footer -->
-        <footer class="border-t bg-rijksgrijs-1 border-rijksgrijs-2">
-            <div class="px-4 py-8 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="grid gap-8 md:grid-cols-2">
+        <footer class="bg-rijksgrijs-1 border-rijksgrijs-2 border-t">
+            <div class="mx-auto px-4 sm:px-6 lg:px-8 py-8 max-w-7xl">
+                <div class="gap-8 grid md:grid-cols-2">
                     <!-- Hackathon Section -->
                     <div>
                         <div class="flex items-center mb-4">
-                            <div class="p-2 mr-3 bg-white rounded-lg">
+                            <div class="bg-white mr-3 p-2 rounded-lg">
                                 <img src="{{ asset('images/hackathon.svg') }}" alt="Hackathon Open Overheid Terminal WOO" class="w-auto h-8">
                             </div>
                         </div>
-                        <p class="text-sm text-rijksgrijs-6">
+                        <p class="text-rijksgrijs-6 text-sm">
                             Een initiatief geïnspireerd door Hackathon Open Overheid 'Terminal WOO'
                             op 31 oktober en 1 november 2025 in de Fokker Terminal in Den Haag.
                         </p>
@@ -158,30 +158,30 @@
 
                     <!-- Bedrijven Section -->
                     <div class="text-left md:text-right">
-                        <h3 class="mb-4 text-lg font-bold text-rijksblauw">
+                        <h3 class="mb-4 font-bold text-rijksblauw text-lg">
                             Ontwikkeld door
                         </h3>
-                        <div class="flex flex-col items-start space-y-3 md:flex-row md:items-center md:justify-end md:space-x-6 md:space-y-0">
+                        <div class="flex md:flex-row flex-col md:justify-end items-start md:items-center md:space-x-6 space-y-3 md:space-y-0">
                             <div class="flex items-center">
                                 <img src="{{ asset('images/techletes_logo.jpg') }}"
                                      alt="Techletes.ai logo"
-                                     class="object-contain mr-2 w-auto h-8">
+                                     class="mr-2 w-auto h-8 object-contain">
                                 <a href="https://www.techletes.ai/"
-                                   class="text-sm font-medium text-rijksblauw hover:text-rijkscyaan hover:underline">
+                                   class="font-medium text-rijksblauw hover:text-rijkscyaan text-sm hover:underline">
                                     Techletes.ai
                                 </a>
                             </div>
                             <div class="flex items-center">
                                 <img src="{{ asset('images/oggel-codelabs_logo.svg') }}"
                                      alt="Oggel Codelabs logo"
-                                     class="object-contain mr-2 w-auto h-8">
+                                     class="mr-2 w-auto h-8 object-contain">
                                 <a href="https://oggel-codelabs.nl/"
-                                   class="text-sm font-medium text-rijksblauw hover:text-rijkscyaan hover:underline">
+                                   class="font-medium text-rijksblauw hover:text-rijkscyaan text-sm hover:underline">
                                     Oggel Codelabs
                                 </a>
                             </div>
                         </div>
-                        <p class="mt-4 text-xs text-rijksgrijs-5">
+                        <p class="mt-4 text-rijksgrijs-5 text-xs">
                             © {{ date('Y') }} Techlethes.ai en Oggel-codelabs. Alle rechten voorbehouden.
                         </p>
                     </div>

@@ -1,15 +1,15 @@
 <x-app-layout>
     <x-slot name="title">Contact - woohub</x-slot>
 
-    <div class="min-h-screen bg-white">
+    <div class="bg-white min-h-screen">
         <!-- Hero Section -->
-        <section class="px-4 py-20 sm:px-6 lg:px-8">
+        <section class="px-4 sm:px-6 lg:px-8 py-20">
             <div class="mx-auto max-w-7xl">
                 <div class="text-center">
-                    <h1 class="mb-6 text-4xl font-bold text-rijksblauw">
+                    <h1 class="mb-6 font-bold text-rijksblauw text-4xl">
                         Contact
                     </h1>
-                    <p class="mx-auto max-w-3xl text-xl text-rijksgrijs-6">
+                    <p class="mx-auto max-w-3xl text-rijksgrijs-6 text-xl">
                         Heeft u vragen over woohub of wilt u feedback geven?
                         Neem gerust contact met ons op.
                     </p>
@@ -18,14 +18,14 @@
         </section>
 
         <!-- Contact Section -->
-        <section class="py-20 bg-rijksgrijs-1">
-            <div class="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="grid gap-12 md:grid-cols-2">
+        <section class="bg-rijksgrijs-1 py-20">
+            <div class="mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
+                <div class="gap-12 grid md:grid-cols-2">
                     <div>
-                        <h2 class="mb-6 text-3xl font-bold text-rijksblauw">
+                        <h2 class="mb-6 font-bold text-rijksblauw text-3xl">
                             Neem contact op
                         </h2>
-                        <p class="mb-6 text-lg text-rijksgrijs-6">
+                        <p class="mb-6 text-rijksgrijs-6 text-lg">
                             Voor vragen, suggesties of technische ondersteuning kunt u contact met ons opnemen.
                         </p>
                         <div class="space-y-4">
@@ -41,7 +41,7 @@
                         </div>
                     </div>
                     <div>
-                        <h2 class="mb-6 text-3xl font-bold text-rijksblauw">
+                        <h2 class="mb-6 font-bold text-rijksblauw text-3xl">
                             Veelgestelde vragen
                         </h2>
                         <div class="space-y-4">

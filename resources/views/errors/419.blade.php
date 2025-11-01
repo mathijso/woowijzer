@@ -47,7 +47,7 @@
                     <!-- Home Link -->
                     <div class="flex items-center">
                         <a href="{{ route('welcome') }}"
-                            class="font-medium text-white transition-colors duration-200 hover:text-rijkscyaan">
+                            class="font-medium text-white transition-colors duration-200 hover:text-rijkscyaan focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-rijksblauw rounded">
                             Home
                         </a>
                     </div>
@@ -93,7 +93,7 @@
                             <!-- Action Buttons -->
                             <div class="flex flex-col gap-4 justify-center items-center sm:flex-row">
                                 <a href="{{ route('welcome') }}"
-                                   class="inline-flex items-center px-6 py-3 font-medium text-white rounded-md transition-colors duration-200 bg-rijksblauw hover:bg-rijkscyaan">
+                                   class="inline-flex items-center px-6 py-3 font-medium text-white rounded-md transition-colors duration-200 bg-rijksblauw hover:bg-rijkscyaan focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                     <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                                     </svg>

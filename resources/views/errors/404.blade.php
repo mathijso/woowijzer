@@ -47,7 +47,7 @@
                     <!-- Home Link -->
                     <div class="flex items-center">
                         <a href="{{ route('welcome') }}"
-                            class="font-medium text-white transition-colors duration-200 hover:text-rijkscyaan">
+                            class="font-medium text-white transition-colors duration-200 hover:text-rijkscyaan focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-rijksblauw rounded">
                             Home
                         </a>
                     </div>
@@ -94,14 +94,14 @@
                             <!-- Action Buttons -->
                             <div class="flex flex-col gap-4 justify-center items-center sm:flex-row">
                                 <a href="{{ route('welcome') }}"
-                                   class="inline-flex items-center px-6 py-3 font-medium text-white rounded-md transition-colors duration-200 bg-rijksblauw hover:bg-rijkscyaan">
+                                   class="inline-flex items-center px-6 py-3 font-medium text-white rounded-md transition-colors duration-200 bg-rijksblauw hover:bg-rijkscyaan focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                     <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                                     </svg>
                                     Naar hoofdpagina
                                 </a>
                                 <a href="{{ route('document.summarize') }}"
-                                   class="inline-flex items-center px-6 py-3 font-medium rounded-md border transition-colors duration-200 border-rijksblauw text-rijksblauw hover:bg-rijksblauw hover:text-white">
+                                   class="inline-flex items-center px-6 py-3 font-medium rounded-md border transition-colors duration-200 border-rijksblauw text-rijksblauw hover:bg-rijksblauw hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                     <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                     </svg>
@@ -123,7 +123,7 @@
                                 Als u denkt dat dit een fout is, neem dan contact met ons op.
                             </p>
                             <a href="{{ route('contact') }}"
-                               class="inline-flex items-center font-medium text-rijksblauw hover:text-rijkscyaan hover:underline">
+                               class="inline-flex items-center font-medium text-rijksblauw hover:text-rijkscyaan hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
                                 Contact opnemen
                                 <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
@@ -166,7 +166,7 @@
                                      alt="Techletes.ai logo"
                                      class="object-contain mr-2 w-auto h-8">
                                 <a href="https://www.techletes.ai/"
-                                   class="text-sm font-medium text-rijksblauw hover:text-rijkscyaan hover:underline">
+                                   class="text-sm font-medium text-rijksblauw hover:text-rijkscyaan hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
                                     Techletes.ai
                                 </a>
                             </div>
@@ -175,7 +175,7 @@
                                      alt="Oggel Codelabs logo"
                                      class="object-contain mr-2 w-auto h-8">
                                 <a href="https://oggel-codelabs.nl/"
-                                   class="text-sm font-medium text-rijksblauw hover:text-rijkscyaan hover:underline">
+                                   class="text-sm font-medium text-rijksblauw hover:text-rijkscyaan hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded">
                                     Oggel Codelabs
                                 </a>
                             </div>

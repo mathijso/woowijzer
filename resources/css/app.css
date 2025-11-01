@@ -39,8 +39,20 @@
     background-color: #154273;
 }
 
+.hover\:bg-rijksblauw:hover {
+    background-color: #154273;
+}
+
 .text-rijksblauw {
     color: #154273;
+}
+
+.hover\:text-rijksblauw:hover {
+    color: #154273;
+}
+
+.hover\:text-white:hover {
+    color: #ffffff;
 }
 
 .bg-rijkscyaan {
@@ -48,6 +60,10 @@
 }
 
 .text-rijkscyaan {
+    color: #007bc7;
+}
+
+.hover\:text-rijkscyaan:hover {
     color: #007bc7;
 }
 
@@ -152,4 +168,9 @@
 /* Set RijksoverheidSans as default font */
 body {
     font-family: 'RijksoverheidSans', 'Arial', sans-serif;
+}
+
+/* Make all buttons have pointer cursor */
+button {
+    cursor: pointer;
 }
