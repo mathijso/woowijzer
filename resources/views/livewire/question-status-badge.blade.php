@@ -1,6 +1,6 @@
 @php
     $questionStatusColors = [
-        'unanswered' => 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
+        'unanswered' => 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400',
         'partially_answered' => 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400',
         'answered' => 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400',
     ];

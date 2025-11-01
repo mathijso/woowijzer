@@ -6,12 +6,12 @@
         @php
             $statuses = config('woo.question_statuses');
             $statusColors = [
-                'unanswered' => 'bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700',
+                'unanswered' => 'bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30',
                 'partially_answered' => 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200 dark:bg-yellow-900/20 dark:text-yellow-400 dark:hover:bg-yellow-900/30',
                 'answered' => 'bg-green-100 text-green-700 hover:bg-green-200 dark:bg-green-900/20 dark:text-green-400 dark:hover:bg-green-900/30',
             ];
             $activeStatusColors = [
-                'unanswered' => 'bg-gray-200 text-gray-900 border-2 border-gray-400 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-500',
+                'unanswered' => 'bg-red-200 text-red-900 border-2 border-red-500 dark:bg-red-900/40 dark:text-red-200 dark:border-red-400',
                 'partially_answered' => 'bg-yellow-200 text-yellow-900 border-2 border-yellow-500 dark:bg-yellow-900/40 dark:text-yellow-200 dark:border-yellow-400',
                 'answered' => 'bg-green-200 text-green-900 border-2 border-green-500 dark:bg-green-900/40 dark:text-green-200 dark:border-green-400',
             ];
