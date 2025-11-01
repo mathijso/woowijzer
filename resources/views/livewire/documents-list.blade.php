@@ -25,15 +25,27 @@
                 <div class="flex-1 min-w-0">
                     <div class="flex gap-2 items-center">
                         <p class="text-sm font-medium truncate text-neutral-900 dark:text-white">{{ $document->file_name }}</p>
-
-                    </div>
-                    <div class="flex flex-wrap gap-2 items-center mt-1">
                          @if($document->relevance_score !== null)
                             <span class="px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400" title="Relevantie score">
                                 {{ round($document->relevance_score * 100) }}%
                             </span>
                         @endif
-
+                    </div>
+                    @if($document->relevance_explanation)
+                        <div x-data="{ expanded: false }" class="mt-2">
+                            <div class="text-sm text-neutral-700 dark:text-neutral-300">
+                                <p x-show="!expanded" class="line-clamp-2">{{ Str::limit($document->relevance_explanation, 100) }}</p>
+                                <p x-show="expanded" x-cloak class="whitespace-pre-wrap">{{ $document->relevance_explanation }}</p>
+                            </div>
+                            @if(strlen($document->relevance_explanation) > 100)
+                                <button @click="expanded = !expanded" class="mt-1 text-xs font-medium text-rijksblauw hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300">
+                                    <span x-show="!expanded">Toon meer</span>
+                                    <span x-show="expanded" x-cloak>Toon minder</span>
+                                </button>
+                            @endif
+                        </div>
+                    @endif
+                    <div class="flex flex-wrap gap-2 items-center mt-1">
                         <p class="text-xs text-neutral-600 dark:text-neutral-400">
                             {{ $document->getFileSizeFormatted() }} • {{ $document->created_at->format('d-m-Y H:i') }}
                         </p>

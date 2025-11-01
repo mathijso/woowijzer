@@ -17,10 +17,27 @@ class DocumentProcessingService
 
     protected int $timeout;
 
+    protected ?string $apiKey;
+
     public function __construct()
     {
         $this->baseUrl = config('woo.woo_insight_api.base_url');
         $this->timeout = config('woo.woo_insight_api.timeout', 120);
+        $this->apiKey = config('woo.woo_insight_api.api_key');
+    }
+
+    /**
+     * Get an HTTP client instance with authentication headers
+     */
+    protected function http(?int $timeout = null): \Illuminate\Http\Client\PendingRequest
+    {
+        $client = Http::timeout($timeout ?? $this->timeout);
+
+        if ($this->apiKey) {
+            $client->withHeaders(['X-API-Key' => $this->apiKey]);
+        }
+
+        return $client;
     }
 
     /**
@@ -33,17 +50,17 @@ class DocumentProcessingService
             $caseId = (string) $wooRequest->id;
 
             // Check if case already exists
-            $getResponse = Http::timeout(5)
+            $getResponse = $this->http(5)
                 ->get("{$this->baseUrl}/cases/{$caseId}");
 
             if ($getResponse->successful()) {
                 $data = $getResponse->json();
-                
+
                 Log::info('Case already exists in WOO Insight API', [
                     'case_id' => $caseId,
                     'has_case_file' => isset($data['case_file']),
                 ]);
-                
+
                 // Store case_file data if present in response (new API format)
                 if (isset($data['case_file']) && is_array($data['case_file'])) {
                     $this->storeCaseFileData($wooRequest, $data['case_file']);
@@ -62,7 +79,7 @@ class DocumentProcessingService
             }
 
             // Create new case
-            $response = Http::timeout($this->timeout)
+            $response = $this->http()
                 ->post("{$this->baseUrl}/cases", [
                     'case_id' => $caseId,
                     'title' => $wooRequest->title,
@@ -71,14 +88,14 @@ class DocumentProcessingService
 
             if ($response->successful()) {
                 $wooRequest->update(['woo_insight_case_id' => $caseId]);
-                
+
                 $data = $response->json();
-                
+
                 Log::info('Created case in WOO Insight API', [
                     'case_id' => $caseId,
                     'has_case_file' => isset($data['case_file']),
                 ]);
-                
+
                 // Store case_file data if present in response (new API format)
                 if (isset($data['case_file']) && is_array($data['case_file'])) {
                     $this->storeCaseFileData($wooRequest, $data['case_file']);
@@ -151,7 +168,7 @@ class DocumentProcessingService
             $submissionId = (string) $submission->id;
 
             // First try to fetch existing submission (idempotency)
-            $getResponse = Http::timeout(10)
+            $getResponse = $this->http(10)
                 ->get("{$this->baseUrl}/cases/{$caseId}/submissions/{$submissionId}");
 
             if ($getResponse->successful()) {
@@ -165,7 +182,7 @@ class DocumentProcessingService
             }
 
             // Create submission
-            $createResponse = Http::timeout($this->timeout)
+            $createResponse = $this->http()
                 ->post("{$this->baseUrl}/cases/{$caseId}/submissions", [
                     'submission_id' => $submissionId,
                     'submitter_name' => $submission->getSubmitterName(),
@@ -191,7 +208,7 @@ class DocumentProcessingService
                 || str_contains($body, 'duplicate key');
 
             if ($isDuplicate) {
-                $confirmResponse = Http::timeout(10)
+                $confirmResponse = $this->http(10)
                     ->get("{$this->baseUrl}/cases/{$caseId}/submissions/{$submissionId}");
                 if ($confirmResponse->successful()) {
                     $submission->update(['woo_insight_submission_id' => $submissionId]);
@@ -237,7 +254,7 @@ class DocumentProcessingService
             }
 
             // Upload document
-            $response = Http::timeout($this->timeout)
+            $response = $this->http()
                 ->attach('file', file_get_contents($fullPath), $document->file_name)
                 ->post("{$this->baseUrl}/cases/{$caseId}/submissions/{$submissionId}/documents", [
                     'document_id' => $documentId,
@@ -293,7 +310,7 @@ class DocumentProcessingService
     public function getDocumentStatus(string $externalDocumentId): array
     {
         try {
-            $response = Http::timeout($this->timeout)
+            $response = $this->http()
                 ->get("{$this->baseUrl}/documents/{$externalDocumentId}/status");
 
             if ($response->successful()) {
@@ -317,7 +334,7 @@ class DocumentProcessingService
     public function getDocumentDetails(string $externalDocumentId): array
     {
         try {
-            $response = Http::timeout($this->timeout)
+            $response = $this->http()
                 ->get("{$this->baseUrl}/documents/{$externalDocumentId}");
 
             if ($response->successful()) {
@@ -341,7 +358,7 @@ class DocumentProcessingService
     public function getDocumentMarkdown(string $externalDocumentId): array
     {
         try {
-            $response = Http::timeout($this->timeout)
+            $response = $this->http()
                 ->get("{$this->baseUrl}/documents/{$externalDocumentId}/markdown");
 
             if ($response->successful()) {
@@ -382,7 +399,7 @@ class DocumentProcessingService
         try {
             $caseId = (string) $wooRequest->id;
 
-            $response = Http::timeout($this->timeout)
+            $response = $this->http()
                 ->get("{$this->baseUrl}/cases/{$caseId}/status");
 
             if ($response->successful()) {
@@ -416,7 +433,7 @@ class DocumentProcessingService
         try {
             $caseId = (string) $wooRequest->id;
 
-            $response = Http::timeout($this->timeout)
+            $response = $this->http()
                 ->get("{$this->baseUrl}/cases/{$caseId}/timeline");
 
             if ($response->successful()) {
@@ -448,7 +465,7 @@ class DocumentProcessingService
         try {
             $caseId = (string) $wooRequest->id;
 
-            $response = Http::timeout($this->timeout)
+            $response = $this->http()
                 ->get("{$this->baseUrl}/cases/{$caseId}/decision-overview");
 
             if ($response->successful()) {
@@ -518,7 +535,7 @@ class DocumentProcessingService
                 throw new \Exception("File not found: {$filePath}");
             }
 
-            $response = Http::timeout($this->timeout)
+            $response = $this->http()
                 ->attach('file', file_get_contents($filePath), basename($filePath))
                 ->post("{$this->baseUrl}/cases/{$caseId}/extract-case-file");
 
@@ -546,25 +563,25 @@ class DocumentProcessingService
 
     /**
      * Get previously extracted case file information
-     * 
+     *
      * @param bool $suppressNotFoundErrors If true, 404 errors won't be logged as errors (useful for polling)
      */
     public function getCaseFileExtraction(string $caseId, bool $suppressNotFoundErrors = false): array
     {
         try {
-            $response = Http::timeout($this->timeout)
+            $response = $this->http()
                 ->get("{$this->baseUrl}/cases/{$caseId}/case-file-extraction");
 
             if ($response->successful()) {
                 $data = $response->json();
-                
+
                 Log::debug('Retrieved case file extraction', [
                     'case_id' => $caseId,
                     'has_title' => ! empty($data['title']),
                     'has_description' => ! empty($data['description']),
                     'question_count' => count($data['questions'] ?? []),
                 ]);
-                
+
                 return $data;
             }
 
@@ -621,7 +638,7 @@ class DocumentProcessingService
                 return false;
             }
 
-            $response = Http::timeout(5)
+            $response = $this->http(5)
                 ->get($this->baseUrl);
 
             return $response->successful();

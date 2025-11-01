@@ -135,29 +135,7 @@ $statusLabels = config('woo.woo_request_statuses');
             {{-- Progress Bar (Case Managers Only - Detailed) --}}
             @auth
                 @if(auth()->user()->isCaseManager() && $wooRequest->questions->count() > 0)
-                    <div class="p-4 mt-4 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
-                        <div class="flex justify-between items-center mb-2">
-                            <span class="text-sm font-medium text-neutral-900 dark:text-white">Voortgang</span>
-                            <span class="text-sm font-semibold text-neutral-900 dark:text-white">{{ $progressPercentage }}%</span>
-                        </div>
-                        <div class="overflow-hidden h-3 rounded-full bg-neutral-200 dark:bg-neutral-700">
-                            <div class="h-full rounded-full transition-all bg-rijksblauw" style="width: {{ $progressPercentage }}%"></div>
-                        </div>
-                        <div class="grid grid-cols-3 gap-2 mt-2 text-xs text-center">
-                            <div>
-                                <span class="font-semibold text-gray-600 dark:text-gray-400">{{ $questionStats['unanswered'] }}</span>
-                                <span class="text-neutral-600 dark:text-neutral-400"> onbeantwoord</span>
-                            </div>
-                            <div>
-                                <span class="font-semibold text-yellow-600 dark:text-yellow-400">{{ $questionStats['partially_answered'] }}</span>
-                                <span class="text-neutral-600 dark:text-neutral-400"> gedeeltelijk</span>
-                            </div>
-                            <div>
-                                <span class="font-semibold text-green-600 dark:text-green-400">{{ $questionStats['answered'] }}</span>
-                                <span class="text-neutral-600 dark:text-neutral-400"> beantwoord</span>
-                            </div>
-                        </div>
-                    </div>
+                    <livewire:woo-request-progress :woo-request="$wooRequest" view-type="detailed" />
                 @endif
             @endauth
         </div>
@@ -173,77 +151,13 @@ $statusLabels = config('woo.woo_request_statuses');
                 </div>
                 @endif
 
-                {{-- Progress (Burgers View - Simple) --}}
+                {{-- Progress (Simple View - Guests and Non-Case Manager Users) --}}
                 @if($wooRequest->questions->count() > 0)
                     @guest
-                    <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
-                        <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Voortgang</h2>
-                        <div class="mt-4">
-                            <div class="flex justify-between items-center text-sm text-neutral-600 dark:text-neutral-400">
-                                <span>Beantwoorde vragen</span>
-                                <span class="font-semibold">{{ round($wooRequest->progress_percentage) }}%</span>
-                            </div>
-                            <div class="overflow-hidden mt-2 w-full h-2.5 rounded-full bg-neutral-200 dark:bg-neutral-700">
-                                <div class="h-full rounded-full transition-all bg-rijksblauw"
-                                     style="width: {{ $wooRequest->progress_percentage }}%"></div>
-                            </div>
-                            <div class="grid grid-cols-3 gap-4 mt-4">
-                                <div class="p-3 text-center rounded-lg bg-neutral-50 dark:bg-neutral-900">
-                                    <div class="text-2xl font-bold text-neutral-900 dark:text-white">
-                                        {{ $wooRequest->questions->count() }}
-                                    </div>
-                                    <div class="text-xs text-neutral-600 dark:text-neutral-400">Totaal vragen</div>
-                                </div>
-                                <div class="p-3 text-center bg-green-50 rounded-lg dark:bg-green-900/20">
-                                    <div class="text-2xl font-bold text-green-600 dark:text-green-400">
-                                        {{ $wooRequest->questions->where('status', 'answered')->count() }}
-                                    </div>
-                                    <div class="text-xs text-neutral-600 dark:text-neutral-400">Beantwoord</div>
-                                </div>
-                                <div class="p-3 text-center bg-red-50 rounded-lg dark:bg-red-900/20">
-                                    <div class="text-2xl font-bold text-red-600 dark:text-red-400">
-                                        {{ $wooRequest->questions->where('status', 'unanswered')->count() }}
-                                    </div>
-                                    <div class="text-xs text-neutral-600 dark:text-neutral-400">Open</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        <livewire:woo-request-progress :woo-request="$wooRequest" view-type="simple" />
                     @else
                         @if(!auth()->user()->isCaseManager())
-                        <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
-                            <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">Voortgang</h2>
-                            <div class="mt-4">
-                                <div class="flex justify-between items-center text-sm text-neutral-600 dark:text-neutral-400">
-                                    <span>Beantwoorde vragen</span>
-                                    <span class="font-semibold">{{ round($wooRequest->progress_percentage) }}%</span>
-                                </div>
-                                <div class="overflow-hidden mt-2 w-full h-2.5 rounded-full bg-neutral-200 dark:bg-neutral-700">
-                                    <div class="h-full rounded-full transition-all bg-rijksblauw"
-                                         style="width: {{ $wooRequest->progress_percentage }}%"></div>
-                                </div>
-                                <div class="grid grid-cols-3 gap-4 mt-4">
-                                    <div class="p-3 text-center rounded-lg bg-neutral-50 dark:bg-neutral-900">
-                                        <div class="text-2xl font-bold text-neutral-900 dark:text-white">
-                                            {{ $wooRequest->questions->count() }}
-                                        </div>
-                                        <div class="text-xs text-neutral-600 dark:text-neutral-400">Totaal vragen</div>
-                                    </div>
-                                    <div class="p-3 text-center bg-green-50 rounded-lg dark:bg-green-900/20">
-                                        <div class="text-2xl font-bold text-green-600 dark:text-green-400">
-                                            {{ $wooRequest->questions->where('status', 'answered')->count() }}
-                                        </div>
-                                        <div class="text-xs text-neutral-600 dark:text-neutral-400">Beantwoord</div>
-                                    </div>
-                                    <div class="p-3 text-center bg-red-50 rounded-lg dark:bg-red-900/20">
-                                        <div class="text-2xl font-bold text-red-600 dark:text-red-400">
-                                            {{ $wooRequest->questions->where('status', 'unanswered')->count() }}
-                                        </div>
-                                        <div class="text-xs text-neutral-600 dark:text-neutral-400">Open</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            <livewire:woo-request-progress :woo-request="$wooRequest" view-type="simple" />
                         @endif
                     @endguest
                 @endif
@@ -996,6 +910,26 @@ $statusLabels = config('woo.woo_request_statuses');
                 }, 600);
             }
         }
+
+        // Listen for Livewire event to scroll to questions section
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('scroll-to-questions', () => {
+                const questionsSection = document.getElementById('questions-section');
+                const tabQuestions = document.getElementById('tab-questions');
+                const target = questionsSection || tabQuestions;
+
+                if (target) {
+                    const offset = 80;
+                    const elementPosition = target.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
 
     </script>
     @endpush
