@@ -155,8 +155,19 @@
                     <div class="border-b border-neutral-200 dark:border-neutral-700">
                         <nav class="flex overflow-x-auto -mb-px" aria-label="Tabs">
                             @php
-$activeTab = $activeTab ?? 'questions';
+$activeTab = $activeTab ?? 'documents';
                             @endphp
+                            <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'documents']) }}"
+                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'documents' ? 'border-blue-500 text-rijksblauw dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
+                                <span class="flex gap-2 items-center">
+                                    Documenten
+                                    @if($wooRequest->documents->count() > 0)
+                                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full {{ $activeTab === 'documents' ? 'text-rijksblauw bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400' }}">
+                                            {{ $wooRequest->documents->count() }}
+                                        </span>
+                                    @endif
+                                </span>
+                            </a>
                             <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'questions']) }}"
                                class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'questions' ? 'border-blue-500 text-rijksblauw dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
                                 <span class="flex gap-2 items-center">
@@ -180,17 +191,6 @@ $activeTab = $activeTab ?? 'questions';
                                 Complete Timeline
                             </a>
                             @endif
-                            <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'documents']) }}"
-                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'documents' ? 'border-blue-500 text-rijksblauw dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
-                                <span class="flex gap-2 items-center">
-                                    Documenten
-                                    @if($wooRequest->documents->count() > 0)
-                                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full {{ $activeTab === 'documents' ? 'text-rijksblauw bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400' }}">
-                                            {{ $wooRequest->documents->count() }}
-                                        </span>
-                                    @endif
-                                </span>
-                            </a>
                             @auth
                                 @if(auth()->user()->isCaseManager())
                                 <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'internal-requests']) }}"
@@ -201,6 +201,33 @@ $activeTab = $activeTab ?? 'questions';
                             @endauth
                         </nav>
                     </div>
+
+                    {{-- Tab Content: Documents --}}
+                    @if($activeTab === 'documents')
+                    <div id="tab-documents" class="tab-content">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
+                                    Documenten ({{ $wooRequest->documents->count() }})
+                                </h2>
+                                <div class="flex gap-4 items-center">
+                                    @auth
+                                        @if(auth()->user()->isCaseManager())
+                                            <form action="{{ route('woo-requests.auto-link-documents', $wooRequest) }}" method="POST" class="inline">
+                                                @csrf
+                                                <button type="submit" class="text-sm font-medium text-rijksblauw hover:text-rijksblauw dark:text-blue-400">
+                                                    Auto-link documenten
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @endauth
+                                </div>
+                            </div>
+
+                            <livewire:documents-list :woo-request="$wooRequest" />
+                        </div>
+                    </div>
+                    @endif
 
                     {{-- Tab Content: Questions --}}
                     @if($activeTab === 'questions')
@@ -321,33 +348,6 @@ $activeTab = $activeTab ?? 'questions';
                             </div>
 
                             <livewire:timeline-list :woo-request="$wooRequest" />
-                        </div>
-                    </div>
-                    @endif
-
-                    {{-- Tab Content: Documents --}}
-                    @if($activeTab === 'documents')
-                    <div id="tab-documents" class="tab-content">
-                        <div class="p-6">
-                            <div class="flex justify-between items-center mb-4">
-                                <h2 class="text-lg font-semibold text-neutral-900 dark:text-white">
-                                    Documenten ({{ $wooRequest->documents->count() }})
-                                </h2>
-                                <div class="flex gap-4 items-center">
-                                    @auth
-                                        @if(auth()->user()->isCaseManager())
-                                            <form action="{{ route('woo-requests.auto-link-documents', $wooRequest) }}" method="POST" class="inline">
-                                                @csrf
-                                                <button type="submit" class="text-sm font-medium text-rijksblauw hover:text-rijksblauw dark:text-blue-400">
-                                                    Auto-link documenten
-                                                </button>
-                                            </form>
-                                        @endif
-                                    @endauth
-                                </div>
-                            </div>
-
-                            <livewire:documents-list :woo-request="$wooRequest" />
                         </div>
                     </div>
                     @endif

@@ -136,13 +136,13 @@ class WooRequestController extends Controller
 
         // Get tab from request parameter if not in URL
         if (!$tab) {
-            $tab = $request->query('tab', 'questions');
+            $tab = $request->query('tab', 'documents');
         }
 
         // Validate tab
         $validTabs = ['questions', 'decision', 'timeline', 'documents', 'internal-requests'];
         if (!in_array($tab, $validTabs)) {
-            $tab = 'questions';
+            $tab = 'documents';
         }
 
         $wooRequest->load([
