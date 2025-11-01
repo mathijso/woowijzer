@@ -46,7 +46,7 @@
                             @if($document->relevance_score !== null)
                                 <div class="flex justify-center">
                                     <span
-                                        class="px-3 py-1.5 text-sm font-bold rounded-lg border-2 {{ $document->relevance_score >= 0.7 ? 'text-green-700 bg-green-50 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700' : ($document->relevance_score >= 0.4 ? 'text-yellow-700 bg-yellow-50 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-700' : 'text-red-700 bg-red-50 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700') }}"
+                                        class="px-3 py-1.5 text-sm font-bold rounded-lg {{ $document->relevance_score >= 0.7 ? 'text-green-700 bg-green-50 border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700' : ($document->relevance_score >= 0.4 ? 'text-yellow-700 bg-yellow-50 border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-700' : 'text-red-700 bg-red-50 border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700') }}"
                                         title="Relevantie score: {{ round($document->relevance_score * 100) }}%">
                                         {{ round($document->relevance_score * 100) }}%
                                     </span>
@@ -63,15 +63,15 @@
                         </td>
 
                         {{-- Document Name --}}
-                        <td class="px-4 py-4 whitespace-normal" style="max-width: 400px;">
+                        <td class="px-4 py-4 whitespace-normal" style="max-width: 500px;">
                             <a href="{{ route('cases.documents.show', [$wooRequest, $document]) }}"
                                class="flex gap-2 items-center group">
-                                <svg class="flex-shrink-0 w-5 h-5 text-rijksblauw dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-                                </svg>
+
                                 <span class="text-sm font-medium break-all text-neutral-900 group-hover:text-rijksblauw dark:text-white dark:group-hover:text-blue-400"
-                                      style="word-break:break-all; display:inline-block; max-width:400px; overflow-wrap:break-word; white-space:normal;">
+                                      style="word-break:break-all; display:inline-block; max-width:500px; overflow-wrap:break-word; white-space:normal;">
+
                                     {{ $document->file_name }}
+
                                 </span>
                             </a>
                         </td>
