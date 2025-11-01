@@ -103,7 +103,7 @@
                                             <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                         </svg>
                                         <div class="flex text-sm text-neutral-600 dark:text-neutral-400">
-                                            <label for="documents" class="relative font-medium text-blue-600 rounded-md cursor-pointer hover:text-blue-500">
+                                            <label for="documents" class="relative font-medium text-rijksblauw rounded-md cursor-pointer hover:text-blue-500">
                                                 <span>Upload bestanden</span>
                                                 <input id="documents" name="documents[]" type="file" multiple required class="sr-only">
                                             </label>
@@ -145,7 +145,7 @@
                         {{-- Submit --}}
                         <div class="flex justify-end pt-4 border-t border-neutral-200 dark:border-neutral-700">
                             <button type="submit"
-                                    class="px-6 py-2 text-sm font-semibold text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    class="px-6 py-2 text-sm font-semibold text-white bg-rijksblauw rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                                 Documenten uploaden
                             </button>
                         </div>

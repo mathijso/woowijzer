@@ -3,7 +3,7 @@
         {{-- Header --}}
         <div class="mb-6">
             <div class="mb-4">
-                <a href="{{ route('cases.documents.index', $wooRequest ?? $document->wooRequest) }}"
+                <a href="{{ route('woo-requests.show.tab', [$wooRequest ?? $document->wooRequest, 'documents']) }}"
                    class="inline-flex items-center text-sm text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white">
                     <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -21,7 +21,7 @@
                 </div>
                 <div class="flex gap-2">
                     <a href="{{ route('cases.documents.download', [$wooRequest ?? $document->wooRequest, $document]) }}"
-                       class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                       class="inline-flex items-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-rijksblauw hover:bg-blue-700">
                         <svg class="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
@@ -110,7 +110,7 @@
                             <div class="flex gap-3 p-4 rounded-lg bg-neutral-50 dark:bg-neutral-900">
                                 <div class="flex flex-col items-center pt-1">
                                     <div class="flex justify-center items-center w-8 h-8 bg-blue-100 rounded-full dark:bg-blue-900/20">
-                                        <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <svg class="w-4 h-4 text-rijksblauw dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
                                         </svg>
                                     </div>
@@ -183,7 +183,7 @@
                                     <p class="text-sm text-neutral-900 dark:text-white">{{ $question->question_text }}</p>
                                     <div class="flex gap-2 items-center mt-2">
                                         @if($question->pivot->relevance_score)
-                                            <span class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
+                                            <span class="px-2 py-1 text-xs font-medium text-white rounded-full bg-rijksblauw dark:bg-blue-900/20 dark:text-blue-400">
                                                 {{ round($question->pivot->relevance_score * 100) }}% relevant
                                             </span>
                                         @endif
@@ -294,7 +294,7 @@
                 <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
                     <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">WOO Verzoek</h3>
                     <a href="{{ route('woo-requests.show', [$wooRequest ?? $document->wooRequest, 'questions']) }}"
-                       class="block mt-3 text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400">
+                       class="block mt-3 text-sm text-rijksblauw hover:text-blue-700 dark:text-blue-400">
                         {{ ($wooRequest ?? $document->wooRequest)->title }} →
                     </a>
                 </div>

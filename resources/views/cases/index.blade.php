@@ -104,7 +104,7 @@
                                     @if($request->questions_count > 0)
                                         <div class="mt-3 flex items-center gap-2">
                                             <div class="h-2 flex-1 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
-                                                <div class="h-full rounded-full bg-blue-600 transition-all"
+                                                <div class="h-full rounded-full bg-rijksblauw transition-all"
                                                      style="width: {{ $request->progress_percentage ?? 0 }}%">
                                                 </div>
                                             </div>
@@ -122,14 +122,14 @@
                                 <form action="{{ route('cases.pickup', $request) }}" method="POST" class="inline">
                                     @csrf
                                     <button type="submit"
-                                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition-colors">
+                                            class="inline-flex items-center px-3 py-1.5 text-xs font-medium rounded-lg bg-rijksblauw text-white hover:bg-blue-700 transition-colors">
                                         <svg class="mr-1.5 h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                         </svg>
                                         Oppakken
                                     </button>
                                 </form>
-                                
+
                                 {{-- Assign to another case manager dropdown --}}
                                 <form action="{{ route('cases.assign', $request) }}" method="POST" class="inline" id="assign-form-{{ $request->id }}">
                                     @csrf

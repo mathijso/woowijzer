@@ -24,7 +24,7 @@
                     'answered' => 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400',
                 ];
                 $questionStatusLabels = config('woo.question_statuses');
-                
+
                 // Calculate display number: (current page - 1) * per page + index + 1
                 // e.g., page 1: (1-1)*15 + 0 + 1 = 1, page 2: (2-1)*15 + 0 + 1 = 16
                 $displayNumber = ($questions->currentPage() - 1) * $questions->perPage() + $loop->index + 1;
@@ -34,7 +34,7 @@
                 <div class="flex justify-between items-start">
                     <div class="flex-1">
                         <div class="flex gap-4 items-start">
-                            <div class="flex flex-shrink-0 justify-center items-center w-8 h-8 text-sm font-semibold text-blue-600 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
+                            <div class="flex flex-shrink-0 justify-center items-center w-8 h-8 text-sm font-semibold text-rijksblauw bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
                                 {{ $displayNumber }}
                             </div>
                             <div class="flex-1">

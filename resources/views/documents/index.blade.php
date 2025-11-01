@@ -63,7 +63,7 @@
                 @endif
 
                 <button type="submit"
-                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700">
+                        class="px-4 py-2 text-sm font-medium text-white bg-rijksblauw rounded-lg hover:bg-blue-700">
                     Filteren
                 </button>
 
@@ -86,7 +86,7 @@
                             {{-- File Icon --}}
                             <div class="flex-shrink-0">
                                 <div class="flex justify-center items-center w-12 h-12 bg-blue-100 rounded-lg dark:bg-blue-900/20">
-                                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="w-6 h-6 text-rijksblauw dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
                                     </svg>
                                 </div>
@@ -152,7 +152,7 @@
                                 @endif
 
                                 @if($document->hasTimelineEvents())
-                                    <span class="flex items-center text-xs text-blue-600 dark:text-blue-400">
+                                    <span class="flex items-center text-xs text-rijksblauw dark:text-blue-400">
                                         <svg class="mr-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                         </svg>

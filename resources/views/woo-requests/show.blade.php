@@ -36,7 +36,7 @@
                 <meta http-equiv="refresh" content="5">
             @elseif($wooRequest->isProcessing())
                 <div class="p-4 mb-6 text-sm bg-blue-50 rounded-lg dark:bg-blue-900/20">
-                    <div class="flex gap-2 items-center text-blue-700 dark:text-blue-400">
+                    <div class="flex gap-2 items-center text-rijksblauw dark:text-blue-400">
                         <svg class="w-5 h-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
@@ -141,7 +141,7 @@ $statusLabels = config('woo.woo_request_statuses');
                             <span class="text-sm font-semibold text-neutral-900 dark:text-white">{{ $progressPercentage }}%</span>
                         </div>
                         <div class="overflow-hidden h-3 rounded-full bg-neutral-200 dark:bg-neutral-700">
-                            <div class="h-full bg-blue-600 rounded-full transition-all" style="width: {{ $progressPercentage }}%"></div>
+                            <div class="h-full rounded-full transition-all bg-rijksblauw" style="width: {{ $progressPercentage }}%"></div>
                         </div>
                         <div class="grid grid-cols-3 gap-2 mt-2 text-xs text-center">
                             <div>
@@ -184,7 +184,7 @@ $statusLabels = config('woo.woo_request_statuses');
                                 <span class="font-semibold">{{ round($wooRequest->progress_percentage) }}%</span>
                             </div>
                             <div class="overflow-hidden mt-2 w-full h-2.5 rounded-full bg-neutral-200 dark:bg-neutral-700">
-                                <div class="h-full bg-blue-600 rounded-full transition-all"
+                                <div class="h-full rounded-full transition-all bg-rijksblauw"
                                      style="width: {{ $wooRequest->progress_percentage }}%"></div>
                             </div>
                             <div class="grid grid-cols-3 gap-4 mt-4">
@@ -219,7 +219,7 @@ $statusLabels = config('woo.woo_request_statuses');
                                     <span class="font-semibold">{{ round($wooRequest->progress_percentage) }}%</span>
                                 </div>
                                 <div class="overflow-hidden mt-2 w-full h-2.5 rounded-full bg-neutral-200 dark:bg-neutral-700">
-                                    <div class="h-full bg-blue-600 rounded-full transition-all"
+                                    <div class="h-full rounded-full transition-all bg-rijksblauw"
                                          style="width: {{ $wooRequest->progress_percentage }}%"></div>
                                 </div>
                                 <div class="grid grid-cols-3 gap-4 mt-4">
@@ -256,11 +256,11 @@ $statusLabels = config('woo.woo_request_statuses');
                                 $activeTab = $activeTab ?? 'questions';
                             @endphp
                             <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'questions']) }}"
-                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'questions' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
+                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'questions' ? 'border-blue-500 text-rijksblauw dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
                                 <span class="flex gap-2 items-center">
                                     Vragen
                                     @if($wooRequest->questions->count() > 0)
-                                        <span class="px-2 py-0.5 text-xs font-semibold {{ $activeTab === 'questions' ? 'text-blue-700 bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400' }} rounded-full">
+                                        <span class="px-2 py-0.5 text-xs font-semibold {{ $activeTab === 'questions' ? 'text-rijksblauw bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400' }} rounded-full">
                                             {{ $wooRequest->questions->count() }}
                                         </span>
                                     @endif
@@ -268,22 +268,22 @@ $statusLabels = config('woo.woo_request_statuses');
                             </a>
                             @if($wooRequest->hasDecision())
                             <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'decision']) }}"
-                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'decision' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
+                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'decision' ? 'border-blue-500 text-rijksblauw dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
                                 Besluitoverzicht
                             </a>
                             @endif
                             @if($wooRequest->hasTimeline())
                             <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'timeline']) }}"
-                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'timeline' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
+                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'timeline' ? 'border-blue-500 text-rijksblauw dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
                                 Complete Timeline
                             </a>
                             @endif
                             <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'documents']) }}"
-                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'documents' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
+                               class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'documents' ? 'border-blue-500 text-rijksblauw dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
                                 <span class="flex gap-2 items-center">
                                     Documenten
                                     @if($wooRequest->documents->count() > 0)
-                                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full {{ $activeTab === 'documents' ? 'text-blue-700 bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400' }}">
+                                        <span class="px-2 py-0.5 text-xs font-semibold rounded-full {{ $activeTab === 'documents' ? 'text-rijksblauw bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400' : 'text-neutral-600 bg-neutral-100 dark:bg-neutral-800 dark:text-neutral-400' }}">
                                             {{ $wooRequest->documents->count() }}
                                         </span>
                                     @endif
@@ -292,7 +292,7 @@ $statusLabels = config('woo.woo_request_statuses');
                             @auth
                                 @if(auth()->user()->isCaseManager())
                                 <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'internal-requests']) }}"
-                                   class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'internal-requests' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
+                                   class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'internal-requests' ? 'border-blue-500 text-rijksblauw dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
                                     Document Upload Verzoeken
                                 </a>
                                 @endif
@@ -312,7 +312,7 @@ $statusLabels = config('woo.woo_request_statuses');
                                     @if(auth()->user()->isCaseManager())
                                         <form action="{{ route('woo-requests.generate-summaries', $wooRequest) }}" method="POST" class="inline" onsubmit="return confirm('Weet je zeker dat je samenvattingen voor alle vragen wilt genereren? Dit kan enkele minuten duren.');">
                                             @csrf
-                                            <button type="submit" class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
+                                            <button type="submit" class="text-sm font-medium text-rijksblauw hover:text-rijksblauw dark:text-blue-400">
                                                 Genereer samenvattingen
                                             </button>
                                         </form>
@@ -337,7 +337,7 @@ $statusLabels = config('woo.woo_request_statuses');
                                     </p>
                                 </div>
                                 @if($wooRequest->caseDecision)
-                                <span class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
+                                <span class="px-2 py-1 text-xs font-medium bg-blue-100 rounded-full text-rijksblauw dark:bg-blue-900/20 dark:text-blue-400">
                                     {{ $wooRequest->caseDecision->document_count }} documenten
                                 </span>
                                 @endif
@@ -357,7 +357,7 @@ $statusLabels = config('woo.woo_request_statuses');
                                     <ul class="space-y-2">
                                         @foreach($wooRequest->caseDecision->getKeyReasons() as $reason)
                                         <li class="flex gap-2 items-start text-sm text-neutral-700 dark:text-neutral-300">
-                                            <svg class="flex-shrink-0 mt-0.5 w-5 h-5 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <svg class="flex-shrink-0 mt-0.5 w-5 h-5 text-rijksblauw dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                             </svg>
                                             <span>{{ $reason }}</span>
@@ -412,7 +412,7 @@ $statusLabels = config('woo.woo_request_statuses');
                                     </p>
                                 </div>
                                 @if($wooRequest->caseTimeline)
-                                <span class="px-2 py-1 text-xs font-medium text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
+                                <span class="px-2 py-1 text-xs font-medium bg-blue-100 rounded-full text-rijksblauw dark:bg-blue-900/20 dark:text-blue-400">
                                     {{ $wooRequest->caseTimeline->getEventCount() }} events
                                 </span>
                                 @endif
@@ -436,7 +436,7 @@ $statusLabels = config('woo.woo_request_statuses');
                                         @if(auth()->user()->isCaseManager())
                                             <form action="{{ route('woo-requests.auto-link-documents', $wooRequest) }}" method="POST" class="inline">
                                                 @csrf
-                                                <button type="submit" class="text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400">
+                                                <button type="submit" class="text-sm font-medium text-rijksblauw hover:text-rijksblauw dark:text-blue-400">
                                                     Auto-link documenten
                                                 </button>
                                             </form>
@@ -522,7 +522,7 @@ $statusLabels = config('woo.woo_request_statuses');
 
                                     <div class="flex justify-end">
                                         <button type="submit"
-                                                class="inline-flex gap-2 items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                                class="inline-flex gap-2 items-center px-4 py-2 text-sm font-medium text-white rounded-lg bg-rijksblauw hover:bg-rijksblauw focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                                             </svg>
@@ -545,7 +545,7 @@ $statusLabels = config('woo.woo_request_statuses');
                                                     @php
             $irStatusColors = [
                 'pending' => 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400',
-                'submitted' => 'bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400',
+                'submitted' => 'bg-blue-100 text-rijksblauw dark:bg-blue-900/20 dark:text-blue-400',
                 'completed' => 'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400',
                 'expired' => 'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400',
             ];
@@ -674,10 +674,10 @@ $statusLabels = config('woo.woo_request_statuses');
                     <a href="{{ route('woo-requests.download-document', $wooRequest) }}"
                        download
                        class="flex gap-2 items-center p-3 mt-3 bg-blue-50 rounded-lg transition hover:bg-blue-100 dark:bg-blue-900/10 dark:hover:bg-blue-900/20">
-                        <svg class="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-5 h-5 text-rijksblauw dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
-                        <span class="text-sm font-medium text-blue-600 dark:text-blue-400">Download PDF</span>
+                        <span class="text-sm font-medium text-rijksblauw dark:text-blue-400">Download PDF</span>
                     </a>
                 </div>
                 @endif
@@ -687,7 +687,7 @@ $statusLabels = config('woo.woo_request_statuses');
                 <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
                     <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Aanvrager</h3>
                     <div class="flex gap-3 items-center mt-3">
-                        <div class="flex justify-center items-center w-10 h-10 text-sm font-semibold text-blue-600 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
+                        <div class="flex justify-center items-center w-10 h-10 text-sm font-semibold bg-blue-100 rounded-full text-rijksblauw dark:bg-blue-900/20 dark:text-blue-400">
                             {{ $wooRequest->user->initials() }}
                         </div>
                         <div>
@@ -719,7 +719,7 @@ $statusLabels = config('woo.woo_request_statuses');
                                             <form action="{{ route('woo-requests.pickup', $wooRequest) }}" method="POST" class="flex-1">
                                                 @csrf
                                                 <button type="submit"
-                                                        class="inline-flex justify-center items-center px-4 py-2 w-full text-sm font-medium text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700">
+                                                        class="inline-flex justify-center items-center px-4 py-2 w-full text-sm font-medium text-white rounded-lg transition-colors bg-rijksblauw hover:bg-rijksblauw">
                                                     <svg class="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                                                     </svg>
@@ -772,7 +772,7 @@ $statusLabels = config('woo.woo_request_statuses');
                                             <form action="{{ route('woo-requests.pickup', $wooRequest) }}" method="POST">
                                                 @csrf
                                                 <button type="submit"
-                                                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg transition-colors hover:bg-blue-700">
+                                                        class="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors bg-rijksblauw hover:bg-rijksblauw">
                                                     Overnemen
                                                 </button>
                                             </form>
@@ -815,7 +815,7 @@ $statusLabels = config('woo.woo_request_statuses');
                         <div class="flex gap-3">
                             <div class="flex flex-col items-center">
                                 <div class="flex justify-center items-center w-8 h-8 bg-blue-100 rounded-full dark:bg-blue-900/20">
-                                    <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-rijksblauw dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                     </svg>
                                 </div>
@@ -833,7 +833,7 @@ $statusLabels = config('woo.woo_request_statuses');
                         <div class="flex gap-3">
                             <div class="flex flex-col items-center">
                                 <div class="flex justify-center items-center w-8 h-8 bg-blue-100 rounded-full dark:bg-blue-900/20">
-                                    <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-rijksblauw dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
                                     </svg>
                                 </div>

@@ -197,7 +197,7 @@
                             @if($case->questions->count() > 0)
                                 <div class="flex items-center">
                                     <div class="h-2 w-32 overflow-hidden rounded-full bg-neutral-200 dark:bg-neutral-700">
-                                        <div class="h-full rounded-full bg-blue-600"
+                                        <div class="h-full rounded-full bg-rijksblauw"
                                              style="width: {{ $case->progress_percentage }}%">
                                         </div>
                                     </div>
