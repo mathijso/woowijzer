@@ -244,7 +244,7 @@
                         <td>{{ $document->created_at->format('d-m-Y') }}</td>
                         <td>
                             @if($document->api_processing_status === 'completed')
-                                Verwerkt
+                                Ingediend
                             @elseif($document->api_processing_status === 'processing')
                                 Thinking...
                             @elseif($document->api_processing_status === 'failed')

@@ -81,7 +81,7 @@
                         <td class="px-4 py-4 text-center whitespace-nowrap">
                             @if($document->api_processing_status === 'completed')
                                 <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full dark:bg-green-900/20 dark:text-green-400">
-                                    Verwerkt
+                                    Ingediend
                                 </span>
                             @elseif($document->api_processing_status === 'processing')
                                 <span class="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full dark:bg-yellow-900/20 dark:text-yellow-400">

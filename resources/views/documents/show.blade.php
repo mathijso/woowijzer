@@ -25,7 +25,7 @@
                         <svg class="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                         </svg>
-                        Download
+                        Download&nbsp;PDF
                     </a>
                 </div>
             </div>
@@ -433,7 +433,7 @@ $activeTab = $activeTab ?? 'overview';
                             <dd class="mt-1">
                                 @if($document->api_processing_status === 'completed')
                                     <span class="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full dark:bg-green-900/20 dark:text-green-400">
-                                        Verwerkt
+                                        Ingediend
                                     </span>
                                 @elseif($document->api_processing_status === 'processing')
                                     <span class="px-2 py-1 text-xs font-medium text-yellow-700 bg-yellow-100 rounded-full dark:bg-yellow-900/20 dark:text-yellow-400">

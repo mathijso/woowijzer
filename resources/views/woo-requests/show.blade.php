@@ -583,7 +583,53 @@ $activeTab = $activeTab ?? 'documents';
                     </a>
                 </div>
                 @endif
+                @auth
+                    @if(auth()->user()->isBurger())
+                    {{-- Documents Overview --}}
+                    <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Meest Relevante Documenten</h3>
+                            <span class="px-2 py-1 text-xs font-medium rounded-full text-neutral-600 bg-neutral-100 dark:bg-neutral-700 dark:text-neutral-400">
+                                Top {{ min(5, $wooRequest->documents->count()) }}
+                            </span>
+                        </div>
+                        <div class="space-y-2">
+                            @forelse($wooRequest->documents->sortByDesc('relevance_score')->take(5) as $document)
+                                <a href="#"
+                                   class="flex gap-3 items-center p-3 rounded-lg transition hover:bg-neutral-50 dark:hover:bg-neutral-700/50 group">
 
+
+                                    {{-- Document Info --}}
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium truncate text-neutral-900 group-hover:text-rijksblauw dark:text-white dark:group-hover:text-blue-400">
+                                            {{ $document->file_name }}
+                                        </p>
+                                        <div class="flex gap-2 items-center mt-1">
+                                            @if($document->relevance_score !== null)
+                                                <span class="px-2 py-0.5 text-xs font-bold rounded-lg {{ $document->relevance_score >= 0.7 ? 'text-green-700 bg-green-50 border border-green-300 dark:bg-green-900/30 dark:text-green-400 dark:border-green-700' : ($document->relevance_score >= 0.4 ? 'text-yellow-700 bg-yellow-50 border border-yellow-300 dark:bg-yellow-900/30 dark:text-yellow-400 dark:border-yellow-700' : 'text-red-700 bg-red-50 border border-red-300 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700') }}"
+                                                      title="Relevantie score: {{ round($document->relevance_score * 100) }}%">
+                                                    {{ round($document->relevance_score * 100) }}%
+                                                </span>
+                                            @elseif($document->api_processing_status === 'completed')
+                                                <span class="px-2 py-0.5 text-xs font-medium text-gray-500 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-gray-400">
+                                                    Geen score
+                                                </span>
+                                            @endif
+
+                                        </div>
+                                    </div>
+
+
+                                </a>
+                            @empty
+                                <p class="py-4 text-sm text-center text-neutral-600 dark:text-neutral-400">
+                                    Nog geen documenten beschikbaar
+                                </p>
+                            @endforelse
+                        </div>
+                    </div>
+                    @endif
+                    @endauth
 
 
                 {{-- Actions (Case Managers Only) --}}
