@@ -167,7 +167,7 @@ $statusLabels = config('woo.woo_request_statuses');
                     <div class="border-b border-neutral-200 dark:border-neutral-700">
                         <nav class="flex overflow-x-auto -mb-px" aria-label="Tabs">
                             @php
-                                $activeTab = $activeTab ?? 'questions';
+$activeTab = $activeTab ?? 'questions';
                             @endphp
                             <a href="{{ route('woo-requests.show.tab', [$wooRequest, 'questions']) }}"
                                class="flex-shrink-0 px-4 py-4 text-sm font-medium whitespace-nowrap border-b-2 {{ $activeTab === 'questions' ? 'border-blue-500 text-rijksblauw dark:text-blue-400' : 'border-transparent text-neutral-500 hover:text-neutral-700 hover:border-neutral-300 dark:text-neutral-400 dark:hover:text-neutral-300' }}">
@@ -597,6 +597,7 @@ $statusLabels = config('woo.woo_request_statuses');
                 @endif
 
                 {{-- Aanvrager Info --}}
+                @if(auth()->user()->isCaseManager())
                 @if($wooRequest->user)
                 <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
                     <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Aanvrager</h3>
@@ -615,6 +616,7 @@ $statusLabels = config('woo.woo_request_statuses');
                     </div>
                 </div>
                 @endif
+                @endif
 
                 {{-- Actions (Case Managers Only) --}}
                 @auth
@@ -622,6 +624,15 @@ $statusLabels = config('woo.woo_request_statuses');
                         <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
                             <h3 class="text-sm font-semibold text-neutral-900 dark:text-white">Acties</h3>
                             <div class="mt-4 space-y-3">
+
+
+                                @if(auth()->user()->isCaseManager())
+                                    {{-- Status Buttons --}}
+                                    <div class="mb-4">
+                                    @livewire('woo-request-status-buttons', ['wooRequest' => $wooRequest])
+                                    </div>
+                                @endif
+
                                 {{-- Case Assignment --}}
                                 @if(!$wooRequest->case_manager_id)
                                     {{-- Not assigned - show pickup and assign options --}}
@@ -633,18 +644,18 @@ $statusLabels = config('woo.woo_request_statuses');
                                             <form action="{{ route('woo-requests.pickup', $wooRequest) }}" method="POST" class="flex-1">
                                                 @csrf
                                                 <button type="submit"
-                                                        class="inline-flex justify-center items-center px-4 py-2 w-full text-sm font-medium text-white rounded-lg transition-colors bg-rijksblauw hover:bg-rijksblauw">
+                                                    class="inline-flex justify-center items-center px-4 py-2 w-full text-sm font-medium text-white rounded-lg transition-colors bg-rijksblauw hover:bg-rijksblauw">
                                                     <svg class="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                            d="M13 10V3L4 14h7v7l9-11h-7z" />
                                                     </svg>
                                                     Case oppakken
                                                 </button>
                                             </form>
                                             <form action="{{ route('woo-requests.assign-case-manager', $wooRequest) }}" method="POST" class="flex-1">
                                                 @csrf
-                                                <select name="case_manager_id"
-                                                        onchange="this.form.submit()"
-                                                        class="block px-3 py-2 w-full text-sm rounded-lg border shadow-sm border-neutral-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-white">
+                                                <select name="case_manager_id" onchange="this.form.submit()"
+                                                    class="block px-3 py-2 w-full text-sm rounded-lg border shadow-sm border-neutral-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-white">
                                                     <option value="">Toewijzen aan...</option>
                                                     @foreach($caseManagers as $manager)
                                                         <option value="{{ $manager->id }}">{{ $manager->name }}</option>
@@ -661,10 +672,10 @@ $statusLabels = config('woo.woo_request_statuses');
                                         </label>
                                         <form action="{{ route('woo-requests.assign-case-manager', $wooRequest) }}" method="POST">
                                             @csrf
-                                            <select name="case_manager_id"
-                                                    onchange="this.form.submit()"
-                                                    class="block px-3 py-2 w-full text-sm rounded-lg border shadow-sm border-neutral-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-white">
-                                                <option value="{{ $wooRequest->case_manager_id }}">Toegewezen aan: {{ $wooRequest->caseManager->name }}</option>
+                                            <select name="case_manager_id" onchange="this.form.submit()"
+                                                class="block px-3 py-2 w-full text-sm rounded-lg border shadow-sm border-neutral-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 dark:border-neutral-600 dark:bg-neutral-900 dark:text-white">
+                                                <option value="{{ $wooRequest->case_manager_id }}">Toegewezen aan: {{ $wooRequest->caseManager->name }}
+                                                </option>
                                                 <option value="">---</option>
                                                 @foreach($caseManagers->where('id', '!=', auth()->id()) as $manager)
                                                     <option value="{{ $manager->id }}">{{ $manager->name }}</option>
@@ -680,24 +691,22 @@ $statusLabels = config('woo.woo_request_statuses');
                                             Case toewijzing
                                         </label>
                                         <div class="flex gap-2">
-                                            <div class="flex-1 px-3 py-2 text-sm rounded-lg border border-neutral-300 bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-300">
+                                            <div
+                                                class="flex-1 px-3 py-2 text-sm rounded-lg border border-neutral-300 bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-700 dark:text-neutral-300">
                                                 Toegewezen aan: {{ $wooRequest->caseManager->name }}
                                             </div>
                                             <form action="{{ route('woo-requests.pickup', $wooRequest) }}" method="POST">
                                                 @csrf
                                                 <button type="submit"
-                                                        class="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors bg-rijksblauw hover:bg-rijksblauw">
+                                                    class="px-4 py-2 text-sm font-medium text-white rounded-lg transition-colors bg-rijksblauw hover:bg-rijksblauw">
                                                     Overnemen
                                                 </button>
                                             </form>
                                         </div>
                                     </div>
                                 @endif
-
-                                {{-- Status Buttons --}}
-                                @livewire('woo-request-status-buttons', ['wooRequest' => $wooRequest])
-
-                                <a href="{{ route('woo-requests.generate-report', $wooRequest) }}" class="inline-block px-4 py-2 w-full text-sm font-medium text-center rounded-lg border border-neutral-300 text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700">
+                                <a href="{{ route('woo-requests.generate-report', $wooRequest) }}"
+                                    class="inline-block px-4 py-2 w-full text-sm font-medium text-center rounded-lg border border-neutral-300 text-neutral-700 hover:bg-neutral-50 dark:border-neutral-600 dark:text-neutral-300 dark:hover:bg-neutral-700">
                                     Genereer rapport
                                 </a>
                             </div>
@@ -766,56 +775,7 @@ $statusLabels = config('woo.woo_request_statuses');
                 </div>
 
                 {{-- Stats --}}
-                <div class="p-6 bg-white rounded-xl shadow-sm dark:bg-neutral-800">
-                    <h3 class="mb-4 text-sm font-semibold text-neutral-900 dark:text-white">Statistieken</h3>
-                    <dl class="space-y-3">
-                        <div class="flex justify-between items-center">
-                            <dt class="text-sm text-neutral-600 dark:text-neutral-400">Vragen</dt>
-                            <dd>
-                                <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold text-blue-800 bg-blue-100 rounded-full dark:bg-blue-900/20 dark:text-blue-400">
-                                    {{ $wooRequest->questions->count() }}
-                                </span>
-                            </dd>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <dt class="text-sm text-neutral-600 dark:text-neutral-400">Documenten</dt>
-                            <dd>
-                                <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold text-indigo-800 bg-indigo-100 rounded-full dark:bg-indigo-900/20 dark:text-indigo-400">
-                                    {{ $wooRequest->documents->count() }}
-                                </span>
-                            </dd>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <dt class="text-sm text-neutral-600 dark:text-neutral-400">Uploads</dt>
-                            <dd>
-                                <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold text-yellow-800 bg-yellow-100 rounded-full dark:bg-yellow-900/20 dark:text-yellow-400">
-                                    {{ $wooRequest->submissions->count() }}
-                                </span>
-                            </dd>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <dt class="text-sm text-neutral-600 dark:text-neutral-400">Dagen actief</dt>
-                            <dd>
-                                <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold text-gray-800 bg-gray-100 rounded-full dark:bg-gray-800 dark:text-gray-300">
-                                    {{ ceil($wooRequest->created_at->diffInHours(now()) / 24) }}
-                                </span>
-                            </dd>
-                        </div>
-                        @auth
-                            @if(auth()->user()->isCaseManager())
-                                <div class="flex justify-between items-center">
-                                    <dt class="text-sm text-neutral-600 dark:text-neutral-400">Interne verzoeken</dt>
-                                    <dd>
-                                        <span class="inline-flex items-center px-2.5 py-0.5 text-xs font-semibold text-pink-800 bg-pink-100 rounded-full dark:bg-pink-900/20 dark:text-pink-400">
-                                            {{ $wooRequest->internalRequests->count() }}
-                                        </span>
-                                    </dd>
-                                </div>
-                            @endif
-                        @endauth
-                    </dl>
-                </div>
-            </div>
+
         </div>
     </div>
 

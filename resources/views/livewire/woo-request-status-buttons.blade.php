@@ -1,8 +1,38 @@
-<div>
-    <label class="block mb-2 text-xs font-medium text-neutral-700 dark:text-neutral-300">
-        Status wijzigen
-    </label>
-    <div class="flex flex-col gap-2">
+<div x-data="{ open: false }" class="w-full">
+    {{-- Collapsible Header --}}
+    <button
+        type="button"
+        @click="open = !open"
+        class="flex justify-between items-center w-full px-3 py-2 mb-2 text-xs font-medium rounded-lg transition-all duration-200 bg-neutral-50 hover:bg-neutral-100 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-700 dark:text-neutral-300"
+    >
+        <div class="flex items-center gap-2">
+            <span>Status wijzigen</span>
+            <span class="px-2 py-0.5 text-[10px] font-medium rounded-full {{ $wooRequest->getStatusBadgeClass() }}">
+                {{ $wooRequest->getStatusLabel() }}
+            </span>
+        </div>
+        <svg
+            class="w-4 h-4 transition-transform duration-200"
+            :class="{ 'rotate-180': open }"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+        >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+    </button>
+
+    {{-- Collapsible Content --}}
+    <div
+        x-show="open"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 max-h-0"
+        x-transition:enter-end="opacity-100 max-h-[500px]"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 max-h-[500px]"
+        x-transition:leave-end="opacity-0 max-h-0"
+        class="overflow-hidden flex flex-col gap-2"
+    >
         @php
             $statuses = config('woo.woo_request_statuses');
             $statusColors = [
@@ -22,10 +52,11 @@
         @endphp
 
         @foreach($statuses as $key => $label)
-            <button type="button"
-                    wire:click="updateStatus('{{ $key }}')"
-                    wire:loading.attr="disabled"
-                    class="flex justify-center items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors {{ $wooRequest->status === $key ? $activeStatusColors[$key] : $statusColors[$key] }} disabled:opacity-50 disabled:cursor-not-allowed">
+            <button
+                type="button"
+                wire:click="updateStatus('{{ $key }}')"
+                wire:loading.attr="disabled"
+                class="flex justify-center items-center w-full px-3 py-2 text-sm font-medium rounded-lg transition-colors {{ $wooRequest->status === $key ? $activeStatusColors[$key] : $statusColors[$key] }} disabled:opacity-50 disabled:cursor-not-allowed">
                 <span wire:loading.remove wire:target="updateStatus">
                     {{ $label }}
                 </span>

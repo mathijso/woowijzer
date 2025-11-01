@@ -68,11 +68,77 @@ class WooRequestProgress extends Component
         ];
     }
 
+    public function getStatusPhasesProperty(): array
+    {
+        $status = $this->wooRequest->status;
+        
+        // Define all phases with their details
+        $phases = [
+            [
+                'key' => 'submitted',
+                'title' => 'Aanvraag ingediend',
+                'description' => 'Uw Woo-verzoek is ontvangen',
+                'icon' => 'document-text',
+                'completed' => in_array($status, ['submitted', 'in_review', 'in_progress', 'completed']),
+                'current' => $status === 'submitted',
+                'date' => $this->wooRequest->submitted_at?->format('d-m-Y H:i'),
+            ],
+            [
+                'key' => 'in_review',
+                'title' => 'In behandeling',
+                'description' => 'Het verzoek wordt beoordeeld',
+                'icon' => 'clipboard-document-check',
+                'completed' => in_array($status, ['in_review', 'in_progress', 'completed']),
+                'current' => $status === 'in_review',
+                'date' => null,
+            ],
+            [
+                'key' => 'collecting',
+                'title' => 'Documenten verzamelen',
+                'description' => 'Relevante documenten worden verzameld',
+                'icon' => 'folder-open',
+                'completed' => in_array($status, ['in_progress', 'completed']) && $this->wooRequest->documents()->count() > 0,
+                'current' => $status === 'in_progress' && $this->wooRequest->documents()->count() === 0,
+                'date' => null,
+            ],
+            [
+                'key' => 'processing',
+                'title' => 'Informatie verwerken',
+                'description' => 'Documenten worden geanalyseerd en vragen beantwoord',
+                'icon' => 'cog-6-tooth',
+                'completed' => in_array($status, ['in_progress', 'completed']) && $this->progressPercentage > 0,
+                'current' => $status === 'in_progress' && $this->wooRequest->documents()->count() > 0,
+                'date' => null,
+            ],
+            [
+                'key' => 'decision',
+                'title' => 'Besluitvorming',
+                'description' => 'Het definitieve besluit wordt voorbereid',
+                'icon' => 'scale',
+                'completed' => $status === 'completed',
+                'current' => $status === 'in_progress' && $this->progressPercentage >= 80,
+                'date' => null,
+            ],
+            [
+                'key' => 'publication',
+                'title' => 'Communicatie / Publicatie',
+                'description' => 'Het besluit wordt gecommuniceerd',
+                'icon' => 'paper-airplane',
+                'completed' => $status === 'completed',
+                'current' => false,
+                'date' => $this->wooRequest->completed_at?->format('d-m-Y H:i'),
+            ],
+        ];
+
+        return $phases;
+    }
+
     public function render()
     {
         return view('livewire.woo-request-progress', [
             'progressPercentage' => $this->progressPercentage,
             'questionStats' => $this->questionStats,
+            'statusPhases' => $this->statusPhases,
         ]);
     }
 }
