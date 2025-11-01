@@ -142,6 +142,20 @@ class ProcessUploadedDocument implements ShouldQueue
             // Fetch detailed document information (now that processing should be done)
             $documentDetails = $processingService->getDocumentDetails($this->document->external_document_id);
 
+            Log::info('Received document details from API', [
+                'document_id' => $this->document->id,
+                'external_document_id' => $this->document->external_document_id,
+                'has_processing' => isset($documentDetails['processing']),
+                'processing_keys' => isset($documentDetails['processing']) ? array_keys($documentDetails['processing']) : [],
+                'full_response_structure' => [
+                    'top_level_keys' => array_keys($documentDetails),
+                    'processing_relevance_score' => $documentDetails['processing']['relevance_score'] ?? 'NOT SET',
+                    'processing_relevance_explanation' => isset($documentDetails['processing']['relevance_explanation'])
+                        ? (strlen($documentDetails['processing']['relevance_explanation']) . ' chars')
+                        : 'NOT SET',
+                ],
+            ]);
+
             // Fetch markdown content
             $markdownData = $processingService->getDocumentMarkdown($this->document->external_document_id);
 
@@ -151,6 +165,19 @@ class ProcessUploadedDocument implements ShouldQueue
             $relevanceScore = $documentDetails['processing']['relevance_score'] ?? null;
             $relevanceExplanation = $documentDetails['processing']['relevance_explanation'] ?? null;
             $timelineEvents = $documentDetails['timeline'] ?? [];
+
+            Log::info('Extracted relevance data from API response', [
+                'document_id' => $this->document->id,
+                'relevance_score' => $relevanceScore,
+                'relevance_score_type' => gettype($relevanceScore),
+                'relevance_explanation' => $relevanceExplanation ? (substr($relevanceExplanation, 0, 100) . '...') : null,
+                'relevance_explanation_length' => $relevanceExplanation ? strlen($relevanceExplanation) : 0,
+                'processing_structure_dump' => [
+                    'summary_exists' => isset($documentDetails['processing']['summary']),
+                    'relevance_score_exists' => isset($documentDetails['processing']['relevance_score']),
+                    'relevance_explanation_exists' => isset($documentDetails['processing']['relevance_explanation']),
+                ],
+            ]);
             $processingMetadata = [
                 'confidence_score' => $documentDetails['processing']['confidence_score'] ?? null,
                 'has_markdown' => $documentDetails['processing']['has_markdown'] ?? false,
@@ -178,6 +205,16 @@ class ProcessUploadedDocument implements ShouldQueue
                 'has_markdown' => ! empty($contentMarkdown),
                 'has_summary' => ! empty($aiSummary),
                 'timeline_event_count' => count($timelineEvents),
+                'relevance_score_stored' => $relevanceScore,
+                'relevance_explanation_stored' => $relevanceExplanation ? 'YES (' . strlen($relevanceExplanation) . ' chars)' : 'NO',
+            ]);
+
+            // Verify what was actually saved to database
+            $this->document->refresh();
+            Log::info('Verified saved relevance data in database', [
+                'document_id' => $this->document->id,
+                'db_relevance_score' => $this->document->relevance_score,
+                'db_relevance_explanation' => $this->document->relevance_explanation ? 'YES (' . strlen($this->document->relevance_explanation) . ' chars)' : 'NO',
             ]);
 
             // Regenerate aggregated timeline and decision

@@ -24,7 +24,8 @@ class DocumentsList extends Component
     {
         $query = $this->wooRequest->documents()
             ->withCount('questions')
-            ->latest('created_at');
+            ->orderBy('relevance_score', 'desc')
+            ->orderBy('created_at', 'desc');
 
         if ($this->search) {
             $query->where(function ($q) {
